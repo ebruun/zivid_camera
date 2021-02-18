@@ -1,0 +1,45 @@
+name: zivid_test
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - astroid=2.5=py37h03978a9_1
+  - ca-certificates=2020.12.5=h5b45459_0
+  - certifi=2020.12.5=py37h03978a9_1
+  - colorama=0.4.4=pyh9f0ad1d_0
+  - isort=5.7.0=pyhd8ed1ab_0
+  - lazy-object-proxy=1.5.2=py37hcc03f2d_1
+  - mccabe=0.6.1=py_1
+  - openssl=1.1.1j=h8ffe710_0
+  - pip=20.2.3=py_0
+  - pylint=2.6.0=py37h03978a9_1
+  - python=3.7.8=h60c2a47_1_cpython
+  - python_abi=3.7=1_cp37m
+  - setuptools=49.6.0=py37hc8dfbb8_0
+  - six=1.15.0=pyh9f0ad1d_0
+  - sqlite=3.33.0=he774522_0
+  - toml=0.10.2=pyhd8ed1ab_0
+  - typed-ast=1.4.2=py37hcc03f2d_0
+  - vc=14.1=h869be7e_1
+  - vs2015_runtime=14.16.27012=h30e32a0_2
+  - wheel=0.35.1=pyh9f0ad1d_0
+  - wincertstore=0.2=py37_1003
+  - wrapt=1.12.1=py37hcc03f2d_3
+  - pip:
+    - cftime==1.2.1
+    - cycler==0.10.0
+    - kiwisolver==1.2.0
+    - matplotlib==3.3.1
+    - netcdf4==1.5.4
+    - numpy==1.19.2
+    - opencv-python==4.4.0.42
+    - pillow==7.2.0
+    - pptk==0.1.0
+    - pyparsing==2.4.7
+    - python-dateutil==2.8.1
+    - pyyaml==5.3.1
+    - vtk==9.0.1
+    - vtk-visualizer==0.9.6
+    - zivid==2.1.0.2.2.0
+prefix: C:\Users\Edvard\.conda\envs\zivid
+
