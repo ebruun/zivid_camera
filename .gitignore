@@ -1,6 +1,10 @@
+#PROJECT SPECIFIC ADDS
+# -----------
 *.png
 *.zdf
 /.vscode
+/output
+# -----------
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
