@@ -1,9 +1,8 @@
 #PROJECT SPECIFIC ADDS
 # -----------
-*.png
-*.zdf
 /.vscode
 /output
+! /ZividSampleData2/
 # -----------
 
 # Byte-compiled / optimized / DLL files
