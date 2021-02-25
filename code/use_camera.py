@@ -8,14 +8,23 @@ import zivid
 from utils import get_sample_data_path_edvard as get_sample_data_path
 from utils import get_output_data_path_edvard as get_output_data_path
 
+from zivid import capture_assistant
+
+
+
+
 
 def _main():
     app = zivid.Application()
     camera = app.connect_camera()
 
+    # a = capture_assistant.SuggestSettingsParameters()
+    # settings_2d = capture_assistant.suggest_settings(camera,a)
+
+
     settings = zivid.Settings()
     settings.acquisitions.append(zivid.Settings.Acquisition())
-    settings.acquisitions[0].aperture = 5.6
+    settings.acquisitions[0].aperture = 4
     settings.acquisitions[0].exposure_time = datetime.timedelta(microseconds=8333)
     settings.processing.filters.outlier.removal.enabled = True
     settings.processing.filters.outlier.removal.threshold = 5.0
