@@ -1,3 +1,0 @@
-numpy
-scipy
--e ./3rdParty/rtde-2.3.6/ setup.py
