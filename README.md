@@ -36,3 +36,34 @@ Suggest the following steps:
    * for example: import applications.basic.file_formats.convert_zdf
 
 ## Description of Code (John)
+
+#Zivid Modules
+   - _init_.py - imports all non protected classes, modules and packages from the current level: https://github.com/zivid/zivid-python/blob/master/modules/zivid/__init__.py
+   - _setting2_d_converter.py - implementation of 2D evaluation process: https://github.com/zivid/zivid-python/blob/master/modules/zivid/_settings2_d_converter.py
+   - application.py - class can be used as a context manager: https://github.com/zivid/zivid-python/blob/master/modules/zivid/application.py
+   - calibration.py - Module for calibration features: https://github.com/zivid/zivid-python/blob/master/modules/zivid/calibration.py
+   - camera.py - contains camera class: https://github.com/zivid/zivid-python/blob/master/modules/zivid/camera.py
+   - capture_assistant.py - class representing parameters to capture assistant: https://github.com/zivid/zivid-python/blob/master/modules/zivid/capture_assistant.py
+   - frame.py - contains the frame class: https://github.com/zivid/zivid-python/blob/master/modules/zivid/frame.py
+   - frame_2d.py - contains a 2D image as well as metadata at the time of capture: https://github.com/zivid/zivid-python/blob/master/modules/zivid/frame_2d.py
+   - image.py - contains the image class:  https://github.com/zivid/zivid-python/blob/master/modules/zivid/image.py
+   - 
+
+#Calibration Modules
+   - hand_eye.py - implementation of hand-eye calibration functionality: https://github.com/zivid/zivid-python/blob/master/modules/zivid/_calibration/hand_eye.py
+   - detector.py - implementation of feature point detection functionality: https://github.com/zivid/zivid-python/blob/master/modules/zivid/_calibration/detector.py
+
+
+List of Zivid Classes:
+   - Application
+   - Camera
+   - CameraState
+   - Frame
+   - Frame2D
+   - FrameInfo
+   - Image
+   - PointCloud
+   - SDKVersion
+   - Settings
+   - Settings2D
+   - CameraInfo
