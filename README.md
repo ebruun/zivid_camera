@@ -13,7 +13,7 @@ Zivid provides example code from the following repos:
 | https://github.com/zivid/zivid-python      | Samples       |
 | https://github.com/zivid/zivid-python-samples   | Source        |
 
-Note that at the time of writing (Feb, 2021), the code in zivid-python-samples is just a more comprehensive set of code than what is provided in zivid-python. So can probably ignore zivid-python samples, but check this to make sure...
+Note that at the time of writing (Feb, 2021), the code in zivid-python-samples repo is just a more comprehensive set of code than what is provided in the samples folder in zivid-python repo. So can probably ignore the samples folder provided in the zivid-python repo, but check this to make sure...
 
 **DO NOT MAKE CHANGES TO ZIVID BASE CODE SAMPLES**
 
