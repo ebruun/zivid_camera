@@ -1,1 +1,69 @@
 # zerowaste
+
+## Zivid Code
+
+Working for SDK V2.2.0
+
+Zivid provides example code from the following repos:
+(in samples folder)
+(in source folder)
+
+| Repo      | Folder |
+| ----------- | ----------- |
+| https://github.com/zivid/zivid-python      | Samples       |
+| https://github.com/zivid/zivid-python-samples   | Source        |
+
+Note that at the time of writing (Feb, 2021), the code in zivid-python-samples repo is just a more comprehensive set of code than what is provided in the samples folder in zivid-python repo. So can probably ignore the samples folder provided in the zivid-python repo, but check this to make sure...
+
+**DO NOT MAKE CHANGES TO ZIVID BASE CODE SAMPLES**
+
+The code in this repo extends the functionality of the sample code provided by Zivid. Some functions we use will rely on their code base, which we will keep updated as new versions are released. The idea is to keep their code as a "template" for our own implementation. If we need to make any changes to their provided code, make a copy, reference where it came from (so can update easier), and save our own version in this repo.
+
+**DO NOT MAKE CHANGES TO ZIVID BASE CODE SAMPLES**
+
+To use the provided Zivid code modules as imports to new code, ensure the source code location is added to the PYTHONPATH environment variable. This will ensure that python module imports work.
+
+Suggest the following steps:
+1. Clone the https://github.com/zivid/zivid-python-samples repo
+2. Add the source code folder to the PYTHONPATH
+    * Read section 3.6 in the following link: https://docs.python.org/3/using/windows.html
+    * in command line: echo %PYTHONPATH% (will be empty if the variable is not set)
+    * to add temporarily to current shell: set PYTHONPATH=%PYTHONPATH%;C:\new\path\to\source\code
+    * to add permanently: go through System Properties, Environment Variables, Edit or Add New (need to restart shell to see changes)
+    * downside of permanent method is that all versions on python will refer to this folder, so make sure this won't cause any issues
+3. Test that this works, should now be able to import any of the modules in the source folder. Reference from source as top folder.
+   * For example: from sample_utils.paths import get_sample_data_path
+   * for example: import applications.basic.file_formats.convert_zdf
+
+## Description of Code (John)
+
+#Zivid Modules
+   - _init_.py - imports all non protected classes, modules and packages from the current level: https://github.com/zivid/zivid-python/blob/master/modules/zivid/__init__.py
+   - _setting2_d_converter.py - implementation of 2D evaluation process: https://github.com/zivid/zivid-python/blob/master/modules/zivid/_settings2_d_converter.py
+   - application.py - class can be used as a context manager: https://github.com/zivid/zivid-python/blob/master/modules/zivid/application.py
+   - calibration.py - Module for calibration features: https://github.com/zivid/zivid-python/blob/master/modules/zivid/calibration.py
+   - camera.py - contains camera class: https://github.com/zivid/zivid-python/blob/master/modules/zivid/camera.py
+   - capture_assistant.py - class representing parameters to capture assistant: https://github.com/zivid/zivid-python/blob/master/modules/zivid/capture_assistant.py
+   - frame.py - contains the frame class: https://github.com/zivid/zivid-python/blob/master/modules/zivid/frame.py
+   - frame_2d.py - contains a 2D image as well as metadata at the time of capture: https://github.com/zivid/zivid-python/blob/master/modules/zivid/frame_2d.py
+   - image.py - contains the image class:  https://github.com/zivid/zivid-python/blob/master/modules/zivid/image.py
+   - 
+
+#Calibration Modules
+   - hand_eye.py - implementation of hand-eye calibration functionality: https://github.com/zivid/zivid-python/blob/master/modules/zivid/_calibration/hand_eye.py
+   - detector.py - implementation of feature point detection functionality: https://github.com/zivid/zivid-python/blob/master/modules/zivid/_calibration/detector.py
+
+
+List of Zivid Classes:
+   - Application
+   - Camera
+   - CameraState
+   - Frame
+   - Frame2D
+   - FrameInfo
+   - Image
+   - PointCloud
+   - SDKVersion
+   - Settings
+   - Settings2D
+   - CameraInfo
