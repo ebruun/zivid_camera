@@ -37,6 +37,23 @@ Suggest the following steps:
 
 ## Description of Code (John)
 
+### Zivid Classes
+
+| Class/Name | Description | Members | Summary | Relevance
+| ----------- | ----------- | ----------- | ----------- | ----------- |
+|Application | | | | |
+|Camera | | | | |
+|CameraState | | | | |
+|Frame | | | | |
+|Frame2D | | | | |
+|FrameInfo | | | | |
+|Image | | | | |
+|PointCloud | | | | |
+|SDKVersion | | | | |
+|Settings | | | | |
+|Settings2D | | | | |
+|CameraInfo | | | | |
+
 #Zivid Modules
    - _init_.py - imports all non protected classes, modules and packages from the current level: https://github.com/zivid/zivid-python/blob/master/modules/zivid/__init__.py
    - _setting2_d_converter.py - implementation of 2D evaluation process: https://github.com/zivid/zivid-python/blob/master/modules/zivid/_settings2_d_converter.py
@@ -52,18 +69,3 @@ Suggest the following steps:
 ## Calibration Modules
    - hand_eye.py - implementation of hand-eye calibration functionality: https://github.com/zivid/zivid-python/blob/master/modules/zivid/_calibration/hand_eye.py
    - detector.py - implementation of feature point detection functionality: https://github.com/zivid/zivid-python/blob/master/modules/zivid/_calibration/detector.py
-
-
-## List of Zivid Classes:
-   - Application
-   - Camera
-   - CameraState
-   - Frame
-   - Frame2D
-   - FrameInfo
-   - Image
-   - PointCloud
-   - SDKVersion
-   - Settings
-   - Settings2D
-   - CameraInfo
