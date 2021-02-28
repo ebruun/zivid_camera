@@ -3,6 +3,9 @@ This example is based on "capture_from_file.py" code provided in zivid-python-sa
 
 
 """
+
+#Add a comment to this file
+
 # PYTHON IMPORTS
 from pathlib import Path
 import datetime
