@@ -49,12 +49,12 @@ Suggest the following steps:
    - image.py - contains the image class:  https://github.com/zivid/zivid-python/blob/master/modules/zivid/image.py
    - 
 
-#Calibration Modules
+## Calibration Modules
    - hand_eye.py - implementation of hand-eye calibration functionality: https://github.com/zivid/zivid-python/blob/master/modules/zivid/_calibration/hand_eye.py
    - detector.py - implementation of feature point detection functionality: https://github.com/zivid/zivid-python/blob/master/modules/zivid/_calibration/detector.py
 
 
-List of Zivid Classes:
+## List of Zivid Classes:
    - Application
    - Camera
    - CameraState
