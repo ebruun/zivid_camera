@@ -39,13 +39,15 @@ Suggest the following steps:
 
 ### Zivid Classes
 
+https://github.com/zivid/zivid-python/tree/master/modules/zivid
+
 | Class/Name | Description | Members | Summary | Use in Code
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-| Application | | | | |
-| Camera | | | | |
-| CameraState | | | | |
-| Frame | | | | |
-| Frame2D | | | | |
+| Application |  class can be used as a context manager to guarantee that resources are released deterministically | "__init__", "__str__",| | |
+| Camera | interface to one Zivid camera, but only to access | | | |
+| CameraState | extract information from internal function of Zivid camera, such as temperature or lens info | | | |
+| Frame | contains the point cloud, stored on compute device memory | | | |
+| Frame2D | contains a 2D image as well as metadata | | | |
 | FrameInfo | | | | |
 | Image | | | | |
 | PointCloud | | | | |
