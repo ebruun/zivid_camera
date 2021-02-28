@@ -18,10 +18,6 @@ def _main():
     app = zivid.Application()
     camera = app.connect_camera()
 
-    # a = capture_assistant.SuggestSettingsParameters()
-    # settings_2d = capture_assistant.suggest_settings(camera,a)
-
-
     settings = zivid.Settings()
     settings.acquisitions.append(zivid.Settings.Acquisition())
     settings.acquisitions[0].aperture = 4
