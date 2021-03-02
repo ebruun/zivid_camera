@@ -44,7 +44,7 @@ https://github.com/zivid/zivid-python/tree/master/modules/zivid
 | Class/Name | Description | Members | Summary | Use in Code
 | ----------- | ----------- | ----------- | ----------- | ----------- |
 | Application |  manager class for Zivid | create_file_camera, connect_camera, cameras, release | | |
-| Calibration | | | | |
+| Calibration | calibration features, such as HandEye and MultiCamera | HandEyeInput, HandEyeResidual, HandEyeOutput | | |
 | Camera | interface to one Zivid camera, but only to access | capture, info, state, connect, disconnect, write_user_data, user_data, release | | |
 | Camera_Info | | firmware_version, model_name, serial_number, revision, user_data, firmware_version, | | |
 | :Revision | | major, minor | | |
