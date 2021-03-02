@@ -43,18 +43,22 @@ https://github.com/zivid/zivid-python/tree/master/modules/zivid
 
 | Class/Name | Description | Members | Summary | Use in Code
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-| Application |  class can be used as a context manager to guarantee that resources are released deterministically | "__init__", "__str__",| | |
-| Camera | interface to one Zivid camera, but only to access | | | |
-| CameraState | extract information from internal function of Zivid camera, such as temperature or lens info | | | |
+| Application |  class can be used as a context manager to guarantee that resources are released deterministically | create_file_camera, connect_camera, cameras, release | | |
+| Calibration | | | | |
+| Camera | interface to one Zivid camera, but only to access | capture, info, state, connect, disconnect, write_user_data, user_data, release | | |
+| Camera_Info | firmware_version, model_name, serial_number, revision, user_data, firmware_version, | | | |
+| :Revision | | major, minor | | |
+| :UserData | | | | |
+| Camera_State | extract information from internal function of Zivid camera, such as temperature or lens info | available, connected | | |
+| :Temperature | | dmd, general, led, lens, pcb | | |
 | Frame | contains the point cloud, stored on compute device memory | | | |
 | Frame2D | contains a 2D image as well as metadata | | | |
-| FrameInfo | | | | |
+| FrameInfo | | SoftwareVersion, Core, TimeStamp | | |
 | Image | | | | |
 | PointCloud | | | | |
 | SDKVersion | | | | |
-| Settings | | | | |
-| Settings2D | | | | |
-| CameraInfo | | | | |
+| Settings | | Acquisition, Processing, Color, Balance, Color, Filters, Noise, Smoothing, Gaussian, Experimental, ContrastDistortion, Correction, Removal, Reflection, Settings, Outlier, Brightness, Aperture, ExposureTime, Gain, ContrastDistortion, Enabled, Strength, Threshold, | | |
+| Settings2D | | Acquisition, Processing, Color, Balance | | |
 
 ### Zivid Modules
 
