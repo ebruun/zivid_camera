@@ -51,7 +51,8 @@ https://github.com/zivid/zivid-python/tree/master/modules/zivid
 | :UserData | | | | |
 | Camera_State | extract information from internal function of Zivid camera, such as temperature or lens info | available, connected | | |
 | :Temperature | | dmd, general, led, lens, pcb | | |
-| Frame | contains the point cloud, stored on compute device memory | | | |
+| Capture_Assistant | | ambient_light_frequency, max_capture_time, _convert_to_internal, suggest_settings | | |
+| Frame | contains the point cloud, stored on compute device memory | point_cloud, save, load, release | | |
 | Frame2D | contains a 2D image as well as metadata | | | |
 | FrameInfo | | SoftwareVersion, Core, TimeStamp | | |
 | Image | | | | |
