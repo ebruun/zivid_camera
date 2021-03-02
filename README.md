@@ -53,12 +53,13 @@ https://github.com/zivid/zivid-python/tree/master/modules/zivid
 | :Temperature | | dmd, general, led, lens, pcb | | |
 | Capture_Assistant | | ambient_light_frequency, max_capture_time, _convert_to_internal, suggest_settings | | |
 | Frame | contains the point cloud, stored on compute device memory | point_cloud, save, load, release | | |
-| Frame2D | contains a 2D image as well as metadata | | | |
-| FrameInfo | | SoftwareVersion, Core, TimeStamp | | |
-| Image | | | | |
-| PointCloud | | | | |
-| SDKVersion | | | | |
+| Frame_2D | contains a 2D image as well as metadata | image_rgba, settings, state, info, release | | |
+| Frame_Info | | core, time_stamp, software_version | | |
+| Image | A two-dimensional image stored on the host | height, width, save, copy_data, release | | |
+| PointCloud | Point cloud with x, y, z, RGB and color laid out on a 2D grid | height, width, release | | |
+| SDK_Version | get the version of the loaded library | | | |
 | Settings | | Acquisition, Processing, Color, Balance, Color, Filters, Noise, Smoothing, Gaussian, Experimental, ContrastDistortion, Correction, Removal, Reflection, Settings, Outlier, Brightness, Aperture, ExposureTime, Gain, ContrastDistortion, Enabled, Strength, Threshold, | | |
+| :Acquisition | | | | |
 | Settings2D | | Acquisition, Processing, Color, Balance | | |
 
 ### Zivid Modules
