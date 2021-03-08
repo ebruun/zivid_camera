@@ -41,6 +41,7 @@ Suggest the following steps:
 
 https://github.com/zivid/zivid-python/tree/master/modules/zivid
 
+
 | Class/Name | Description | Members | Summary | Use in Code
 | ----------- | ----------- | ----------- | ----------- | ----------- |
 | Application |  manager class for Zivid | create_file_camera, connect_camera, cameras, release | | |
