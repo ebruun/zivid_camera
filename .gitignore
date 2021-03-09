@@ -3,6 +3,7 @@
 /.vscode
 /output
 ! /ZividSampleData2/
+*.3dmbak
 # -----------
 
 # Byte-compiled / optimized / DLL files
