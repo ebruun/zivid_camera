@@ -9,7 +9,9 @@ from pathlib import Path
 from utils import get_output_data_path_edvard as get_output_data_path
 
 
-img_path = Path() / get_output_data_path() / "emulated_output_frame.png"
+#img_path = Path() / get_output_data_path() / "emulated_output_frame.png"
+img_path = Path() / get_output_data_path() / "lab_test_april6.png"
+
 print(img_path)
 
 img = cv2.imread(str(img_path),0)
