@@ -27,3 +27,15 @@ def get_output_data_path_edvard():
 
     path = Path(__file__).parents[1] / "output"
     return path
+
+def create_file_path(folder,filename):
+    """create output data path.
+
+    Returns:
+        path: Output data path
+
+    """
+
+    path = Path(__file__).parents[1] / folder / filename
+
+    return os.path.abspath(path)
