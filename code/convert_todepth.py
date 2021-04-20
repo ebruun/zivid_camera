@@ -30,6 +30,8 @@ def _point_cloud_to_cv_z(point_cloud):
         (depth_map - np.nanmin(depth_map)) / (np.nanmax(depth_map) - np.nanmin(depth_map)) * 255
     ).astype(np.uint8)
 
+
+
     depth_map_color_map = cv2.applyColorMap(depth_map_uint8, cv2.COLORMAP_VIRIDIS)
 
     # Setting nans to black
@@ -56,25 +58,43 @@ def _point_cloud_to_cv_bgr(point_cloud):
 
 app = zivid.Application()
 
-data_file = create_file_path("input","lab_test_april6_notape.zdf")
-print(f"Reading ZDF frame from file: {data_file}")
+data_file_in = create_file_path("input","lab_test_april6.zdf")
+#data_file_in = create_file_path("input","MiscObjects.zdf")
+file_out_bgr = create_file_path("output","april6_image.png")
+file_out_depth = create_file_path("output","april6_depth.png")
 
-frame = zivid.Frame(data_file)
+
+print(f"Reading ZDF frame from file: {data_file_in}")
+
+frame = zivid.Frame(data_file_in)
 point_cloud = frame.point_cloud()
+
 
 print("Converting to BGR image in OpenCV format")
 bgr = _point_cloud_to_cv_bgr(point_cloud)
-file_out = create_file_path("output","april6_image.png")
-cv2.imwrite(file_out, bgr)
+cv2.imwrite(file_out_bgr, bgr)
 
 print("Converting to Depth map in OpenCV format")
 z_color_map = _point_cloud_to_cv_z(point_cloud)
 
-z_color_map[525:575,825:875] = [255,255,255]
-z_color_map[475:525,325:375] = [255,255,255]
+z_color_map[290:310,805:825] = [255,255,255] #del
+z_color_map[290:310,1455:1475] = [255,255,255] #del
 
-file_out = create_file_path("output","april6_depth.png")
-cv2.imwrite(file_out, z_color_map)
+z_color_map[657:677,1055:1075] = [255,255,255]
+z_color_map[578:598,1725:1745] = [255,255,255]
+z_color_map[511:531,891:911] = [255,255,255]
+z_color_map[386:406,1730:1750] = [255,255,255]
+z_color_map[878:898,460:480] = [255,255,255]
+z_color_map[873:893,533:553] = [255,255,255]
+z_color_map[690:710,990:1010] = [255,255,255]
+z_color_map[675:695,532:552] = [255,255,255]
+z_color_map[675:695,455:475] = [255,255,255]
+z_color_map[478:498,957:977] = [255,255,255]
+z_color_map[385:405,1664:1684] = [255,255,255]
+z_color_map[576:596,1662:1682] = [255,255,255]
+
+
+cv2.imwrite(file_out_depth, z_color_map)
 
 plt.subplot(121),plt.imshow(bgr,cmap = 'gray')
 plt.title('Original Image'), plt.xticks([]), plt.yticks([])
