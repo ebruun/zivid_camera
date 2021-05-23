@@ -11,9 +11,6 @@ from utils import get_output_data_path_edvard as get_output_data_path
 from zivid import capture_assistant
 
 
-
-
-
 def _main():
     app = zivid.Application()
     camera = app.connect_camera()
