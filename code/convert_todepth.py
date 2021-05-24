@@ -23,13 +23,13 @@ def _point_cloud_to_cv_z(point_cloud, features):
     """
     depth_map = point_cloud.copy_data("z")
 
-    depths = []
+    depths = [600]
     for point in features:
         x,y = point.ravel()
         depths.append(depth_map[y,x])
 
     # Setting the depth map based on min/max of the features
-    pad = 25
+    pad = 100
     depth_map_uint8 = (
         255 * (depth_map - (np.nanmin(depths)-pad)) / ((pad+np.nanmax(depths)) - (np.nanmin(depths)-pad))
     ).astype(np.uint8)
@@ -83,7 +83,7 @@ def _main(input_file, output_bgr, output_depth):
         [543,883],
         [1000,700],
         [542,685],
-        [465,685],
+        [465,685], 
         [967,488],
         [1674,395],
         [1672,586],
@@ -110,7 +110,7 @@ def _main(input_file, output_bgr, output_depth):
 
 if __name__ == "__main__":
     _main(
-        input_file = "_3D_frame_fromfile.zdf",
+        input_file = "_3D_frame_fromassistant_may24.zdf",
         output_bgr = "may24_image.png",
         output_depth = "may24_depth.png",
         )    

@@ -38,5 +38,5 @@ def _main(output_file, setting_file = False):
 
 
 if __name__ == "__main__":
-    _main(output_file = "_3D_frame_fromfile.zdf", setting_file = "capture_settings.yml")
+    #_main(output_file = "_3D_frame_fromfile.zdf", setting_file = "capture_settings.yml")
     _main(output_file = "_3D_frame_fromassistant.zdf")
