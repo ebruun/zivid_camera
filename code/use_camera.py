@@ -1,52 +1,42 @@
 """Capture sample."""
 # PYTHON IMPORTS
-from pathlib import Path
 import datetime
 import zivid
+from pathlib import Path
+
+# ZIVID IMPORTS
+from sample_utils.settings_from_file import get_settings_from_yaml
 
 # LOCAL IMPORTS
-from utils import get_sample_data_path_edvard as get_sample_data_path
-from utils import get_output_data_path_edvard as get_output_data_path
-
-from zivid import capture_assistant
+from utils import create_file_path as create_file_path
 
 
-def _main():
+def _main(output_file, setting_file = False):
     app = zivid.Application()
     camera = app.connect_camera()
 
-    settings = zivid.Settings()
-    settings.acquisitions.append(zivid.Settings.Acquisition())
-    settings.acquisitions[0].aperture = 4
-    settings.acquisitions[0].exposure_time = datetime.timedelta(microseconds=8333)
-    settings.processing.filters.outlier.removal.enabled = True
-    settings.processing.filters.outlier.removal.threshold = 5.0
+    if setting_file:
+        settings_file_path = Path() / create_file_path("input",setting_file)
 
-    print("Capturing frame")
+        print(f"Configuring settings from file: {settings_file_path}")
+        settings = get_settings_from_yaml(settings_file_path)
+    else:
+        suggest_settings_parameters = zivid.capture_assistant.SuggestSettingsParameters(
+            max_capture_time=datetime.timedelta(milliseconds=1200),
+            ambient_light_frequency=zivid.capture_assistant.SuggestSettingsParameters.AmbientLightFrequency.none,
+        )
+
+        print(f"Running Capture Assistant with parameters: {suggest_settings_parameters}")
+        settings = zivid.capture_assistant.suggest_settings(camera, suggest_settings_parameters)
+
+    print("Capturing 3D frame")
     with camera.capture(settings) as frame:
-        data_file = Path() / get_output_data_path() / "output_frame.zdf"
-        print(f"Saving frame to file: {data_file}")
-        frame.save(data_file)
+        file_out = create_file_path("input",output_file)
+        print(f"Saving frame to file: {file_out}")
 
-    print("Configuring 2D settings")
-    settings_2d = zivid.Settings2D()
-    settings_2d.acquisitions.append(zivid.Settings2D.Acquisition())
-    settings_2d.acquisitions[0].exposure_time = datetime.timedelta(microseconds=30000)
-    settings_2d.acquisitions[0].aperture = 11.31
-    settings_2d.acquisitions[0].brightness = 1.80
-    settings_2d.acquisitions[0].gain = 2.0
-    settings_2d.processing.color.balance.red = 1.0
-    settings_2d.processing.color.balance.green = 1.0
-    settings_2d.processing.color.balance.blue = 1.0
-    settings_2d.processing.color.gamma = 1.0
+        frame.save(file_out)
 
-    print("Capturing 2D frame")
-    with camera.capture(settings_2d) as frame_2d:
-        image = frame_2d.image_rgba()
-
-        data_file = Path() / get_output_data_path() / "output_frame.png"
-        print(f"Saving frame to file: {data_file}")
-        image.save(data_file)    
 
 if __name__ == "__main__":
-    _main()
+    _main(output_file = "_3D_frame_fromfile.zdf", setting_file = "capture_settings.yml")
+    _main(output_file = "_3D_frame_fromassistant.zdf")
