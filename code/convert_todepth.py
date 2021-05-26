@@ -101,16 +101,28 @@ def _main(input_file, output_bgr, output_depth):
 
     ##################################
 
-    plt.subplot(121),plt.imshow(bgr,cmap = 'gray')
-    plt.title('Original Image'), plt.xticks([]), plt.yticks([])
-    plt.subplot(122),plt.imshow(z_color_map)
+    plt.subplot(121),
+    plt.imshow(bgr,cmap = 'gray')
+    plt.title('Original Image'),
+    plt.xticks([]), plt.yticks([])
+
+
+    z_color_map = cv2.cvtColor(z_color_map, cv2.COLOR_BGR2RGB)
+
+    plt.subplot(122),
+    plt.imshow(z_color_map,cmap = 'gray')
     plt.title('Depth Image'), plt.xticks([]), plt.yticks([])
     plt.show()
 
 
 if __name__ == "__main__":
+    # _main(
+    #     input_file = "_3D_frame_fromassistant.zdf",
+    #     output_bgr = "may24_image.png",
+    #     output_depth = "may24_depth.png",
+    #     )    
     _main(
-        input_file = "_3D_frame_fromassistant_may24.zdf",
-        output_bgr = "may24_image.png",
-        output_depth = "may24_depth.png",
+        input_file = "test_output.zdf",
+        output_bgr = "test_image.png",
+        output_depth = "test_depth.png",
         )    
