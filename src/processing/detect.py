@@ -9,6 +9,7 @@ from src.utility.io import create_file_path
 from src.utility.plots import plot_flex, plot_summary
 
 
+#Note to self: come up with a better way to specify plot data here
 
 ##################################
 # IMPORT
@@ -40,7 +41,7 @@ def _import_img(input_file):
 
 
 ###################################
-# DEPTH MASK (WHERE NO DATA)
+# DEPTH MASK (WHERE IS THERE NO DATA)
 ###################################
 def _apply_depth_mask(img, gray, input_file):
     print("\nAPPLY DEPTH MASK")
@@ -73,7 +74,7 @@ def _apply_depth_mask(img, gray, input_file):
         },
         2: {
             "name": "gray mask",
-            "img_file": mask,
+            "img_file": cv2.cvtColor(mask, cv2.COLOR_GRAY2RGB),
             "pos": (1,1),
         },    
         3: {
@@ -239,6 +240,7 @@ def _find_contours(closing):
     max_contour_area = 2300000 # max contour area for 1920x1200 pixels
 
     contours = [c  for c in contours if cv2.contourArea(c) < max_contour_area]
+    
 
     #make a mask of only the final rectangles
     found_shapes = np.zeros((1200,1920,3), np.uint8)
@@ -246,6 +248,7 @@ def _find_contours(closing):
 
     num_labels = 0
     contours_save = []
+    midpoint_save = []
     for c in contours:
         area = cv2.contourArea(c)
         epsilon = 0.01*cv2.arcLength(c,True)
@@ -255,16 +258,23 @@ def _find_contours(closing):
         print(str)
 
         if area > min_area and area < max_area and len(approx) < n_approx_max:
-                num_labels += 1
-                cv2.drawContours(found_shapes, [c], -1, (0, 0, 0), thickness=cv2.FILLED)
-                contours_save.append(c)
+            num_labels += 1
+            cv2.drawContours(found_shapes, [c], -1, (0, 0, 0), thickness=cv2.FILLED)
+            contours_save.append(c)
+
+            m = cv2.moments(c)
+            midpoint_save.append([int(m["m10"] / m["m00"]), int(m["m01"] / m["m00"])])
+
 
     found_shapes = cv2.cvtColor(found_shapes,cv2.COLOR_RGB2GRAY)
 
     edges = cv2.Canny(found_shapes,100,200,5)
     corners = cv2.goodFeaturesToTrack(found_shapes,num_labels*4,0.1,40)
+    
+    corners = np.squeeze(corners).astype('int32')
+    midpoint_save = np.asarray(midpoint_save).astype('int32')
 
-    return contours, contours_save, found_shapes, edges, corners
+    return contours, contours_save, midpoint_save, found_shapes, edges, corners
 
 
 def find_features(input_file_zdf, input_file_image, plot = False):
@@ -273,7 +283,7 @@ def find_features(input_file_zdf, input_file_image, plot = False):
     gray, data3 = _apply_glare_remove(img,gray)
     closing, data4 = _apply_threshold(gray)
 
-    contours, contours_save, found_shapes, edges, corners = _find_contours(closing)
+    contours, contours_save, midpoint_save, found_shapes, edges, corners = _find_contours(closing)
 
     if plot:
         plot_flex(data1,dims=[1,2])
@@ -281,9 +291,12 @@ def find_features(input_file_zdf, input_file_image, plot = False):
         plot_flex(data3, dims=[2,2])
         plot_flex(data4, dims=[2,3])
 
-        plot_summary(img, contours, contours_save, corners, found_shapes, edges)
+        plot_summary(img, contours, contours_save, midpoint_save, corners, found_shapes, edges)
+        plt.show()
+        plt.pause(1)
 
-    return corners
+
+    return corners, midpoint_save
 
 
 if __name__ == "__main__":

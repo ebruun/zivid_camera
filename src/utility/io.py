@@ -2,7 +2,9 @@
 Utilities for working with Zivid Camera
 """
 
+import datetime
 import os
+from datetime import datetime
 from pathlib import Path
 
 
@@ -39,3 +41,10 @@ def create_file_path(folder,filename):
     path = Path(__file__).parents[2] / folder / filename
 
     return os.path.abspath(path)
+
+def file_name(file_name,type):
+    return file_name + type
+
+def dynamic_name(n = 00, type = "online"):
+    str2 = datetime.now().strftime("%m_%d_n")
+    return str2 + str(n) + "_" + type

@@ -1,7 +1,6 @@
 # PYTHON IMPORTS
 import numpy as np
 from cv2 import cv2
-from matplotlib import pyplot as plt
 import zivid
 
 # ZIVID LOCAL IMPORTS
@@ -10,7 +9,7 @@ import zivid
 from src.utility.io import create_file_path
 
 
-def _point_cloud_to_cv_z(point_cloud, features):
+def _point_cloud_to_cv_z(point_cloud, points):
     """Get depth map from frame.
 
     Args:
@@ -23,21 +22,28 @@ def _point_cloud_to_cv_z(point_cloud, features):
     """
     depth_map = point_cloud.copy_data("z")
 
+    d = []
     try:
-        depths = []
-        for point in features:
+        for point in points:
             x,y = point.ravel()
-            depths.append(depth_map[int(y),int(x)])
+            d.append(depth_map[int(y),int(x)])
     except:
-        depths = [600]
+        d = [600]
 
-    # Setting the depth map based on min/max of the features
-    pad = 100
+    pad = 50
+
+    a = depth_map < (np.nanmin(d) - pad)
+    b = depth_map > (np.nanmax(d) + pad)
+    c = np.isnan(depth_map)
+
+    #Setting the depth map range based on min/max of the features
     depth_map_uint8 = (
-        255 * (depth_map - (np.nanmin(depths)-pad)) / ((pad+np.nanmax(depths)) - (np.nanmin(depths)-pad))
+        255 * (depth_map - (np.nanmin(d)-pad)) / (np.ptp(d) + 2*pad)
     ).astype(np.uint8)
 
-    depth_map_uint8 = 255 - depth_map_uint8 #Flipping so that closest = lighter color
+    depth_map_uint8[a] = 20 #cells closer than limit (dark)
+    depth_map_uint8[b] = 240 #cells further than limit (light)
+    depth_map_uint8[c] = 255 #cells without data (white)
 
     c_map = cv2.COLORMAP_HOT
     depth_map_color_map = cv2.applyColorMap(depth_map_uint8, c_map)
@@ -56,6 +62,7 @@ def _point_cloud_to_cv_bgr(point_cloud):
 
     """
     rgba = point_cloud.copy_data("rgba")
+
     # Applying color map
     bgr = cv2.cvtColor(rgba, cv2.COLOR_RGBA2BGR)
     return bgr
@@ -77,13 +84,9 @@ def convert2png(input_file, output_file):
 
     cv2.imwrite(file_out_bgr, bgr)
 
-    ##################################
-    plt.subplot(121),
-    plt.imshow(bgr,cmap = 'gray')
-    plt.title('Original Image'),
-    plt.xticks([]), plt.yticks([])
+    return bgr
 
-def convert2depth(input_file, output_file, feature_points=False):
+def convert2depth(input_file, output_file, points):
     print("\nCONVERT TO DEPTH IMAGE")
     app = zivid.Application()
 
@@ -95,30 +98,13 @@ def convert2depth(input_file, output_file, feature_points=False):
     point_cloud = frame.point_cloud()
 
     print("--Converting to Depth map in OpenCV format")
-    z_color_map = _point_cloud_to_cv_z(point_cloud,feature_points)
-
-    # # Add a white/black square on the depth map to show where the feature point is
-    # for point in feature_points:
-    #     x,y = point.ravel()
-
-    #     x = int(x)
-    #     y = int(y)
-
-    #     z_color_map[(y-5):(y+5),(x-5):(x+5)] = [255,255,255]
-    #     z_color_map[(y-2):(y+2),(x-2):(x+2)] = [0,0,0]
+    z_color_map = _point_cloud_to_cv_z(point_cloud, points)
 
     cv2.imwrite(file_out_depth, z_color_map)
 
-    ##################################
-    z_color_map = cv2.cvtColor(z_color_map, cv2.COLOR_BGR2RGB)
-
-    plt.subplot(122),
-    plt.imshow(z_color_map,cmap = 'gray')
-    plt.title('Depth Image'),
-    plt.xticks([]), plt.yticks([])
-    plt.show()
+    return z_color_map
 
 
 if __name__ == "__main__":   
-    convert2png(input_file = "_3D_frame_fromassistant.zdf",output_file = "_test_convert_rgb.png")
-    convert2depth(input_file = "_3D_frame_fromassistant.zdf",output_file = "_test_convert_depth.png")
+    convert2png(input_file = "04_20_n00_online_depth.zdf",output_file = "_test_convert_rgb.png")
+    convert2depth(input_file = "04_20_n00_online_depth.zdf",output_file = "_test_convert_depth.png")
