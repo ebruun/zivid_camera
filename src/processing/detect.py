@@ -1,6 +1,6 @@
 # PYTHON IMPORTS
 import numpy as np
-from cv2 import cv2
+import cv2 as cv
 from matplotlib import pyplot as plt
 import zivid
 
@@ -15,14 +15,13 @@ from src.utility.plots import plot_flex, plot_summary
 # IMPORT
 ##################################
 def _import_img(input_file):
-    print("\nIMPORT IMAGE")
     app = zivid.Application()
 
     img_path = create_file_path("output",input_file)
+    print(f"--Reading RGB image from file: {input_file}")
 
-    print(f"--Reading image from file: {input_file}")
-    img = cv2.cvtColor(cv2.imread(img_path), cv2.COLOR_BGR2RGB)
-    gray = cv2.cvtColor(img,cv2.COLOR_RGB2GRAY)
+    img = cv.cvtColor(cv.imread(img_path), cv.COLOR_BGR2RGB)
+    gray = cv.cvtColor(img,cv.COLOR_RGB2GRAY)
 
     img_data1 = {
         0: {
@@ -43,23 +42,18 @@ def _import_img(input_file):
 ###################################
 # DEPTH MASK (WHERE IS THERE NO DATA)
 ###################################
-def _apply_depth_mask(img, gray, input_file):
-    print("\nAPPLY DEPTH MASK")
-    data_file_in = create_file_path("input",input_file) #ZDF file
+def _apply_depth_mask(img, gray, pointcloud):
+    print("--apply depth mask")
 
-    print(f"--Reading depth data from ZDF file: {data_file_in}")
-    frame = zivid.Frame(data_file_in)
-    point_cloud = frame.point_cloud()
-
-    depth_map = point_cloud.copy_data("z")
+    depth_map = pointcloud.copy_data("z")
     a = ~np.isnan(depth_map) #where is there no depth data
 
     mask = np.zeros((1200,1920,1), np.uint8)
     mask[a] = (255) #make black
-    img_gray_mask = cv2.bitwise_and(gray, mask)
+    img_gray_mask = cv.bitwise_and(gray, mask)
 
-    mask3 = cv2.cvtColor(mask, cv2.COLOR_GRAY2RGB)
-    img_mask = cv2.bitwise_and(img, mask3)
+    mask3 = cv.cvtColor(mask, cv.COLOR_GRAY2RGB)
+    img_mask = cv.bitwise_and(img, mask3)
 
     img_data2 = {
         0: {
@@ -74,7 +68,7 @@ def _apply_depth_mask(img, gray, input_file):
         },
         2: {
             "name": "gray mask",
-            "img_file": cv2.cvtColor(mask, cv2.COLOR_GRAY2RGB),
+            "img_file": cv.cvtColor(mask, cv.COLOR_GRAY2RGB),
             "pos": (1,1),
         },    
         3: {
@@ -104,19 +98,19 @@ def _apply_depth_mask(img, gray, input_file):
 # GLARE REMOVE
 ####################################
 def _apply_glare_remove(img,gray):
-    print("\nAPPLY GLARE REMOVE")
+    print("--apply glare removal")
 
-    hsv_image = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
-    h, s, v = cv2.split(hsv_image)
+    hsv_image = cv.cvtColor(img, cv.COLOR_RGB2HSV)
+    h, s, v = cv.split(hsv_image)
 
-    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+    clahe = cv.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
     h = clahe.apply(h)
     s = clahe.apply(s)
     v = clahe.apply(v)
 
-    hsv_image_unglared = cv2.merge([h, s, v])
-    img_unglared = cv2.cvtColor(hsv_image_unglared, cv2.COLOR_HSV2RGB)
-    gray_unglared = cv2.cvtColor(img_unglared,cv2.COLOR_RGB2GRAY)
+    hsv_image_unglared = cv.merge([h, s, v])
+    img_unglared = cv.cvtColor(hsv_image_unglared, cv.COLOR_HSV2RGB)
+    gray_unglared = cv.cvtColor(img_unglared,cv.COLOR_RGB2GRAY)
 
     img_data3 = {
         0: {
@@ -152,27 +146,27 @@ def _apply_glare_remove(img,gray):
 # ADJUST IMAGE
 ##################################
 def _apply_threshold(gray):
-    print("\nAPPLY BINARY THRESHOLD")
+    print("--apply binary threshold")
 
     n = 7
-    gray = cv2.medianBlur(gray,n) #Blur
+    gray = cv.medianBlur(gray,n) #Blur
 
     kernel = np.array([[0,-1,0], [-1,5,-1], [0,-1,0]])
-    gray = cv2.filter2D(gray, -1, kernel) #sharpen kernel
+    gray = cv.filter2D(gray, -1, kernel) #sharpen kernel
 
-    min_max = cv2.minMaxLoc(gray) 
+    min_max = cv.minMaxLoc(gray) 
     delta = 50
 
-    _,thresh1 = cv2.threshold(gray,(min_max[1] - delta), 255,cv2.THRESH_BINARY) #binary threshold
+    _,thresh1 = cv.threshold(gray,(min_max[1] - delta), 255,cv.THRESH_BINARY) #binary threshold
     
     kernel = np.ones((5,5),np.uint8) #square image kernel used for erosion
 
     thresh = thresh1
 
-    nlabels, labels, stats, centroids = cv2.connectedComponentsWithStats(thresh, None, None, None, 8, cv2.CV_32S)
+    nlabels, labels, stats, centroids = cv.connectedComponentsWithStats(thresh, None, None, None, 8, cv.CV_32S)
 
     #get CC_STAT_AREA component as stats[label, COLUMN] 
-    areas = stats[1:,cv2.CC_STAT_AREA]
+    areas = stats[1:,cv.CC_STAT_AREA]
 
     result = np.zeros((labels.shape), np.uint8)
 
@@ -181,12 +175,12 @@ def _apply_threshold(gray):
             result[labels == i + 1] = 255
 
     thresh = result
-    erosion1 = cv2.dilate(thresh, (3,3),iterations = 4) #makes white area bigger
-    erosion2 = cv2.erode(erosion1, (3,3),iterations = 2) #makes white area smaller
+    erosion1 = cv.dilate(thresh, (3,3),iterations = 4) #makes white area bigger
+    erosion2 = cv.erode(erosion1, (3,3),iterations = 2) #makes white area smaller
 
     thresh = erosion2
-    opening = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)
-    closing = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, kernel) #this is for further removing small noises and holes in the image
+    opening = cv.morphologyEx(thresh, cv.MORPH_OPEN, kernel)
+    closing = cv.morphologyEx(opening, cv.MORPH_CLOSE, kernel) #this is for further removing small noises and holes in the image
     closing = np.uint8(closing)
 
 
@@ -230,16 +224,16 @@ def _apply_threshold(gray):
 # FIND FEATURES
 ##################################
 def _find_contours(closing):
-    print("\nFIND FEATURES")
+    print("--find contours and features")
 
-    contours, hierarchy = cv2.findContours(closing,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE) #find contours with simple approximation
+    contours, hierarchy = cv.findContours(closing,cv.RETR_TREE,cv.CHAIN_APPROX_SIMPLE) #find contours with simple approximation
 
     min_area = 5000
     max_area = 25000
     n_approx_max = 8 #how many corners should approx shape have
     max_contour_area = 2300000 # max contour area for 1920x1200 pixels
 
-    contours = [c  for c in contours if cv2.contourArea(c) < max_contour_area]
+    contours = [c  for c in contours if cv.contourArea(c) < max_contour_area]
     
 
     #make a mask of only the final rectangles
@@ -250,26 +244,26 @@ def _find_contours(closing):
     contours_save = []
     midpoint_save = []
     for c in contours:
-        area = cv2.contourArea(c)
-        epsilon = 0.01*cv2.arcLength(c,True)
-        approx = cv2.approxPolyDP(c,epsilon,True)
+        area = cv.contourArea(c)
+        epsilon = 0.01*cv.arcLength(c,True)
+        approx = cv.approxPolyDP(c,epsilon,True)
 
-        str = "--contour area: {:.0f}, # contours: {:.0f}, # approx corner: {:.0f}".format(area, len(c), len(approx))
+        str = "-- --contour area: {:.0f}, # contours: {:.0f}, # approx corner: {:.0f}".format(area, len(c), len(approx))
         print(str)
 
         if area > min_area and area < max_area and len(approx) < n_approx_max:
             num_labels += 1
-            cv2.drawContours(found_shapes, [c], -1, (0, 0, 0), thickness=cv2.FILLED)
+            cv.drawContours(found_shapes, [c], -1, (0, 0, 0), thickness=cv.FILLED)
             contours_save.append(c)
 
-            m = cv2.moments(c)
+            m = cv.moments(c)
             midpoint_save.append([int(m["m10"] / m["m00"]), int(m["m01"] / m["m00"])])
 
 
-    found_shapes = cv2.cvtColor(found_shapes,cv2.COLOR_RGB2GRAY)
+    found_shapes = cv.cvtColor(found_shapes,cv.COLOR_RGB2GRAY)
 
-    edges = cv2.Canny(found_shapes,100,200,5)
-    corners = cv2.goodFeaturesToTrack(found_shapes,num_labels*4,0.1,40)
+    edges = cv.Canny(found_shapes,100,200,5)
+    corners = cv.goodFeaturesToTrack(found_shapes,num_labels*4,0.1,40)
     
     corners = np.squeeze(corners).astype('int32')
     midpoint_save = np.asarray(midpoint_save).astype('int32')
@@ -277,9 +271,10 @@ def _find_contours(closing):
     return contours, contours_save, midpoint_save, found_shapes, edges, corners
 
 
-def find_features(input_file_zdf, input_file_image, plot = False):
+def find_features(pointcloud, input_file_image, plot = False):
+    print("\nFIND FEATURES IN IMAGE")
     img, gray, data1 = _import_img(input_file = input_file_image)
-    img, gray, data2 = _apply_depth_mask(img, gray, input_file = input_file_zdf)
+    img, gray, data2 = _apply_depth_mask(img, gray, pointcloud=pointcloud)
     gray, data3 = _apply_glare_remove(img,gray)
     closing, data4 = _apply_threshold(gray)
 

@@ -48,15 +48,45 @@ for fname in images:
         # cv.drawChessboardCorners(img, (7,6), corners2, ret)
         # cv.imshow('img', img)
         # cv.waitKey(0)
-        print("done")
+
+
 
 
 ret, mtx, dist, rvecs, tvecs = cv.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
 
+print("mtx", mtx)
+print("dist", dist)
+
+#############################
+def draw_axis(img, r, t, K):
+    # unit is mm
+    rotV, _ = cv.Rodrigues(r)
+    #print(rotV)
+    points = np.float32([[10, 0, 0], [0, 10, 0], [0, 0, 10], [0, 0, 0]]).reshape(-1, 3)
+    axisPoints, _ = cv.projectPoints(points, rotV, t, K, (0, 0, 0, 0))
+
+    axisPoints = axisPoints.astype(int)
+
+    img = cv.line(img, tuple(axisPoints[3].ravel()), tuple(axisPoints[0].ravel()), (0,0,255), 3)
+    img = cv.line(img, tuple(axisPoints[3].ravel()), tuple(axisPoints[1].ravel()), (0,255,0), 3)
+    img = cv.line(img, tuple(axisPoints[3].ravel()), tuple(axisPoints[2].ravel()), (255,0,0), 3)
+    return img
 
 
 #############################
-i = 2
+i = 4
+
+img1 = cv.imread(images[i])
+
+gray = cv.cvtColor(img1, cv.COLOR_BGR2GRAY)
+ret, corners = cv.findChessboardCorners(gray, (7,6), None)
+corners2 = cv.cornerSubPix(gray,corners, (11,11), (-1,-1), criteria)
+
+# p = 9
+# cv.circle(img1,  (int(corners2[p][0][0]),int(corners2[p][0][1])) , radius=1, color=(0, 0, 255), thickness=-1)
+# cv.imshow('img', img1)
+# cv.waitKey(0)
+
 
 a,_ = cv.Rodrigues(rvecs[i])
 b = tvecs[i]
@@ -70,30 +100,27 @@ F = Frame.from_transformation(T)
 print("trans matrix", T)
 print("frame", F)
 
-img1 = cv.imread(images[i])
+
 
 h,  w = img1.shape[:2]
 newcameramtx, roi = cv.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
 
 img1_nodistort = cv.undistort(img1, mtx, dist, None, newcameramtx)
 
-def draw_axis(img, r, t, K):
-    # unit is mm
-    rotV, _ = cv.Rodrigues(r)
-    print(rotV)
-    points = np.float32([[10, 0, 0], [0, 10, 0], [0, 0, 10], [0, 0, 0]]).reshape(-1, 3)
-    axisPoints, _ = cv.projectPoints(points, rotV, t, K, (0, 0, 0, 0))
-
-    axisPoints = axisPoints.astype(int)
-
-    img = cv.line(img, tuple(axisPoints[3].ravel()), tuple(axisPoints[0].ravel()), (0,0,255), 3)
-    img = cv.line(img, tuple(axisPoints[3].ravel()), tuple(axisPoints[1].ravel()), (0,255,0), 3)
-    img = cv.line(img, tuple(axisPoints[3].ravel()), tuple(axisPoints[2].ravel()), (255,0,0), 3)
-    return img
 
 img1_axis = draw_axis(copy(img1),rvecs[i],tvecs[i],mtx)
 img1_nodistort_axis = draw_axis(copy(img1_nodistort),rvecs[i],tvecs[i],newcameramtx)
 
+
+# cv.circle(img1_nodistort,  (int(corners2[p][0][0]),int(corners2[p][0][1])) , radius=1, color=(255, 0, 0), thickness=-1)
+# cv.imshow('img', img1_nodistort)
+# cv.waitKey(0)
+
+# pp = cv.undistortPoints(corners2,newcameramtx,dist, P=newcameramtx)
+
+# cv.circle(img1_nodistort, (int(pp[p][0][0]),int(pp[p][0][1]))  , radius=2, color=(0, 255, 0), thickness=-1)
+# cv.imshow('img', img1_nodistort)
+# cv.waitKey(0)
 
 h1 = np.concatenate((img1, img1_axis), axis = 1)
 h2 = np.concatenate((img1_nodistort, img1_nodistort_axis), axis = 1)
