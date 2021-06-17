@@ -14,10 +14,10 @@ from src.utility.plots import plot_flex, plot_summary
 ##################################
 # IMPORT
 ##################################
-def _import_img(input_file):
+def _import_img(folder, input_file):
     app = zivid.Application()
 
-    img_path = create_file_path("output",input_file)
+    img_path = create_file_path(folder,input_file)
     print(f"--Reading RGB image from file: {input_file}")
 
     img = cv.cvtColor(cv.imread(img_path), cv.COLOR_BGR2RGB)
@@ -271,9 +271,9 @@ def _find_contours(closing):
     return contours, contours_save, midpoint_save, found_shapes, edges, corners
 
 
-def find_features(pointcloud, input_file_image, plot = False):
+def find_features(pointcloud, folder, input_file_image, plot = False):
     print("\nFIND FEATURES IN IMAGE")
-    img, gray, data1 = _import_img(input_file = input_file_image)
+    img, gray, data1 = _import_img(folder = folder, input_file = input_file_image)
     img, gray, data2 = _apply_depth_mask(img, gray, pointcloud=pointcloud)
     gray, data3 = _apply_glare_remove(img,gray)
     closing, data4 = _apply_threshold(gray)

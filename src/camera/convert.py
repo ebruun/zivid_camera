@@ -68,31 +68,31 @@ def _point_cloud_to_cv_bgr(point_cloud):
 	return bgr
 
 
-def convert2png(pointcloud, output_file):
+def convert2png(pointcloud, folder, output_file):
 	print("\nCONVERTING TO BGR IMAGE")
 
-	file_out_bgr = create_file_path("output",output_file)
+	file_out_bgr = create_file_path(folder,output_file)
 	bgr = _point_cloud_to_cv_bgr(pointcloud)
 
 	cv.imwrite(file_out_bgr, bgr)
 
 	return bgr
 
-def convert2depth(pointcloud, output_file, points = False):
+def convert2depth(pointcloud, folder, output_file, points = False):
 	print("\nCONVERTING TO DEPTH IMAGE")
 
-	file_out_depth = create_file_path("output",output_file)
+	file_out_depth = create_file_path(folder,output_file)
 	z_color_map = _point_cloud_to_cv_z(pointcloud, points)
 
 	cv.imwrite(file_out_depth, z_color_map)
 
 	return z_color_map
 
-def load_pointcloud(input_file):
+def load_pointcloud(folder,input_file):
 	print("\nREAD IN POINTCLOUD")
 
 	app = zivid.Application()
-	data_file_in = create_file_path("input",input_file) #ZDF file
+	data_file_in = create_file_path(folder,input_file) #ZDF file
 
 	print(f"--Reading ZDF frame from file: {data_file_in}")
 	frame = zivid.Frame(data_file_in)
@@ -102,8 +102,19 @@ def load_pointcloud(input_file):
 
 
 if __name__ == "__main__":
-		name = "04_20_n00_online.zdf"
-		pc =  load_pointcloud(name)
+		pc =  load_pointcloud(
+			folder = "input",
+			input_file = "_test_output.zdf",
+			)
 
-		convert2png(pointcloud=pc, output_file = "_test_convert_rgb.png")
-		convert2depth(pointcloud=pc, output_file = "_test_convert_depth.png")
+		convert2png(
+			pointcloud=pc,
+			folder = "output",
+			output_file = "_test_convert_rgb.png",
+			)
+
+		convert2depth(
+			pointcloud=pc,
+			folder = "output",
+			output_file = "_test_convert_depth.png",
+			)
