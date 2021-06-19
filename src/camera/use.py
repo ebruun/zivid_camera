@@ -34,7 +34,9 @@ def capture_image(folder, output_file, setting_file = False):
     ##############################
     if setting_file:
         settings_file_path = create_file_path(folder,setting_file)
+
         settings = get_settings_from_yaml(Path() / settings_file_path)
+
         print(f"--Configuring settings from file: {settings_file_path}")
     else:
         suggest_settings_parameters = zivid.capture_assistant.SuggestSettingsParameters(

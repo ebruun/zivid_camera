@@ -18,7 +18,8 @@ from src.utility.plots import plot_features, plot_ordered_features, plot_frames
 # name = dynamic_name(n=00, type = "online")
 # capture_image(
 # 	folder = "input",
-# 	output_file = file_name(name, ".zdf")
+# 	output_file = file_name(name, ".zdf"),
+# 	#setting_file = "detection_settings.yml",
 # )
 
 #read in saved
