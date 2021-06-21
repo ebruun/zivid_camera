@@ -14,17 +14,18 @@ from src.utility.plots import plot_features, plot_ordered_features, plot_frames
 # 1. CAPTURE IMAGE
 ################################
 
-# # capture with camera
-# name = dynamic_name(n=00, type = "online")
-# capture_image(
-# 	folder = "input",
-# 	output_file = file_name(name, ".zdf"),
-# 	#setting_file = "detection_settings.yml",
-# )
+# capture with camera
+name = dynamic_name(n=00, type = "online")
+capture_image(
+	folder = "input",
+	output_file = file_name(name, ".zdf"),
+	#setting_file = "detection_settings.yml",
+)
 
-#read in saved
-name = "04_20_n00_online"
-#name = "05_24_n00_online"
+# # #read in saved
+# #name = "04_20_n00_online" #Multiple detected
+# #name = "05_24_n00_online" 
+# name = "06_21_n0_online"
 
 pc = load_pointcloud(
 	folder = "input",
@@ -44,7 +45,7 @@ corners, midpoints = find_features(
 	pointcloud = pc,
 	folder = "output",
 	input_file_image = file_name(name, "_rgb.png"),
-	plot = False,
+	plot = True,
 	)
 
 img_depth = convert2depth(

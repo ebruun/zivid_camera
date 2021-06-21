@@ -19,36 +19,52 @@ def plot_flex(imgs, dims):
 		axs[i["pos"]].imshow(i['img_file'],cmap="gray")
 		axs[i["pos"]].set_title(i['name'])
 
-def plot_summary(img, contours, contours_save, midpoint_save, corners, found_shapes, edges):
-	img_copy = copy.deepcopy(img)
-	fig = plt.figure(figsize=(12, 6))
+def plot_summary(img, contours, contours_save, midpoint_save, hull, corners_rect, corners_saved):
+	
+	img2 = copy.deepcopy(img)
+	img3 = copy.deepcopy(img)
+	img4 = copy.deepcopy(img)
 
-	cv.drawContours(img_copy, contours, -1, (0, 255, 0), 10)
-	cv.drawContours(img, contours_save, -1, (0, 255, 0), 10)
+	cv.drawContours(img, contours, -1, (255, 0, 0), 5)
+	cv.drawContours(img2, contours_save, -1, (255, 0, 0), 7)
 
-	for corner in corners:
+	for i,_ in enumerate(midpoint_save):
+		cv.drawContours(img2, [corners_rect[4*i:4*i+4]], -1, (0, 0, 255), 3)
+
+	for corner in hull:
 		x,y = corner.ravel()
-		cv.circle(img,(int(x),int(y)),10,(0,0,255),-1)
+		cv.circle(img3,(int(x),int(y)),8,(255,0,0),-1)
+
+	for corner in corners_rect:
+		x,y = corner.ravel()
+		cv.circle(img3,(int(x),int(y)),8,(0,0,255),-1)
+
+	for corner in corners_saved:
+		x,y = corner.ravel()
+		cv.circle(img3,(int(x),int(y)),5,(0,255,0),-1) 
+		cv.circle(img4,(int(x),int(y)),8,(0,255,0),-1) 
 
 	for midpoint in midpoint_save:
 		x,y = midpoint.ravel()
-		cv.circle(img,(int(x),int(y)),20,(255,0,0),-1)        
+		cv.circle(img4,(int(x),int(y)),10,(255,0,0),-1)        
+
+	fig = plt.figure(figsize=(12, 6))
 
 	plt.subplot(221),
-	plt.imshow(img_copy,cmap = 'gray')
-	plt.title('Masked RGB + ALL contours'), plt.xticks([]), plt.yticks([])\
+	plt.imshow(img,cmap = 'gray')
+	plt.title('ALL contours'), plt.xticks([]), plt.yticks([])
 
 	plt.subplot(222),
-	plt.imshow(img,cmap = 'gray')
-	plt.title('Masked RGB + selected contours/corners'), plt.xticks([]), plt.yticks([])
+	plt.imshow(img2,cmap = 'gray')
+	plt.title('SELECTED contours & rect approx'), plt.xticks([]), plt.yticks([])
 
 	plt.subplot(223),
-	plt.imshow(found_shapes, cmap = 'gray')
-	plt.title('Found Box'), plt.xticks([]), plt.yticks([])
+	plt.imshow(img3, cmap = 'gray')
+	plt.title('corners: Hull, Rect, Saved'), plt.xticks([]), plt.yticks([])
 
 	plt.subplot(224),
-	plt.imshow(edges,cmap = 'gray')
-	plt.title('Edges of rectangles'), plt.xticks([]), plt.yticks([])
+	plt.imshow(img4, cmap = 'gray')
+	plt.title('saved corners + midpoint'), plt.xticks([]), plt.yticks([])
 
 
 def plot_features(img_png, img_depth, points, midpoints):

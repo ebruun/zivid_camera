@@ -51,7 +51,7 @@ def capture_image(folder, output_file, setting_file = False):
     ##############################
     print("--Capturing 3D frame...")
     with camera.capture(settings) as frame:
-        file_out = create_file_path(folder,output_file)
+        file_out = Path() / create_file_path(folder,output_file)
         frame.save(file_out)
         print(f"--Saving frame to file: {file_out}")
 
