@@ -2,6 +2,7 @@
 import numpy as np
 import cv2 as cv
 import zivid
+from pathlib import Path
 
 # ZIVID LOCAL IMPORTS
 

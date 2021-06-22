@@ -1,4 +1,5 @@
 # PYTHON IMPORTS
+from ast import parse
 import numpy as np
 
 def _group(corners, midpoints):
@@ -23,10 +24,11 @@ def _reorder_corners(rectangles,midpoints):
 	#Reorder the rectangles in this order
 	#3------2  
 	#|      |      
-	#|      |      
+	#|      |
+	#|      |
 	#1------0      
 
-	# Find index of bottom left corner, make it first row
+	# Find index of bottom right corner, make it first row
 	for i,rectangle in enumerate(rectangles):
 		midpoint = midpoints[i]
 		a = rectangle[:,0] > midpoint[0]
@@ -43,6 +45,15 @@ def _reorder_corners(rectangles,midpoints):
 		rectangle = np.squeeze([rectangle[x] for x in np.argsort(distances)])
 		
 		rectangles[i] = rectangle
+
+	#check that the member is vertically oriented, otherwise swap
+	for i,rectangle in enumerate(rectangles):
+		b = rectangle[:,1] > midpoint[1]
+		if b[0] and b[1]: #small width is below middle point (it is vertical)
+			pass
+		else:
+			rectangle[[0,1]] = rectangle[[1,0]]
+			rectangle[[2,3]] = rectangle[[3,2]]
 
 	return rectangles
 

@@ -1,4 +1,5 @@
 # LOCAL IMPORTS
+from numpy.core.numeric import True_
 from src.camera.use import capture_image
 from src.camera.convert import convert2depth, convert2png, load_pointcloud
 from src.camera.intrinsics import build_cam_intrinsics
@@ -11,6 +12,8 @@ from src.utility.io import file_name, dynamic_name
 from src.utility.plots import plot_features, plot_ordered_features, plot_frames
 
 from calibration_planes import make_yaml_frame
+
+import os
 
 ################################
 # 1. CAPTURE IMAGE
@@ -29,7 +32,7 @@ def main(online = False):
 		# read in saved
 		#name = "04_20_n00_online" #Multiple detected
 		#name = "05_24_n00_online" 
-		name = "06_21_n0_online"
+		name = "06_22_n0_online"
 
 	pc = load_pointcloud(
 		folder = "input",
@@ -60,14 +63,14 @@ def main(online = False):
 		)
 
 	rectangles = calc_rectangles(corners, midpoints)
-	plot_features(img_png, img_depth, corners, midpoints)
+	#plot_features(img_png, img_depth, corners, midpoints)
 
 	##########################################
 	# 3. CALCULATE MEMBER FRAMES
 	##########################################
 	frames = calc_frames(pointcloud = pc, features = [rectangles, midpoints])
 
-	make_yaml_frame(frames, "transformations","H1_cam_obj.yaml")
+	make_yaml_frame("transformations","H1_cam_obj.yaml", frames)
 
 	plot_frames(img_png,frames)
 	plot_ordered_features(img_png, rectangles)
