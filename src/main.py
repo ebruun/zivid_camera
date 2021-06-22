@@ -10,58 +10,67 @@ from src.processing.calc_frames import calc_frames
 from src.utility.io import file_name, dynamic_name
 from src.utility.plots import plot_features, plot_ordered_features, plot_frames
 
+from calibration_planes import make_yaml_frame
+
 ################################
 # 1. CAPTURE IMAGE
 ################################
 
-# capture with camera
-name = dynamic_name(n=00, type = "online")
-capture_image(
-	folder = "input",
-	output_file = file_name(name, ".zdf"),
-	#setting_file = "detection_settings.yml",
-)
+def main(online = False):
+	# capture with camera
+	if online:
+		name = dynamic_name(n=00, type = "online")
+		capture_image(
+			folder = "input",
+			output_file = file_name(name, ".zdf"),
+			setting_file = "detection_settings.yml",
+		)
+	else:
+		# read in saved
+		#name = "04_20_n00_online" #Multiple detected
+		#name = "05_24_n00_online" 
+		name = "06_21_n0_online"
 
-# # #read in saved
-# #name = "04_20_n00_online" #Multiple detected
-# #name = "05_24_n00_online" 
-# name = "06_21_n0_online"
-
-pc = load_pointcloud(
-	folder = "input",
-	input_file = file_name(name, ".zdf")
-)
-
-#########################################
-# 2. CONVERT AND FIND CORNERS/MIDPOINTS
-#########################################
-img_png = convert2png(
-	pointcloud = pc,
-	folder = "output",
-	output_file = file_name(name, "_rgb.png"),
+	pc = load_pointcloud(
+		folder = "input",
+		input_file = file_name(name, ".zdf")
 	)
 
-corners, midpoints = find_features(
-	pointcloud = pc,
-	folder = "output",
-	input_file_image = file_name(name, "_rgb.png"),
-	plot = True,
-	)
+	#########################################
+	# 2. CONVERT AND FIND CORNERS/MIDPOINTS
+	#########################################
+	img_png = convert2png(
+		pointcloud = pc,
+		folder = "output",
+		output_file = file_name(name, "_rgb.png"),
+		)
 
-img_depth = convert2depth(
-	pointcloud = pc,
-	folder = "output",
-	output_file = file_name(name, "_depth.png"),
-	points = midpoints,
-	)
+	corners, midpoints = find_features(
+		pointcloud = pc,
+		folder = "output",
+		input_file_image = file_name(name, "_rgb.png"),
+		plot = True,
+		)
 
-rectangles = calc_rectangles(corners, midpoints)
-plot_features(img_png, img_depth, corners, midpoints)
+	img_depth = convert2depth(
+		pointcloud = pc,
+		folder = "output",
+		output_file = file_name(name, "_depth.png"),
+		points = midpoints,
+		)
 
-##########################################
-# 3. CALCULATE MEMBER FRAMES
-##########################################
-frames = calc_frames(pointcloud = pc, features = [rectangles, midpoints])
-plot_frames(img_png,frames)
-plot_ordered_features(img_png, rectangles)
+	rectangles = calc_rectangles(corners, midpoints)
+	plot_features(img_png, img_depth, corners, midpoints)
 
+	##########################################
+	# 3. CALCULATE MEMBER FRAMES
+	##########################################
+	frames = calc_frames(pointcloud = pc, features = [rectangles, midpoints])
+
+	make_yaml_frame(frames, "transformations","H1_cam_obj.yaml")
+
+	plot_frames(img_png,frames)
+	plot_ordered_features(img_png, rectangles)
+
+if __name__ == "__main__":
+	main(online = False)
