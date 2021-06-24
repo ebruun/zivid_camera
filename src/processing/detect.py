@@ -229,8 +229,8 @@ def _find_contours(closing):
 
 	contours, hierarchy = cv.findContours(closing,cv.RETR_TREE,cv.CHAIN_APPROX_SIMPLE) #find contours with simple approximation
 
-	min_area = 5000
-	max_area = 25000
+	min_area = 20000
+	max_area = 40000
 	n_approx_max = 8 #how many corners should approx shape have
 	max_contour_area = 2300000 # max contour area for 1920x1200 pixels
 

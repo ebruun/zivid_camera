@@ -31,7 +31,7 @@ def main(online = False):
 		# read in saved
 		#name = "04_20_n00_online" #Multiple detected
 		#name = "05_24_n00_online" 
-		name = "06_22_n0_online"
+		name = "06_23_n0_online"
 
 	pc = load_pointcloud(
 		folder = "input",
