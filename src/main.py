@@ -1,5 +1,4 @@
 # LOCAL IMPORTS
-from numpy.core.numeric import True_
 from src.camera.use import capture_image
 from src.camera.convert import convert2depth, convert2png, load_pointcloud
 from src.camera.intrinsics import build_cam_intrinsics
@@ -76,4 +75,4 @@ def main(online = False):
 	plot_ordered_features(img_png, rectangles)
 
 if __name__ == "__main__":
-	main(online = False)
+	main(online = True)
