@@ -18,21 +18,24 @@ def capture_image(folder, output_file, setting_file = False):
     # 1. CONNECT
     ##############################
     try:
+        print("TRYING TO CONNECT TO CAMERA...")
         camera = app.connect_camera()
+        print(f"--Connected to real camera")
+        real_camera = True
     except:
         folder_zivid_data = "ZividSampleData2"
         file_camera = "FileCameraZividOne.zfc"
 
         camera_file_path =  create_file_path(folder_zivid_data,file_camera)
         camera = app.create_file_camera(Path() / camera_file_path)
-        print(f"--Connecting to virtual camera using file: {camera_file_path}")
-    else:
-        print(f"--Connecting to real camera")
+        print(f"--Connected to virtual camera using file: {camera_file_path}")
+        real_camera = False
+        
 
     ##############################
     # 2. CAPTURE SETTINGS
     ##############################
-    if setting_file:
+    if setting_file and real_camera:
         settings_file_path = create_file_path(folder,setting_file)
 
         settings = get_settings_from_yaml(Path() / settings_file_path)

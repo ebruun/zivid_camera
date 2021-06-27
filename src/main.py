@@ -12,23 +12,22 @@ from src.utility.plots import plot_features, plot_ordered_features, plot_frames
 
 from calibration_planes import make_yaml_frame
 
-import os
 
 ################################
 # 1. CAPTURE IMAGE
 ################################
 
 def main(online = False):
-	# capture with camera
+	# capture with camera 
 	if online:
 		name = dynamic_name(n=00, type = "online")
 		capture_image(
 			folder = "input",
 			output_file = file_name(name, ".zdf"),
-			setting_file = "detection_settings.yml",
+			setting_file = "capture_settings_calibration.yml",
 		)
 	else:
-		# read in saved
+		# read in saved pointcloud
 		#name = "04_20_n00_online" #Multiple detected
 		#name = "05_24_n00_online" 
 		name = "06_23_n0_online"
@@ -61,9 +60,10 @@ def main(online = False):
 		points = midpoints,
 		)
 
-	rectangles = calc_rectangles(corners, midpoints)
 	#plot_features(img_png, img_depth, corners, midpoints)
 
+	rectangles = calc_rectangles(corners, midpoints)
+	
 	##########################################
 	# 3. CALCULATE MEMBER FRAMES
 	##########################################
@@ -75,4 +75,4 @@ def main(online = False):
 	plot_ordered_features(img_png, rectangles)
 
 if __name__ == "__main__":
-	main(online = True)
+	main(online = False)
