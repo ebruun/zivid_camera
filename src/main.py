@@ -24,12 +24,12 @@ def main(online=False):
         capture_image(
             folder="input",
             output_file=file_name(name, ".zdf"),
-            #setting_file="capture_settings_calibration.yml",
+            # setting_file="capture_settings_calibration.yml",
         )
     else:
         # read in saved pointcloud
-        #name = "04_20_n00_online" #Multiple detected
-        #name = "06_23_n0_online"
+        # name = "04_20_n00_online" #Multiple detected
+        # name = "06_23_n0_online"
         name = "06_23_n0_online"
 
     pc = load_pointcloud(
@@ -80,5 +80,5 @@ def main(online=False):
 
 
 if __name__ == "__main__":
-    main(online=False)  # If you want to run from saved data
-    #main(online=True)  # If you want to capture live data
+    # main(online=False)  # If you want to run from saved data
+    main(online=True)  # If you want to capture live data
