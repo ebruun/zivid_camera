@@ -1,7 +1,6 @@
 # LOCAL IMPORTS
 from src.camera.use import capture_image
 from src.camera.convert import convert2depth, convert2png, load_pointcloud
-# from src.camera.intrinsics import build_cam_intrinsics
 
 from src.processing.detect import find_features
 from src.processing.calc_rectangles import calc_rectangles
@@ -18,18 +17,16 @@ from calibration_planes import make_yaml_frame
 ################################
 
 def main(online=False):
-    # capture with camera
-    if online:
+
+    if online:  # capture with camera
         name = dynamic_name(n=00, type="online")
         capture_image(
             folder="input",
             output_file=file_name(name, ".zdf"),
             # setting_file="capture_settings_calibration.yml",
         )
-    else:
-        # read in saved pointcloud
+    else:  # read in saved pointcloud
         # name = "04_20_n00_online" #Multiple detected
-        # name = "06_23_n0_online"
         name = "06_23_n0_online"
 
     pc = load_pointcloud(

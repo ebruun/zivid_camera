@@ -17,7 +17,7 @@ def capture_image(folder, output_file, setting_file=False):
     try:
         print("TRYING TO CONNECT TO CAMERA...")
         camera = app.connect_camera()
-        print(f"--Connected to real camera")
+        print("--Connected to real camera")
         real_camera = True
     except RuntimeError:
         folder_zivid_data = "ZividSampleData2"

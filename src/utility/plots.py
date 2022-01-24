@@ -177,4 +177,4 @@ def plot_frames(img,frames):
 
 	im = cv.resize(v1, (1320, 800))
 	cv.imshow('img', im)
-	cv.waitKey(0)
+	cv.waitKey(100)
