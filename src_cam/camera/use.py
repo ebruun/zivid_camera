@@ -41,8 +41,12 @@ def capture_image(folder, output_file, setting_file=False):
             max_capture_time=datetime.timedelta(milliseconds=1200),
             ambient_light_frequency=zivid.capture_assistant.SuggestSettingsParameters.AmbientLightFrequency.none,
         )
-        settings = zivid.capture_assistant.suggest_settings(camera, suggest_settings_parameters)
-        print(f"--Running Capture Assistant with parameters: {suggest_settings_parameters}")
+        settings = zivid.capture_assistant.suggest_settings(
+            camera, suggest_settings_parameters
+        )
+        print(
+            f"--Running Capture Assistant with parameters: {suggest_settings_parameters}"
+        )
 
     ##############################
     # 3. CAPTURE FRAME
@@ -56,4 +60,8 @@ def capture_image(folder, output_file, setting_file=False):
 
 if __name__ == "__main__":
     # capture_image(folder = "input", output_file = "_test_output.zdf")
-    capture_image(folder="input", output_file="_test_output.zdf", setting_file="capture_settings.yml")
+    capture_image(
+        folder="input",
+        output_file="_test_output.zdf",
+        setting_file="capture_settings.yml",
+    )

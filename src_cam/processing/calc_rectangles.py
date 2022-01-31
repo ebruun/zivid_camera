@@ -35,7 +35,7 @@ def _reorder_corners(rectangles, midpoints):
         midpoint = midpoints[i]
         a = rectangle[:, 0] > midpoint[0]
         b = rectangle[:, 1] > midpoint[1]
-        idx = np.where(a/b == 1)[0][0]
+        idx = np.where(a / b == 1)[0][0]
 
         rectangle[[0, idx]] = rectangle[[idx, 0]]
 
@@ -69,25 +69,29 @@ def calc_rectangles(corners, midpoints):
 
 
 if __name__ == "__main__":
-    corners = np.array([
-        [1734.,  589.],
-        [1675.,  392.],
-        [1064.,  668.],
-        [541.,  885.],
-        [464.,  885.],
-        [540.,  685.],
-        [463.,  685.],
-        [897.,  530.],
-        [999.,  703.],
-        [964.,  487.],
-        [1670.,  588.],
-        [1737.,  396.],
-    ]).astype('int32')
+    corners = np.array(
+        [
+            [1734.0, 589.0],
+            [1675.0, 392.0],
+            [1064.0, 668.0],
+            [541.0, 885.0],
+            [464.0, 885.0],
+            [540.0, 685.0],
+            [463.0, 685.0],
+            [897.0, 530.0],
+            [999.0, 703.0],
+            [964.0, 487.0],
+            [1670.0, 588.0],
+            [1737.0, 396.0],
+        ]
+    ).astype("int32")
 
-    midpoints = np.array([
-        [501, 785],
-        [981, 594],
-        [1704, 491],
-    ]).astype('int32')
+    midpoints = np.array(
+        [
+            [501, 785],
+            [981, 594],
+            [1704, 491],
+        ]
+    ).astype("int32")
 
     calc_rectangles(corners, midpoints)

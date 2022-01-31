@@ -15,6 +15,7 @@ from src_cam.utility.plots import plot_features, plot_ordered_features, plot_fra
 # 1. CAPTURE IMAGE
 ################################
 
+
 def main(online=False):
 
     if online:  # capture with camera
@@ -28,10 +29,7 @@ def main(online=False):
         # name = "04_20_n00_online" #Multiple detected
         name = "06_23_n0_online"
 
-    pc = load_pointcloud(
-        folder="input",
-        input_file=file_name(name, ".zdf")
-    )
+    pc = load_pointcloud(folder="input", input_file=file_name(name, ".zdf"))
 
     #########################################
     # 2. CONVERT AND FIND CORNERS/MIDPOINTS
@@ -40,21 +38,21 @@ def main(online=False):
         pointcloud=pc,
         folder="output",
         output_file=file_name(name, "_rgb.png"),
-        )
+    )
 
     corners, midpoints = find_features(
         pointcloud=pc,
         folder="output",
         input_file_image=file_name(name, "_rgb.png"),
         plot=True,
-        )
+    )
 
     img_depth = convert2depth(
         pointcloud=pc,
         folder="output",
         output_file=file_name(name, "_depth.png"),
         points=midpoints,
-        )
+    )
 
     plot = True  # Turn on all the random plots
     if plot:

@@ -21,16 +21,16 @@ def _xyz_data(pointcloud):
 
 def _unit_vec(p1, p2):
     v = p1 - p2
-    v = v/np.linalg.norm(v)
+    v = v / np.linalg.norm(v)
     return v
 
 
 def _calc_unit_vec(points_corners):
     print("-- --calculate unit vectors")
     vec_x_1 = _unit_vec(points_corners[1], points_corners[0])
-    vec_x_2 = _unit_vec(points_corners[3], points_corners[2])
+    # vec_x_2 = _unit_vec(points_corners[3], points_corners[2])
     vec_y_1 = _unit_vec(points_corners[2], points_corners[0])
-    vec_y_2 = _unit_vec(points_corners[3], points_corners[1])
+    # vec_y_2 = _unit_vec(points_corners[3], points_corners[1])
 
     return vec_x_1, vec_y_1
 
@@ -42,7 +42,7 @@ def _member_frame(point, x, y):
         Point(0, 0, 0) + point.tolist(),
         Vector(0, 0, 0) + x.tolist(),
         Vector(0, 0, 0) + y.tolist(),
-        )
+    )
 
     return F
 
@@ -75,7 +75,7 @@ def save_frames_yaml(folder, name, frames):
     for i, f in enumerate(frames):
         T = Transformation.from_frame(f)
         PoseState = np.array(T)
-        s.write('PoseState{}'.format(i), PoseState)
+        s.write("PoseState{}".format(i), PoseState)
 
     s.release()
 

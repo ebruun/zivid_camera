@@ -16,7 +16,7 @@ from src_cam.utility.plots import plot_flex, plot_summary
 # IMPORT
 ##################################
 def _import_img(folder, input_file):
-    app = zivid.Application()
+    _ = zivid.Application()
 
     img_path = create_file_path(folder, input_file)
     print(f"--Reading RGB image from file: {input_file}")
@@ -50,7 +50,7 @@ def _apply_depth_mask(img, gray, pointcloud):
     a = ~np.isnan(depth_map)  # where is there no depth data
 
     mask = np.zeros((1200, 1920, 1), np.uint8)
-    mask[a] = (255)  # make black
+    mask[a] = 255  # make black
     img_gray_mask = cv.bitwise_and(gray, mask)
 
     mask3 = cv.cvtColor(mask, cv.COLOR_GRAY2RGB)
@@ -157,13 +157,17 @@ def _apply_threshold(gray):
     min_max = cv.minMaxLoc(gray)
     delta = 50
 
-    _, thresh1 = cv.threshold(gray, (min_max[1] - delta), 255, cv.THRESH_BINARY)  # binary threshold
+    _, thresh1 = cv.threshold(
+        gray, (min_max[1] - delta), 255, cv.THRESH_BINARY
+    )  # binary threshold
 
     kernel = np.ones((5, 5), np.uint8)  # square image kernel used for erosion
 
     thresh = thresh1
 
-    nlabels, labels, stats, centroids = cv.connectedComponentsWithStats(thresh, None, None, None, 8, cv.CV_32S)
+    nlabels, labels, stats, centroids = cv.connectedComponentsWithStats(
+        thresh, None, None, None, 8, cv.CV_32S
+    )
 
     # get CC_STAT_AREA component as stats[label, COLUMN]
     areas = stats[1:, cv.CC_STAT_AREA]
@@ -180,7 +184,9 @@ def _apply_threshold(gray):
 
     thresh = erosion2
     opening = cv.morphologyEx(thresh, cv.MORPH_OPEN, kernel)
-    closing = cv.morphologyEx(opening, cv.MORPH_CLOSE, kernel)  # further remove small noises and holes in image
+    closing = cv.morphologyEx(
+        opening, cv.MORPH_CLOSE, kernel
+    )  # further remove small noises and holes in image
     closing = np.uint8(closing)
 
     img_data4 = {
@@ -244,14 +250,18 @@ def _find_contours(closing):
     p_mid_save = []
     for c in contours:
         area = cv.contourArea(c)
-        epsilon = 0.01*cv.arcLength(c, True)
+        epsilon = 0.01 * cv.arcLength(c, True)
         approx = cv.approxPolyDP(c, epsilon, True)
 
-        str = "-- --contour area: {:.0f}, # contours: {:.0f}, # approx corner: {:.0f}".format(area, len(c), len(approx))
+        str = "-- --contour area: {:.0f}, # contours: {:.0f}, # approx corner: {:.0f}".format(
+            area, len(c), len(approx)
+        )
         print(str)
 
         if area > min_area and area < max_area and len(approx) < n_approx_max:
-            str = "-- -- --contour area: {:.0f}, # contours: {:.0f}, # approx corner: {:.0f}".format(area, len(c), len(approx))
+            str = "-- -- --contour area: {:.0f}, # contours: {:.0f}, # approx corner: {:.0f}".format(
+                area, len(c), len(approx)
+            )
             print(str)
             num_labels += 1
             # cv.drawContours(found_shapes, [c], -1, (0, 0, 0), thickness=cv.FILLED)
@@ -261,7 +271,7 @@ def _find_contours(closing):
             p_mid_save.append([int(m["m10"] / m["m00"]), int(m["m01"] / m["m00"])])
 
     def closest_node(node, nodes):
-        dist_2 = np.sum((nodes - node)**2, axis=1)
+        dist_2 = np.sum((nodes - node) ** 2, axis=1)
         return np.argmin(dist_2)
 
     c_hull_save = np.empty((0, 2), int)
@@ -287,7 +297,7 @@ def _find_contours(closing):
     # corners = cv.goodFeaturesToTrack(found_shapes,num_labels*4,0.5,40)
     # corners = np.squeeze(corners).astype('int32')
 
-    p_mid_save = np.asarray(p_mid_save).astype('int32')
+    p_mid_save = np.asarray(p_mid_save).astype("int32")
 
     return contours, contours_save, p_mid_save, c_hull_save, c_box_save, c_save
 
