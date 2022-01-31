@@ -3,14 +3,14 @@ import yaml
 import numpy as np
 
 # LOCAL IMPORTS
-from src_cam.utility.io import create_file_path
+from src_cam.utility.io import _create_file_path
 
 
 # Build camera intrinsics from the hard-coded values saved in "input folder"
 # see the following convo on github https://github.com/zivid/zivid-python/issues/42#issuecomment-1020424432
 def build_cam_intrinsics(file_name):
 
-    with open(create_file_path("input", file_name), "r") as stream:
+    with open(_create_file_path("input", file_name), "r") as stream:
         try:
             data = yaml.safe_load(stream)
         except yaml.YAMLError as exc:

@@ -9,7 +9,7 @@ from compas.geometry import Frame
 from compas.geometry import Transformation
 
 # LOCAL IMPORTS
-from src_cam.utility.io import create_file_path
+from src_cam.utility.io import _create_file_path
 
 
 def _xyz_data(pointcloud):
@@ -66,18 +66,6 @@ def calc_frames(pointcloud, features):
         frames.append(F)
 
     return frames
-
-
-def save_frames_yaml(folder, name, frames):
-    file_name = create_file_path(folder, name)
-    s = cv.FileStorage(file_name, cv.FileStorage_WRITE)
-
-    for i, f in enumerate(frames):
-        T = Transformation.from_frame(f)
-        PoseState = np.array(T)
-        s.write("PoseState{}".format(i), PoseState)
-
-    s.release()
 
 
 if __name__ == "__main__":

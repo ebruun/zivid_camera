@@ -1,13 +1,13 @@
 # LOCAL IMPORTS
+import imp
 from src_cam.camera.use import capture_image
 from src_cam.camera.convert import convert2depth, convert2png, load_pointcloud
 
 from src_cam.processing.detect import find_features
 from src_cam.processing.calc_rectangles import calc_rectangles
 from src_cam.processing.calc_frames import calc_frames
-from src_cam.processing.calc_frames import save_frames_yaml
 
-from src_cam.utility.io import file_name, dynamic_name
+from src_cam.utility.io import file_name, dynamic_name, save_frames_as_matrix_yaml
 from src_cam.utility.plots import plot_features, plot_ordered_features, plot_frames
 
 
@@ -23,12 +23,12 @@ def main(online=False):
         capture_image(
             folder="input",
             output_file=file_name(name, ".zdf"),
-            # setting_file="capture_settings_calibration.yml",
+            setting_file="capture_settings_calibration.yml",
         )
     else:  # read in saved pointcloud
         # name = "save_single01"
-        name = "save_single02"
-        # name = "save_triple01"
+        # name = "save_single02"
+        name = "save_triple01"
 
     pc = load_pointcloud(folder="input", input_file=file_name(name, ".zdf"))
 
@@ -66,14 +66,16 @@ def main(online=False):
     ##########################################
     frames = calc_frames(pointcloud=pc, features=[rectangles, midpoints])
 
-    # Saves as a transformation matrix, to use in robot control module
+    # Saves as a transformation matrix, in robot control module
     # Represents the pose of the member
-    save_frames_yaml("transformations", "H1_cam_obj2.yaml", frames)
+    save_frames_as_matrix_yaml(
+        "zerowaste_robot/transformations", "H1_cam_obj2.yaml", frames
+    )
 
     plot_frames(img_png, frames, "intrinsics_zivid1.yml")
     plot_ordered_features(img_png, rectangles)
 
 
 if __name__ == "__main__":
-    main(online=False)  # If you want to run from saved data
-    # main(online=True)  # If you want to capture live data
+    # main(online=False)  # If you want to run from saved data
+    main(online=True)  # If you want to capture live data

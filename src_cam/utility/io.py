@@ -1,20 +1,44 @@
-"""
-Utilities for working with Zivid Camera
-"""
-
-import os
+# PYTHON IMPORTS
+import pathlib
+import numpy as np
+import cv2 as cv
 from datetime import datetime
 
+# COMPAS IMPORTS
+from compas.geometry import Transformation
 
-def create_file_path(folder, filename):
+
+def _create_file_path_robot(folder, filename):
     """create output data path.
 
     Returns:
         path: Output data path
 
     """
-    path = os.path.join(os.getcwd(), folder, filename)
-    # print("created path...",path)
+    path = pathlib.PurePath(
+        pathlib.Path.cwd().parent,  # up to root folder
+        folder,
+        filename,
+    )
+
+    # print("created path...", path)
+    return path
+
+
+def _create_file_path(folder, filename):
+    """create output data path.
+
+    Returns:
+        path: Output data path
+
+    """
+    path = pathlib.PurePath(
+        pathlib.Path.cwd(),
+        folder,
+        filename,
+    )
+
+    # print("created path...", path)
     return path
 
 
@@ -25,3 +49,20 @@ def file_name(file_name, type):
 def dynamic_name(n=00, type="online"):
     str2 = datetime.now().strftime("%m_%d_n")
     return str2 + str(n) + "_" + type
+
+
+def save_frames_as_matrix_yaml(folder, name, frames):
+    file_name = _create_file_path_robot(folder, name).__str__()
+    s = cv.FileStorage(file_name, cv.FileStorage_WRITE)
+
+    for i, f in enumerate(frames):
+        T = Transformation.from_frame(f)
+        PoseState = np.array(T)
+        s.write("PoseState{}".format(i), PoseState)
+
+    s.release()
+
+
+if __name__ == "__main__":
+    _create_file_path_robot("zerowaste_robot/transformations", "H1_cam_obj2.yaml")
+    _create_file_path("transformations", "H1_cam_obj2.yaml")

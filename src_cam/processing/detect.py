@@ -6,7 +6,7 @@ import zivid
 import copy
 
 # LOCAL IMPORTS
-from src_cam.utility.io import create_file_path
+from src_cam.utility.io import _create_file_path
 from src_cam.utility.plots import plot_flex, plot_summary
 
 
@@ -18,7 +18,7 @@ from src_cam.utility.plots import plot_flex, plot_summary
 def _import_img(folder, input_file):
     _ = zivid.Application()
 
-    img_path = create_file_path(folder, input_file)
+    img_path = _create_file_path(folder, input_file).__str__()
     print(f"--Reading RGB image from file: {input_file}")
 
     img = cv.cvtColor(cv.imread(img_path), cv.COLOR_BGR2RGB)

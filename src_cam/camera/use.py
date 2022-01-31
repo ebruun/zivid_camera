@@ -1,10 +1,9 @@
 # PYTHON IMPORTS
 import datetime
 import zivid
-from pathlib import Path
 
 # LOCAL IMPORTS
-from src_cam.utility.io import create_file_path
+from src_cam.utility.io import _create_file_path
 
 
 def capture_image(folder, output_file, setting_file=False):
@@ -23,8 +22,8 @@ def capture_image(folder, output_file, setting_file=False):
         folder_zivid_data = "ZividSampleData2"
         file_camera = "FileCameraZividOne.zfc"
 
-        camera_file_path = create_file_path(folder_zivid_data, file_camera)
-        camera = app.create_file_camera(Path() / camera_file_path)
+        camera_file_path = _create_file_path(folder_zivid_data, file_camera)
+        camera = app.create_file_camera(camera_file_path)
         print(f"--Connected to virtual camera using file: {camera_file_path}")
         real_camera = False
 
@@ -32,8 +31,8 @@ def capture_image(folder, output_file, setting_file=False):
     # 2. CAPTURE SETTINGS
     ##############################
     if setting_file and real_camera:
-        settings_file_path = create_file_path(folder, setting_file)
-        settings = zivid.Settings.load(Path() / settings_file_path)
+        settings_file_path = _create_file_path(folder, setting_file)
+        settings = zivid.Settings.load(settings_file_path)
 
         print(f"--Configuring settings from file: {settings_file_path}")
     else:
@@ -53,7 +52,7 @@ def capture_image(folder, output_file, setting_file=False):
     ##############################
     print("--Capturing 3D frame...")
     with camera.capture(settings) as frame:
-        file_out = Path() / create_file_path(folder, output_file)
+        file_out = _create_file_path(folder, output_file)
         frame.save(file_out)
         print(f"--Saving frame to file: {file_out}")
 

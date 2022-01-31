@@ -7,7 +7,7 @@ from pathlib import Path
 # ZIVID LOCAL IMPORTS
 
 # LOCAL IMPORTS
-from src_cam.utility.io import create_file_path
+from src_cam.utility.io import _create_file_path
 
 
 def _point_cloud_to_cv_z(point_cloud, points):
@@ -72,7 +72,7 @@ def _point_cloud_to_cv_bgr(point_cloud):
 def convert2png(pointcloud, folder, output_file):
     print("\nCONVERTING TO BGR IMAGE")
 
-    file_out_bgr = create_file_path(folder, output_file)
+    file_out_bgr = _create_file_path(folder, output_file).__str__()
     bgr = _point_cloud_to_cv_bgr(pointcloud)
 
     cv.imwrite(file_out_bgr, bgr)
@@ -83,7 +83,7 @@ def convert2png(pointcloud, folder, output_file):
 def convert2depth(pointcloud, folder, output_file, points=False):
     print("\nCONVERTING TO DEPTH IMAGE")
 
-    file_out_depth = create_file_path(folder, output_file)
+    file_out_depth = _create_file_path(folder, output_file).__str__()
     z_color_map = _point_cloud_to_cv_z(pointcloud, points)
 
     cv.imwrite(file_out_depth, z_color_map)
@@ -95,10 +95,10 @@ def load_pointcloud(folder, input_file):
     print("\nREAD IN POINTCLOUD")
 
     _ = zivid.Application()
-    data_file_in = create_file_path(folder, input_file)  # ZDF file
+    data_file_in = _create_file_path(folder, input_file).__str__()  # ZDF file
 
     print(f"--Reading ZDF frame from file: {data_file_in}")
-    frame = zivid.Frame(data_file_in)
+    frame = zivid.Frame(data_file_in.__str__())
     point_cloud = frame.point_cloud()
 
     return point_cloud
