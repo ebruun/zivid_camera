@@ -1,66 +1,60 @@
 # PYTHON IMPORTS
 import datetime
 import zivid
+import zivid.capture_assistant as capture_assistant
+from zivid.capture_assistant import SuggestSettingsParameters as sgst_params
 
 # LOCAL IMPORTS
 from src_cam.utility.io import _create_file_path
 
 
-def capture_image(folder, output_file, setting_file=False):
-    print("CAPTURING IMAGE")
+def camera_connect():
+    print("CONNECTING TO CAMERA")
     app = zivid.Application()
 
-    ##############################
-    # 1. CONNECT
-    ##############################
     try:
-        print("TRYING TO CONNECT TO CAMERA...")
         camera = app.connect_camera()
-        print("--Connected to real camera")
-        real_camera = True
+        print("--Connection success")
     except RuntimeError:
-        folder_zivid_data = "ZividSampleData2"
-        file_camera = "FileCameraZividOne.zfc"
-
-        camera_file_path = _create_file_path(folder_zivid_data, file_camera)
-        camera = app.create_file_camera(camera_file_path)
-        print(f"--Connected to virtual camera using file: {camera_file_path}")
-        real_camera = False
-
-    ##############################
-    # 2. CAPTURE SETTINGS
-    ##############################
-    if setting_file and real_camera:
-        settings_file_path = _create_file_path(folder, setting_file)
-        settings = zivid.Settings.load(settings_file_path)
-
-        print(f"--Configuring settings from file: {settings_file_path}")
-    else:
-        suggest_settings_parameters = zivid.capture_assistant.SuggestSettingsParameters(
-            max_capture_time=datetime.timedelta(milliseconds=1200),
-            ambient_light_frequency=zivid.capture_assistant.SuggestSettingsParameters.AmbientLightFrequency.none,
+        virtual_camera_filepath = _create_file_path(
+            "ZividSampleData2", "FileCameraZividOne.zfc"
         )
-        settings = zivid.capture_assistant.suggest_settings(
+        camera = app.create_file_camera(virtual_camera_filepath)
+        print(f"--Connection failure, using virtual camera: {virtual_camera_filepath}")
+
+    return camera
+
+
+def camera_capture_settings(camera, setting_file=False):
+    if camera.info.serial_number == "F1" or not setting_file:  # virtual cam
+        suggest_settings_parameters = sgst_params(
+            max_capture_time=datetime.timedelta(milliseconds=1200),
+            ambient_light_frequency=sgst_params.AmbientLightFrequency.none,
+        )
+        settings = capture_assistant.suggest_settings(
             camera, suggest_settings_parameters
         )
-        print(
-            f"--Running Capture Assistant with parameters: {suggest_settings_parameters}"
-        )
+        print("--Using capture assistant")
 
-    ##############################
-    # 3. CAPTURE FRAME
-    ##############################
-    print("--Capturing 3D frame...")
+    else:  # real camera w/ setting file
+        settings_file_path = _create_file_path("input", setting_file)
+        settings = zivid.Settings.load(settings_file_path)
+        print(f"--Using specified settings file: {settings_file_path}")
+
+    for i, acquisition in enumerate(settings.acquisitions):
+        print(f"--aquisition #{i+1}: {acquisition}")
+
+    return settings
+
+
+def camera_capture_and_save(camera, settings, folder, filename):
     with camera.capture(settings) as frame:
-        file_out = _create_file_path(folder, output_file)
+        file_out = _create_file_path(folder, filename)
         frame.save(file_out)
         print(f"--Saving frame to file: {file_out}")
 
 
 if __name__ == "__main__":
-    # capture_image(folder = "input", output_file = "_test_output.zdf")
-    capture_image(
-        folder="input",
-        output_file="_test_output.zdf",
-        setting_file="capture_settings.yml",
-    )
+    camera = camera_connect()
+    settings = camera_capture_settings(camera, "capture_settings_z1.yml")
+    camera_capture_and_save(camera, settings, "input", "_delete.zdf")

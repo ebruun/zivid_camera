@@ -46,9 +46,9 @@ def file_name(file_name, type):
     return file_name + type
 
 
-def dynamic_name(n=00, type="online"):
+def create_dynamic_filename(n=00):
     str2 = datetime.now().strftime("%m_%d_n")
-    return str2 + str(n) + "_" + type
+    return str2 + str(n)
 
 
 def save_frames_as_matrix_yaml(folder, name, frames):
