@@ -1,7 +1,7 @@
 #PROJECT SPECIFIC ADDS
 # -----------
 /.vscode
-#/output
+/output
 ! /ZividSampleData2/
 *.3dmbak
 # -----------
