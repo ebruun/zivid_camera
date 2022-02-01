@@ -11,9 +11,7 @@ from src_cam.camera.intrinsics import build_cam_intrinsics
 
 def plot_flex(imgs, dims):
 
-    fig, axs = plt.subplots(
-        dims[0], dims[1], figsize=(18, 8), facecolor="w", edgecolor="k"
-    )
+    fig, axs = plt.subplots(dims[0], dims[1], figsize=(18, 8), facecolor="w", edgecolor="k")
 
     for item in imgs.items():
         i = item[1]
@@ -22,9 +20,7 @@ def plot_flex(imgs, dims):
         axs[i["pos"]].set_title(i["name"])
 
 
-def plot_summary(
-    img, contours, contours_save, midpoint_save, hull, corners_rect, corners_saved
-):
+def plot_summary(img, contours, contours_save, midpoint_save, hull, corners_rect, corners_saved):
 
     img2 = copy.deepcopy(img)
     img3 = copy.deepcopy(img)
@@ -139,22 +135,14 @@ def _draw_axis(img, r, t, K):
     # unit is mm
     rotV, _ = cv.Rodrigues(r)  # 3x1 --> 3x3
 
-    points = np.float32([[100, 0, 0], [0, 100, 0], [0, 0, 100], [0, 0, 0]]).reshape(
-        -1, 3
-    )
+    points = np.float32([[100, 0, 0], [0, 100, 0], [0, 0, 100], [0, 0, 0]]).reshape(-1, 3)
     axisPoints, _ = cv.projectPoints(points, rotV, t, K, (0, 0, 0, 0))
 
     axisPoints = axisPoints.astype(int)
 
-    img = cv.line(
-        img, tuple(axisPoints[3].ravel()), tuple(axisPoints[0].ravel()), (0, 0, 255), 3
-    )
-    img = cv.line(
-        img, tuple(axisPoints[3].ravel()), tuple(axisPoints[1].ravel()), (0, 255, 0), 3
-    )
-    img = cv.line(
-        img, tuple(axisPoints[3].ravel()), tuple(axisPoints[2].ravel()), (255, 0, 0), 3
-    )
+    img = cv.line(img, tuple(axisPoints[3].ravel()), tuple(axisPoints[0].ravel()), (0, 0, 255), 3)
+    img = cv.line(img, tuple(axisPoints[3].ravel()), tuple(axisPoints[1].ravel()), (0, 255, 0), 3)
+    img = cv.line(img, tuple(axisPoints[3].ravel()), tuple(axisPoints[2].ravel()), (255, 0, 0), 3)
     return img
 
 
@@ -184,9 +172,7 @@ def plot_frames(img, frames, cam_intrinsics_yaml):
         rvec, tvec = _member_transforms(frame)
 
         _draw_axis(img, rvec, tvec, mtx)  # draw on original
-        _draw_axis(
-            img_corrected, rvec, tvec, newcameramtx
-        )  # draw on distortion corrected
+        _draw_axis(img_corrected, rvec, tvec, newcameramtx)  # draw on distortion corrected
 
     h1 = np.concatenate((img1, img), axis=1)
     h2 = np.concatenate((img2, img_corrected), axis=1)

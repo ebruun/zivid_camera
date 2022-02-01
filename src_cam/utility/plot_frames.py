@@ -11,22 +11,14 @@ def _draw_axis(img, r, t, K):
     # unit is mm
     rotV, _ = cv.Rodrigues(r)  # 3x1 --> 3x3
 
-    points = np.float32([[100, 0, 0], [0, 100, 0], [0, 0, 100], [0, 0, 0]]).reshape(
-        -1, 3
-    )
+    points = np.float32([[100, 0, 0], [0, 100, 0], [0, 0, 100], [0, 0, 0]]).reshape(-1, 3)
     axisPoints, _ = cv.projectPoints(points, rotV, t, K, (0, 0, 0, 0))
 
     axisPoints = axisPoints.astype(int)
 
-    img = cv.line(
-        img, tuple(axisPoints[3].ravel()), tuple(axisPoints[0].ravel()), (0, 0, 255), 3
-    )
-    img = cv.line(
-        img, tuple(axisPoints[3].ravel()), tuple(axisPoints[1].ravel()), (0, 255, 0), 3
-    )
-    img = cv.line(
-        img, tuple(axisPoints[3].ravel()), tuple(axisPoints[2].ravel()), (255, 0, 0), 3
-    )
+    img = cv.line(img, tuple(axisPoints[3].ravel()), tuple(axisPoints[0].ravel()), (0, 0, 255), 3)
+    img = cv.line(img, tuple(axisPoints[3].ravel()), tuple(axisPoints[1].ravel()), (0, 255, 0), 3)
+    img = cv.line(img, tuple(axisPoints[3].ravel()), tuple(axisPoints[2].ravel()), (255, 0, 0), 3)
     return img
 
 
@@ -54,9 +46,7 @@ def plot_frames(img, frames):
         rvec, tvec = _member_transforms(frame)
 
         _draw_axis(img, rvec, tvec, mtx)  # draw on original
-        _draw_axis(
-            img_corrected, rvec, tvec, newcameramtx
-        )  # draw on distortion corrected
+        _draw_axis(img_corrected, rvec, tvec, newcameramtx)  # draw on distortion corrected
 
     h1 = np.concatenate((img, img), axis=1)
     h2 = np.concatenate((img_corrected, img_corrected), axis=1)

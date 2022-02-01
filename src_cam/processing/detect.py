@@ -157,9 +157,7 @@ def _apply_threshold(gray):
     min_max = cv.minMaxLoc(gray)
     delta = 50
 
-    _, thresh1 = cv.threshold(
-        gray, (min_max[1] - delta), 255, cv.THRESH_BINARY
-    )  # binary threshold
+    _, thresh1 = cv.threshold(gray, (min_max[1] - delta), 255, cv.THRESH_BINARY)  # binary threshold
 
     kernel = np.ones((5, 5), np.uint8)  # square image kernel used for erosion
 
@@ -259,8 +257,10 @@ def _find_contours(closing):
         print(str)
 
         if area > min_area and area < max_area and len(approx) < n_approx_max:
-            str = "-- -- --contour area: {:.0f}, # contours: {:.0f}, # approx corner: {:.0f}".format(
-                area, len(c), len(approx)
+            str = (
+                "-- -- --contour area: {:.0f}, # contours: {:.0f}, # approx corner: {:.0f}".format(
+                    area, len(c), len(approx)
+                )
             )
             print(str)
             num_labels += 1

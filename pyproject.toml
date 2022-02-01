@@ -1,6 +1,6 @@
 [tool.black]
-# Changed line-length to 80 from the default 88
-line-length = 88 
+# Changed line-length to 100 from the default 88
+line-length = 100 
 include = '\.pyi?$'
 exclude = '''
 /(

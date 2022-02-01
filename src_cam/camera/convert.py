@@ -38,9 +38,9 @@ def _point_cloud_to_cv_z(point_cloud, points):
     c = np.isnan(depth_map)
 
     # Setting the depth map range based on min/max of the features
-    depth_map_uint8 = (
-        255 * (depth_map - (np.nanmin(d) - pad)) / (np.ptp(d) + 2 * pad)
-    ).astype(np.uint8)
+    depth_map_uint8 = (255 * (depth_map - (np.nanmin(d) - pad)) / (np.ptp(d) + 2 * pad)).astype(
+        np.uint8
+    )
 
     depth_map_uint8[a] = 20  # cells closer than limit (dark)
     depth_map_uint8[b] = 240  # cells further than limit (light)

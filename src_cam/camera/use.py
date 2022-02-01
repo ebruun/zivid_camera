@@ -8,17 +8,24 @@ from zivid.capture_assistant import SuggestSettingsParameters as sgst_params
 from src_cam.utility.io import _create_file_path
 
 
-def camera_connect():
+def _list_connected_cameras():
+    print("What cameras are connected?")
+    app = zivid.Application()
+
+    cameras = app.cameras()
+    for camera in cameras:
+        print(f"Camera Info:  {camera}")
+
+
+def camera_connect(camera_id):
     print("CONNECTING TO CAMERA")
     app = zivid.Application()
 
     try:
-        camera = app.connect_camera()
+        camera = app.connect_camera(camera_id)
         print("--Connection success")
     except RuntimeError:
-        virtual_camera_filepath = _create_file_path(
-            "ZividSampleData2", "FileCameraZividOne.zfc"
-        )
+        virtual_camera_filepath = _create_file_path("ZividSampleData2", "FileCameraZividOne.zfc")
         camera = app.create_file_camera(virtual_camera_filepath)
         print(f"--Connection failure, using virtual camera: {virtual_camera_filepath}")
 
@@ -31,9 +38,7 @@ def camera_capture_settings(camera, setting_file=False):
             max_capture_time=datetime.timedelta(milliseconds=1200),
             ambient_light_frequency=sgst_params.AmbientLightFrequency.none,
         )
-        settings = capture_assistant.suggest_settings(
-            camera, suggest_settings_parameters
-        )
+        settings = capture_assistant.suggest_settings(camera, suggest_settings_parameters)
         print("--Using capture assistant")
 
     else:  # real camera w/ setting file
@@ -55,6 +60,13 @@ def camera_capture_and_save(camera, settings, folder, filename):
 
 
 if __name__ == "__main__":
-    camera = camera_connect()
+    _list_connected_cameras()
+
+    camera_ids = {
+        "zivid_one": "19010186",
+        "zivid_two": "2147EFB1",
+    }
+
+    camera = camera_connect(camera_ids["zivid_one"])
     settings = camera_capture_settings(camera, "capture_settings_z1.yml")
     camera_capture_and_save(camera, settings, "input", "_delete.zdf")
