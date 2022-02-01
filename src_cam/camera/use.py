@@ -17,12 +17,19 @@ def _list_connected_cameras():
         print(f"Camera Info:  {camera}")
 
 
-def camera_connect(camera_id):
-    print("CONNECTING TO CAMERA")
+def camera_connect(rob_num):
+    """connect to camera, assume rob1 = zivid1, rob2 = zivid2"""
+
+    camera_ids = {
+        1: "19010186",  # zivid 1
+        2: "2147EFB1",  # zivid 2
+    }
+
+    print("\nCONNECTING TO CAMERA:", camera_ids[rob_num])
     app = zivid.Application()
 
     try:
-        camera = app.connect_camera(camera_id)
+        camera = app.connect_camera(camera_ids[rob_num])
         print("--Connection success")
     except RuntimeError:
         virtual_camera_filepath = _create_file_path("ZividSampleData2", "FileCameraZividOne.zfc")
@@ -62,11 +69,8 @@ def camera_capture_and_save(camera, settings, folder, filename):
 if __name__ == "__main__":
     _list_connected_cameras()
 
-    camera_ids = {
-        "zivid_one": "19010186",
-        "zivid_two": "2147EFB1",
-    }
+    rob_num = 2
 
-    camera = camera_connect(camera_ids["zivid_one"])
-    settings = camera_capture_settings(camera, "capture_settings_z1.yml")
+    camera = camera_connect(rob_num)
+    settings = camera_capture_settings(camera, "capture_settings_z{}.yml".format(rob_num))
     camera_capture_and_save(camera, settings, "input", "_delete.zdf")
