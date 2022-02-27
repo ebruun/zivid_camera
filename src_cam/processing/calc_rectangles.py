@@ -23,6 +23,8 @@ def _group(corners, midpoints):
 def _reorder_corners(rectangles, midpoints):
     print("--reordering corners in rectangles")
 
+    # recall that in cv img the 0 is top left corner
+
     # Reorder the rectangles in this order
     # 3------2
     # |      |
@@ -33,9 +35,20 @@ def _reorder_corners(rectangles, midpoints):
     # Find index of bottom right corner, make it first row
     for i, rectangle in enumerate(rectangles):
         midpoint = midpoints[i]
-        a = rectangle[:, 0] > midpoint[0]
-        b = rectangle[:, 1] > midpoint[1]
-        idx = np.where(a / b == 1)[0][0]
+
+        idx_close = np.argmin(np.sum((rectangle[0] - rectangle[1:4]) ** 2, axis=1)) + 1
+
+        idx_side1 = np.array([0, idx_close])
+        idx_side2 = np.delete(np.array([0, 1, 2, 3], dtype=np.int64), [0, idx_close])
+
+        center_vector = np.mean(rectangle[idx_side1], axis=0) - np.mean(
+            rectangle[idx_side2], axis=0
+        )
+
+        if center_vector[1] >= 0:  # side 1 is bottom
+            idx = idx_side1[np.argmax(rectangle[idx_side1, 0], axis=0)]
+        else:  # side 2 is bottom
+            idx = idx_side2[np.argmax(rectangle[idx_side2, 0], axis=0)]
 
         rectangle[[0, idx]] = rectangle[[idx, 0]]
 
@@ -71,26 +84,31 @@ def calc_rectangles(corners, midpoints):
 if __name__ == "__main__":
     corners = np.array(
         [
-            [1734.0, 589.0],
-            [1675.0, 392.0],
-            [1064.0, 668.0],
-            [541.0, 885.0],
-            [464.0, 885.0],
-            [540.0, 685.0],
-            [463.0, 685.0],
-            [897.0, 530.0],
-            [999.0, 703.0],
-            [964.0, 487.0],
-            [1670.0, 588.0],
-            [1737.0, 396.0],
+            [10, 10],
+            [8, 0],
+            [11, 0],
+            [7, 10],
+            [17, 10],
+            [20, 10],
+            [18, 0],
+            [21, 0],
+            [31, 0],
+            [30, 10],
+            [27, 10],
+            [28, 0],
+            [38, 0],
+            [41, 0],
+            [37, 10],
+            [40, 10],
         ]
     ).astype("int32")
 
     midpoints = np.array(
         [
-            [501, 785],
-            [981, 594],
-            [1704, 491],
+            [9, 5],
+            [19, 5],
+            [29, 5],
+            [39, 5],
         ]
     ).astype("int32")
 

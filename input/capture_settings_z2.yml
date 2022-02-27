@@ -1,58 +1,63 @@
 __version__:
   serializer: 1
-  data: 7
+  data: 10
 Settings:
   Acquisitions:
     - Acquisition:
-        Aperture: 4.67056717778426
+        Aperture: 2
         Brightness: 1.8
-        ExposureTime: 6500
-        Gain: 1.10814070061623
+        ExposureTime: 1677
+        Gain: 1.16658382659394
     - Acquisition:
-        Aperture: 3.32906716329996
-        Brightness: 1.8
-        ExposureTime: 6500
-        Gain: 1.80729900199487
+        Aperture: 5.93387497820844
+        Brightness: 1.76080864385791
+        ExposureTime: 1677
+        Gain: 1
     - Acquisition:
-        Aperture: 2.4636050983726
-        Brightness: 1.8
-        ExposureTime: 6500
-        Gain: 3.17691510948466
+        Aperture: 2
+        Brightness: 1.79999999999997
+        ExposureTime: 18447
+        Gain: 1.87614204252087
     - Acquisition:
-        Aperture: 2.14684583945452
-        Brightness: 1.8
-        ExposureTime: 13000
-        Gain: 4.05768483758939
+        Aperture: 2
+        Brightness: 1.79999999999997
+        ExposureTime: 18447
+        Gain: 1.87614204252087
+  Diagnostics:
+    Enabled: no
   Experimental:
     Engine: phase
   Processing:
     Color:
       Balance:
-        Blue: 1
+        Blue: 3.2
         Green: 1
-        Red: 1
+        Red: 2
+      Experimental:
+        ToneMapping:
+          Enabled: always
       Gamma: 1
     Filters:
       Experimental:
         ContrastDistortion:
           Correction:
-            Enabled: no
-            Strength: 0.4
+            Enabled: yes
+            Strength: 0.3
           Removal:
             Enabled: no
-            Threshold: 0.5
+            Threshold: 0.2
       Noise:
         Removal:
           Enabled: yes
-          Threshold: 7
+          Threshold: 5
       Outlier:
         Removal:
           Enabled: yes
-          Threshold: 5
+          Threshold: 21
       Reflection:
         Removal:
           Enabled: yes
       Smoothing:
         Gaussian:
           Enabled: yes
-          Sigma: 1.5
+          Sigma: 1
