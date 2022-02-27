@@ -19,9 +19,9 @@ def _print_camera_intrinsics(camera):
 
 # Build camera intrinsics from the hard-coded values saved in "input folder"
 # see the following convo on github https://github.com/zivid/zivid-python/issues/42#issuecomment-1020424432
-def build_cam_intrinsics(file_name):
+def build_cam_intrinsics(file_path):
 
-    with open(_create_file_path("input", file_name), "r") as stream:
+    with open(file_path, "r") as stream:
         try:
             data = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
@@ -46,14 +46,15 @@ def build_cam_intrinsics(file_name):
 
 if __name__ == "__main__":
 
-    rob_num = 2
+    rob_num = 1
     camera = camera_connect(rob_num)
 
     _print_camera_intrinsics(camera)
 
     f = "intrinsics_z{}.yml".format(rob_num)
+    p = _create_file_path("input_settings", f)
 
-    mtx, dist = build_cam_intrinsics(f)
+    mtx, dist = build_cam_intrinsics(p)
 
     print("mtx", mtx)
     print("dist", dist)

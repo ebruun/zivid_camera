@@ -36,11 +36,13 @@ def main(rob_num=False):
         camera_capture_and_save(
             camera,
             settings,
-            "input",
+            "saved_pc",
             filename + "_R{}".format(rob_num) + ".zdf",
         )
 
-        pc = load_pointcloud(folder="input", input_file=filename + "_R{}".format(rob_num) + ".zdf")
+        pc = load_pointcloud(
+            folder="saved_pc", input_file=filename + "_R{}".format(rob_num) + ".zdf"
+        )
 
     else:
         saved_files = ["save_single01_R1", "save_single02_R1", "save_triple01_R1", "02_27_n0_R2"]
@@ -48,27 +50,27 @@ def main(rob_num=False):
         filename = saved_files[3]
         rob_num = int(filename.split("_")[-1][1])
 
-        pc = load_pointcloud(folder="input", input_file=filename + ".zdf")
+        pc = load_pointcloud(folder="saved_pc", input_file=filename + ".zdf")
 
     #########################################
     # 2. CONVERT AND FIND CORNERS/MIDPOINTS
     #########################################
     img_png = convert2png(
         pointcloud=pc,
-        folder="output",
+        folder="saved_output",
         output_file=filename + "_rgb_R{}.png".format(rob_num),
     )
 
     corners, midpoints = find_features(
         pointcloud=pc,
-        folder="output",
+        folder="saved_output",
         input_file_image=filename + "_rgb_R{}.png".format(rob_num),
         plot=True,
     )
 
     img_depth = convert2depth(
         pointcloud=pc,
-        folder="output",
+        folder="saved_output",
         output_file=filename + "_depth_R{}.png".format(rob_num),
         points=midpoints,
     )
@@ -90,7 +92,13 @@ def main(rob_num=False):
         "zerowaste_robot/transformations", "H1_cam_obj_R{}.yaml".format(rob_num), frames
     )
 
-    plot_frames(img_png, frames, "intrinsics_z{}.yml".format(rob_num))
+    plot_frames(
+        img_png,
+        frames,
+        folder="input_settings",
+        intrinsics_file="intrinsics_z{}.yml".format(rob_num),
+    )
+
     plot_ordered_features(img_png, rectangles)
 
 

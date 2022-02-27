@@ -7,6 +7,7 @@ from compas.geometry import Transformation
 
 # LOCAL IMPORTS
 from src_cam.camera.intrinsics import build_cam_intrinsics
+from src_cam.utility.io import _create_file_path
 
 
 def plot_flex(imgs, dims):
@@ -156,9 +157,11 @@ def _member_transforms(F):
     return rvec, tvec
 
 
-def plot_frames(img, frames, cam_intrinsics_yaml):
+def plot_frames(img, frames, folder, intrinsics_file):
     print("\n--plot frames")
-    mtx, dist = build_cam_intrinsics(cam_intrinsics_yaml)
+
+    intrinsics_file_path = _create_file_path(folder, intrinsics_file).__str__()
+    mtx, dist = build_cam_intrinsics(intrinsics_file_path)
 
     h, w = img.shape[:2]
     newcameramtx, roi = cv.getOptimalNewCameraMatrix(mtx, dist, (w, h), 1, (w, h))

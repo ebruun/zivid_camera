@@ -1,0 +1,36 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "echo variables (camera)",
+            "type": "shell",
+            "command": "echo",
+            "args": [
+                //RUN THESE THESE SET OF TASKS TO GET INFO I NEED
+                //from command palette --> run task
+                //
+                //"${workspaceFolder}", //workspace root folder
+                //"${config:python.pythonPath}", //print config file location
+                "${config:python.envFile}", //print config file location
+                //"${env:USERNAME}", //environment username
+                //"${env:PYTHONPATH}", //environment pythonpath
+                "${env:USERNAME}",
+                "${env:VAR1}",
+                "${file}",
+                "${pathSeparator}",
+                "${workspaceFolder}",
+                "${fileDirname}",
+            ],
+            "presentation": {
+                "echo": false,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            }
+        }
+    ]
+}
