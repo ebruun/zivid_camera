@@ -18,39 +18,42 @@ from src_cam.utility.io import (
     create_dynamic_filename,
     save_frames_as_matrix_yaml,
 )
-from src_cam.utility.plots import plot_features, plot_ordered_features, plot_frames
+from src_cam.utility.plots import (
+    plot_thresholding,
+    plot_feature_contours,
+    plot_feature_points,
+    plot_frames_undistort,
+    plot_frames,
+)
 
 
 ################################
 # 1. CAPTURE IMAGE
 ################################
-def main(rob_num=False):
+def main(rob_num=False, filename=False, plot=False):
 
     if rob_num:
-        filename = create_dynamic_filename(n=00)
+        filename = create_dynamic_filename(rob_num, n=00)
 
         camera = camera_connect(rob_num)
-        settings = camera_capture_settings(camera, "capture_settings_z{}.yml".format(rob_num))
-        # settings = camera_capture_settings(camera)
-
-        camera_capture_and_save(
+        settings = camera_capture_settings(
             camera,
-            settings,
-            "saved_pc",
-            filename + "_R{}".format(rob_num) + ".zdf",
+            folder="input_settings",
+            input_file="capture_settings_z{}.yml".format(rob_num),
         )
+        # settings = camera_capture_settings(camera) # For auto-capture
 
-        pc = load_pointcloud(
-            folder="saved_pc", input_file=filename + "_R{}".format(rob_num) + ".zdf"
-        )
-
-    else:
-        saved_files = ["save_single01_R1", "save_single02_R1", "save_triple01_R1", "02_27_n0_R2"]
-
-        filename = saved_files[3]
-        rob_num = int(filename.split("_")[-1][1])
+        camera_capture_and_save(camera, settings, folder="saved_pc", output_file=filename + ".zdf")
 
         pc = load_pointcloud(folder="saved_pc", input_file=filename + ".zdf")
+
+    else:
+        rob_num = int(filename.split("_")[0][1])
+
+        pc = load_pointcloud(
+            folder="saved_pc",
+            input_file=filename + ".zdf",
+        )
 
     #########################################
     # 2. CONVERT AND FIND CORNERS/MIDPOINTS
@@ -58,26 +61,22 @@ def main(rob_num=False):
     img_png = convert2png(
         pointcloud=pc,
         folder="saved_output",
-        output_file=filename + "_rgb_R{}.png".format(rob_num),
+        output_file=filename + "_rgb.png",
     )
 
-    corners, midpoints = find_features(
+    corners, midpoints, plot_data = find_features(
         pointcloud=pc,
         folder="saved_output",
-        input_file_image=filename + "_rgb_R{}.png".format(rob_num),
+        input_file_image=filename + "_rgb.png",
         plot=True,
     )
 
     img_depth = convert2depth(
         pointcloud=pc,
         folder="saved_output",
-        output_file=filename + "_depth_R{}.png".format(rob_num),
+        output_file=filename + "_depth.png",
         points=midpoints,
     )
-
-    plot = True  # Turn on all the random plots
-    if plot:
-        plot_features(img_png, img_depth, corners, midpoints)
 
     rectangles = calc_rectangles(corners, midpoints)
 
@@ -89,19 +88,39 @@ def main(rob_num=False):
     # Saves as a transformation matrix, in robot control module
     # Represents the pose of the member
     save_frames_as_matrix_yaml(
-        "zerowaste_robot/transformations", "H1_cam_obj_R{}.yaml".format(rob_num), frames
-    )
-
-    plot_frames(
-        img_png,
         frames,
-        folder="input_settings",
-        intrinsics_file="intrinsics_z{}.yml".format(rob_num),
+        folder="zerowaste_robot/transformations",
+        output_file="H1_cam_obj_R{}.yaml".format(rob_num),
     )
 
-    plot_ordered_features(img_png, rectangles)
+    ##########################################
+    # 4. PLOT
+    ##########################################
+    if plot:
+        plot_thresholding(plot_data)
+        plot_feature_contours(plot_data[-1])
+        plot_feature_points(img_png, img_depth, corners, midpoints)
+
+        plot_frames_undistort(
+            img_png,
+            frames,
+            folder="input_settings",
+            input_file="intrinsics_z{}.yml".format(rob_num),
+        )
+
+        plot_frames(img_png, rectangles)  # has to come after
 
 
 if __name__ == "__main__":
-    main()  # If you want to run from saved data
-    # main(rob_num=2)  # If you want to capture live data
+
+    # If you want to run from saved data
+    saved_file_names = {
+        0: "R1_save_single01",
+        1: "R1_save_single02",
+        2: "R1_save_triple01",
+        3: "R2_save_single01",
+    }
+
+    main(filename=saved_file_names[0], plot=True)
+
+    # main(rob_num=2, plot=True)  # If you want to capture live data

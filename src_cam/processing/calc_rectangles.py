@@ -112,4 +112,4 @@ if __name__ == "__main__":
         ]
     ).astype("int32")
 
-    calc_rectangles(corners, midpoints)
+    print(calc_rectangles(corners, midpoints))

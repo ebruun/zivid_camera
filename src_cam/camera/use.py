@@ -39,8 +39,8 @@ def camera_connect(rob_num):
     return camera
 
 
-def camera_capture_settings(camera, setting_file=False):
-    if camera.info.serial_number == "F1" or not setting_file:  # virtual cam
+def camera_capture_settings(camera, folder=False, input_file=False):
+    if camera.info.serial_number == "F1" or not input_file:  # virtual cam
         suggest_settings_parameters = sgst_params(
             max_capture_time=datetime.timedelta(milliseconds=1200),
             ambient_light_frequency=sgst_params.AmbientLightFrequency.none,
@@ -49,7 +49,7 @@ def camera_capture_settings(camera, setting_file=False):
         print("--Using capture assistant")
 
     else:  # real camera w/ setting file
-        settings_file_path = _create_file_path("input", setting_file)
+        settings_file_path = _create_file_path(folder, input_file)
         settings = zivid.Settings.load(settings_file_path)
         print(f"--Using specified settings file: {settings_file_path}")
 
@@ -59,11 +59,11 @@ def camera_capture_settings(camera, setting_file=False):
     return settings
 
 
-def camera_capture_and_save(camera, settings, folder, filename):
+def camera_capture_and_save(camera, settings, folder, output_file):
     with camera.capture(settings) as frame:
-        file_out = _create_file_path(folder, filename)
-        frame.save(file_out)
-        print(f"--Saving frame to file: {file_out}")
+        pointcloud_file_path = _create_file_path(folder, output_file)
+        frame.save(pointcloud_file_path)
+        print(f"--Saving frame to file: {pointcloud_file_path}")
 
 
 if __name__ == "__main__":

@@ -46,14 +46,14 @@ def file_name(file_name, type):
     return file_name + type
 
 
-def create_dynamic_filename(n=00):
+def create_dynamic_filename(rob_num, n=00):
     str2 = datetime.now().strftime("%m_%d_n")
-    return str2 + str(n)
+    return "R{}_".format(rob_num) + str2 + str(n)
 
 
-def save_frames_as_matrix_yaml(folder, name, frames):
-    file_name = _create_file_path_robot(folder, name).__str__()
-    s = cv.FileStorage(file_name, cv.FileStorage_WRITE)
+def save_frames_as_matrix_yaml(frames, folder, output_file):
+    file_path = _create_file_path_robot(folder, output_file).__str__()
+    s = cv.FileStorage(file_path, cv.FileStorage_WRITE)
 
     for i, f in enumerate(frames):
         T = Transformation.from_frame(f)

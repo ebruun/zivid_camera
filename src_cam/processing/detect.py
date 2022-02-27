@@ -7,7 +7,6 @@ import copy
 
 # LOCAL IMPORTS
 from src_cam.utility.io import _create_file_path
-from src_cam.utility.plots import plot_flex, plot_summary
 from src_cam.camera.convert import load_pointcloud
 
 
@@ -50,7 +49,9 @@ def _apply_depth_mask(img, gray, pointcloud):
     depth_map = pointcloud.copy_data("z")
     a = ~np.isnan(depth_map)  # where is there no depth data
 
-    gray_mask = np.zeros((1200, 1944, 1), np.uint8)  # changed from 1920-1944
+    dims = np.shape(a)
+
+    gray_mask = np.zeros((dims[0], dims[1], 1), np.uint8)  # changed from 1920-1944
     gray_mask[a] = 255  # make black
     color_mask = cv.cvtColor(gray_mask, cv.COLOR_GRAY2RGB)
 
@@ -147,7 +148,7 @@ def _apply_glare_remove(img, gray):
 # ADJUST IMAGE
 ##################################
 def _apply_threshold(gray):
-    print("--apply binary threshold")
+    print("--apply binary threshold:")
 
     # n = 7
     # gray = cv.medianBlur(gray, n)  # Blur
@@ -156,7 +157,7 @@ def _apply_threshold(gray):
     # gray = cv.filter2D(gray, -1, kernel)  # sharpen kernel
 
     min_max = cv.minMaxLoc(gray)
-    print(min_max)
+    print("-- --max = ", min_max[1])
 
     delta = 50
 
@@ -315,17 +316,16 @@ def find_features(pointcloud, folder, input_file_image, plot=False):
 
     contours, contours_save, p_mid, c_hull, c_box, c = _find_contours(closing)
 
+    plot_data = []
     if plot:
-        plot_flex(data1, dims=[1, 2])
-        plot_flex(data2, dims=[2, 3])
-        # plot_flex(data3, dims=[2,2])
-        plot_flex(data4, dims=[2, 3])
+        plot_data = [
+            [data1, [1, 2], "Step1: import image"],
+            [data2, [2, 3], "Step2: depth mask"],
+            [data4, [2, 3], "Step3: thresholding"],
+            [img, contours, contours_save, p_mid, c_hull, c_box, c, "Found Features"],
+        ]
 
-        plot_summary(img, contours, contours_save, p_mid, c_hull, c_box, c)
-        plt.show()
-        plt.pause(1)
-
-    return c, p_mid
+    return c, p_mid, plot_data
 
 
 if __name__ == "__main__":

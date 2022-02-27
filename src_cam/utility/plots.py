@@ -10,18 +10,61 @@ from src_cam.camera.intrinsics import build_cam_intrinsics
 from src_cam.utility.io import _create_file_path
 
 
-def plot_flex(imgs, dims):
+def _draw_axis(img, r, t, K):
+    # unit is mm
+    rotV, _ = cv.Rodrigues(r)  # 3x1 --> 3x3
 
-    fig, axs = plt.subplots(dims[0], dims[1], figsize=(18, 8), facecolor="w", edgecolor="k")
+    points = np.float32([[100, 0, 0], [0, 100, 0], [0, 0, 100], [0, 0, 0]]).reshape(-1, 3)
+    axisPoints, _ = cv.projectPoints(points, rotV, t, K, (0, 0, 0, 0))
 
-    for item in imgs.items():
-        i = item[1]
+    axisPoints = axisPoints.astype(int)
 
-        axs[i["pos"]].imshow(i["img_file"], cmap="gray")
-        axs[i["pos"]].set_title(i["name"])
+    img = cv.line(img, tuple(axisPoints[3].ravel()), tuple(axisPoints[0].ravel()), (0, 0, 255), 3)
+    img = cv.line(img, tuple(axisPoints[3].ravel()), tuple(axisPoints[1].ravel()), (0, 255, 0), 3)
+    img = cv.line(img, tuple(axisPoints[3].ravel()), tuple(axisPoints[2].ravel()), (255, 0, 0), 3)
+    return img
 
 
-def plot_summary(img, contours, contours_save, midpoint_save, hull, corners_rect, corners_saved):
+def _member_transforms(F):
+    T = Transformation.from_frame(F)
+
+    r_mat = np.squeeze(T)[0:3, 0:3]
+    rvec, _ = cv.Rodrigues(r_mat)
+    tvec = np.squeeze(T)[0:3, 3].reshape(3, 1)
+
+    return rvec, tvec
+
+
+# -- PLOT FUNCTIONS --#
+def plot_thresholding(plot_data):
+
+    for data in plot_data[0:-1]:  # last entry is for the contours
+        imgs, dims, name = data[0:3]
+
+        fig, axs = plt.subplots(dims[0], dims[1], figsize=(16, 10), facecolor="w", edgecolor="k")
+
+        mngr = plt.get_current_fig_manager()
+        mngr.set_window_title(name)
+        mngr.window.wm_geometry("+500+0")
+
+        for item in imgs.items():
+            i = item[1]
+
+            axs[i["pos"]].imshow(i["img_file"], cmap="gray")
+            axs[i["pos"]].set_title(i["name"])
+
+    plt.show()
+    plt.pause(1)
+
+
+def plot_feature_contours(plot_data):
+
+    _ = plt.figure(figsize=(16, 10))
+    mngr = plt.get_current_fig_manager()
+    mngr.set_window_title("Found Features")
+    mngr.window.wm_geometry("+900+50")
+
+    img, contours, contours_save, midpoint_save, hull, corners_rect, corners_saved, name = plot_data
 
     img2 = copy.deepcopy(img)
     img3 = copy.deepcopy(img)
@@ -50,8 +93,6 @@ def plot_summary(img, contours, contours_save, midpoint_save, hull, corners_rect
         x, y = midpoint.ravel()
         cv.circle(img4, (int(x), int(y)), 10, (255, 0, 0), -1)
 
-    _ = plt.figure(figsize=(12, 6))
-
     plt.subplot(221),
     plt.imshow(img, cmap="gray")
     plt.title("ALL contours"), plt.xticks([]), plt.yticks([])
@@ -69,8 +110,11 @@ def plot_summary(img, contours, contours_save, midpoint_save, hull, corners_rect
     plt.title("saved corners + midpoint"), plt.xticks([]), plt.yticks([])
 
 
-def plot_features(img_png, img_depth, points, midpoints):
-    _ = plt.figure(figsize=(12, 6))
+def plot_feature_points(img_png, img_depth, points, midpoints):
+    _ = plt.figure(figsize=(10, 6))
+    mngr = plt.get_current_fig_manager()
+    mngr.set_window_title("Feature Points")
+    mngr.window.wm_geometry("+10+50")
 
     plt.subplot(121),
     plt.imshow(img_png, cmap="gray")
@@ -105,7 +149,11 @@ def plot_features(img_png, img_depth, points, midpoints):
     plt.show()
 
 
-def plot_ordered_features(img_png, rectangles):
+def plot_frames(img_png, rectangles):
+    _ = plt.figure(figsize=(16, 10))
+    mngr = plt.get_current_fig_manager()
+    mngr.set_window_title("Frames on Image")
+    mngr.window.wm_geometry("+50+50")
 
     img_png = cv.cvtColor(img_png, cv.COLOR_BGR2RGB)
 
@@ -123,44 +171,21 @@ def plot_ordered_features(img_png, rectangles):
                 color=(0, 0, 255),
             )
 
-    _ = plt.figure(figsize=(12, 6))
-
     plt.subplot(111),
-    plt.imshow(img_png, cmap="gray")
+    plt.imshow(img_png)
     plt.title("Original Image"),
     plt.xticks([]), plt.yticks([])
     plt.show()
 
 
-def _draw_axis(img, r, t, K):
-    # unit is mm
-    rotV, _ = cv.Rodrigues(r)  # 3x1 --> 3x3
+def plot_frames_undistort(img, frames, folder, input_file):
 
-    points = np.float32([[100, 0, 0], [0, 100, 0], [0, 0, 100], [0, 0, 0]]).reshape(-1, 3)
-    axisPoints, _ = cv.projectPoints(points, rotV, t, K, (0, 0, 0, 0))
+    _ = plt.figure(figsize=(12, 6))
+    mngr = plt.get_current_fig_manager()
+    mngr.set_window_title("Frames and Undistortion")
+    mngr.window.wm_geometry("+1250+50")
 
-    axisPoints = axisPoints.astype(int)
-
-    img = cv.line(img, tuple(axisPoints[3].ravel()), tuple(axisPoints[0].ravel()), (0, 0, 255), 3)
-    img = cv.line(img, tuple(axisPoints[3].ravel()), tuple(axisPoints[1].ravel()), (0, 255, 0), 3)
-    img = cv.line(img, tuple(axisPoints[3].ravel()), tuple(axisPoints[2].ravel()), (255, 0, 0), 3)
-    return img
-
-
-def _member_transforms(F):
-    T = Transformation.from_frame(F)
-
-    r_mat = np.squeeze(T)[0:3, 0:3]
-    rvec, _ = cv.Rodrigues(r_mat)
-    tvec = np.squeeze(T)[0:3, 3].reshape(3, 1)
-
-    return rvec, tvec
-
-
-def plot_frames(img, frames, folder, intrinsics_file):
-    print("\n--plot frames")
-
-    intrinsics_file_path = _create_file_path(folder, intrinsics_file).__str__()
+    intrinsics_file_path = _create_file_path(folder, input_file).__str__()
     mtx, dist = build_cam_intrinsics(intrinsics_file_path)
 
     h, w = img.shape[:2]
@@ -182,5 +207,11 @@ def plot_frames(img, frames, folder, intrinsics_file):
     v1 = np.concatenate((h1, h2), axis=0)
 
     im = cv.resize(v1, (1320, 800))
-    cv.imshow("img", im)
-    cv.waitKey(100)
+
+    im = cv.cvtColor(im, cv.COLOR_BGR2RGB)
+
+    plt.subplot(111),
+    plt.imshow(im)
+    plt.title("Distortion corrected (bottom)"),
+    plt.xticks([]), plt.yticks([])
+    # plt.show()

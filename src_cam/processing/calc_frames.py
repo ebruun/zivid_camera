@@ -62,7 +62,8 @@ def calc_frames(pointcloud, features):
 
         vec_x, vec_y = _calc_unit_vec(xyz_points_corners)
 
-        F = _member_frame(xyz_points_mid, vec_x, vec_y)
+        # invert vectors so tcp rotate 180
+        F = _member_frame(xyz_points_mid, -vec_x, -vec_y)
         frames.append(F)
 
     return frames
