@@ -49,7 +49,7 @@ def _apply_depth_mask(img, gray, pointcloud):
     depth_map = pointcloud.copy_data("z")
     a = ~np.isnan(depth_map)  # where is there no depth data
 
-    mask = np.zeros((1200, 1920, 1), np.uint8)
+    mask = np.zeros((1200, 1944, 1), np.uint8)  # changed from 1920-1944
     mask[a] = 255  # make black
     img_gray_mask = cv.bitwise_and(gray, mask)
 
@@ -306,16 +306,16 @@ def find_features(pointcloud, folder, input_file_image, plot=False):
     print("\nFIND FEATURES IN IMAGE")
     img, gray, data1 = _import_img(folder=folder, input_file=input_file_image)
     img, gray, data2 = _apply_depth_mask(img, gray, pointcloud=pointcloud)
-    gray, data3 = _apply_glare_remove(img, gray)
+    # gray, data3 = _apply_glare_remove(img, gray)
     closing, data4 = _apply_threshold(gray)
 
     contours, contours_save, p_mid, c_hull, c_box, c = _find_contours(closing)
 
     if plot:
-        # plot_flex(data1,dims=[1,2])
-        # plot_flex(data2,dims=[2,3])
+        plot_flex(data1, dims=[1, 2])
+        plot_flex(data2, dims=[2, 3])
         # plot_flex(data3, dims=[2,2])
-        # plot_flex(data4, dims=[2,3])
+        plot_flex(data4, dims=[2, 3])
 
         plot_summary(img, contours, contours_save, p_mid, c_hull, c_box, c)
         plt.show()
