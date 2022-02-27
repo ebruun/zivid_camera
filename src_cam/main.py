@@ -71,27 +71,30 @@ def main(rob_num=False, filename=False, plot=False):
         plot=True,
     )
 
-    img_depth = convert2depth(
-        pointcloud=pc,
-        folder="saved_output",
-        output_file=filename + "_depth.png",
-        points=midpoints,
-    )
+    try:
+        img_depth = convert2depth(
+            pointcloud=pc,
+            folder="saved_output",
+            output_file=filename + "_depth.png",
+            points=midpoints,
+        )
 
-    rectangles = calc_rectangles(corners, midpoints)
+        rectangles = calc_rectangles(corners, midpoints)
 
-    ##########################################
-    # 3. CALCULATE MEMBER FRAMES
-    ##########################################
-    frames = calc_frames(pointcloud=pc, features=[rectangles, midpoints])
+        ##########################################
+        # 3. CALCULATE MEMBER FRAMES
+        ##########################################
+        frames = calc_frames(pointcloud=pc, features=[rectangles, midpoints])
 
-    # Saves as a transformation matrix, in robot control module
-    # Represents the pose of the member
-    save_frames_as_matrix_yaml(
-        frames,
-        folder="zerowaste_robot/transformations",
-        output_file="H1_cam_obj_R{}.yaml".format(rob_num),
-    )
+        # Saves as a transformation matrix, in robot control module
+        # Represents the pose of the member
+        save_frames_as_matrix_yaml(
+            frames,
+            folder="zerowaste_robot/transformations",
+            output_file="H1_cam_obj_R{}.yaml".format(rob_num),
+        )
+    except ValueError:
+        pass
 
     ##########################################
     # 4. PLOT
@@ -113,14 +116,14 @@ def main(rob_num=False, filename=False, plot=False):
 
 if __name__ == "__main__":
 
-    # If you want to run from saved data
-    saved_file_names = {
-        0: "R1_save_single01",
-        1: "R1_save_single02",
-        2: "R1_save_triple01",
-        3: "R2_save_single01",
-    }
+    # # If you want to run from saved data
+    # saved_file_names = {
+    #     0: "R1_save_single01",
+    #     1: "R1_save_single02",
+    #     2: "R1_save_triple01",
+    #     3: "R2_save_single01",
+    # }
 
-    main(filename=saved_file_names[0], plot=True)
+    # main(filename=saved_file_names[0], plot=True)
 
-    # main(rob_num=2, plot=True)  # If you want to capture live data
+    main(rob_num=2, plot=True)  # If you want to capture live data

@@ -207,7 +207,6 @@ def plot_frames_undistort(img, frames, folder, input_file):
     v1 = np.concatenate((h1, h2), axis=0)
 
     im = cv.resize(v1, (1320, 800))
-
     im = cv.cvtColor(im, cv.COLOR_BGR2RGB)
 
     plt.subplot(111),
