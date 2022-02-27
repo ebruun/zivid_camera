@@ -1,5 +1,4 @@
 # LOCAL IMPORTS
-import imp
 from src_cam.camera.use import (
     camera_connect,
     camera_capture_settings,
@@ -33,22 +32,23 @@ def main(rob_num=False):
         camera = camera_connect(rob_num)
         settings = camera_capture_settings(camera, "capture_settings_z{}.yml".format(rob_num))
         # settings = camera_capture_settings(camera)
+
         camera_capture_and_save(
             camera,
             settings,
             "input",
-            filename + ".zdf",
+            filename + "_R{}".format(rob_num) + ".zdf",
         )
+
+        pc = load_pointcloud(folder="input", input_file=filename + "_R{}".format(rob_num) + ".zdf")
+
     else:
-        saved_files = [
-            "save_single01",
-            "save_single02",
-            "save_triple01",
-        ]
+        saved_files = ["save_single01_R1", "save_single02_R1", "save_triple01_R1", "02_27_n0_R2"]
 
-        filename = saved_files[0]
+        filename = saved_files[3]
+        rob_num = int(filename.split("_")[-1][1])
 
-    pc = load_pointcloud(folder="input", input_file=filename + ".zdf")
+        pc = load_pointcloud(folder="input", input_file=filename + ".zdf")
 
     #########################################
     # 2. CONVERT AND FIND CORNERS/MIDPOINTS
@@ -56,20 +56,20 @@ def main(rob_num=False):
     img_png = convert2png(
         pointcloud=pc,
         folder="output",
-        output_file=filename + "_rgb.png",
+        output_file=filename + "_rgb_R{}.png".format(rob_num),
     )
 
     corners, midpoints = find_features(
         pointcloud=pc,
         folder="output",
-        input_file_image=filename + "_rgb.png",
+        input_file_image=filename + "_rgb_R{}.png".format(rob_num),
         plot=True,
     )
 
     img_depth = convert2depth(
         pointcloud=pc,
         folder="output",
-        output_file=filename + "_depth.png",
+        output_file=filename + "_depth_R{}.png".format(rob_num),
         points=midpoints,
     )
 
@@ -95,6 +95,5 @@ def main(rob_num=False):
 
 
 if __name__ == "__main__":
-
-    # main()  # If you want to run from saved data
-    main(rob_num=2)  # If you want to capture live data
+    main()  # If you want to run from saved data
+    # main(rob_num=2)  # If you want to capture live data

@@ -4,7 +4,6 @@ import zivid
 import zivid.capture_assistant as capture_assistant
 from zivid.capture_assistant import SuggestSettingsParameters as sgst_params
 
-
 # LOCAL IMPORTS
 from src_cam.utility.io import _create_file_path
 
@@ -70,7 +69,7 @@ def camera_capture_and_save(camera, settings, folder, filename):
 if __name__ == "__main__":
     _list_connected_cameras()
 
-    rob_num = 1
+    rob_num = 2
 
     camera = camera_connect(rob_num)
     settings = camera_capture_settings(camera, "capture_settings_z{}.yml".format(rob_num))

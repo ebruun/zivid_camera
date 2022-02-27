@@ -8,6 +8,7 @@ import copy
 # LOCAL IMPORTS
 from src_cam.utility.io import _create_file_path
 from src_cam.utility.plots import plot_flex, plot_summary
+from src_cam.camera.convert import load_pointcloud
 
 
 # Note to self: come up with a better way to specify plot data here
@@ -49,50 +50,50 @@ def _apply_depth_mask(img, gray, pointcloud):
     depth_map = pointcloud.copy_data("z")
     a = ~np.isnan(depth_map)  # where is there no depth data
 
-    mask = np.zeros((1200, 1944, 1), np.uint8)  # changed from 1920-1944
-    mask[a] = 255  # make black
-    img_gray_mask = cv.bitwise_and(gray, mask)
+    gray_mask = np.zeros((1200, 1944, 1), np.uint8)  # changed from 1920-1944
+    gray_mask[a] = 255  # make black
+    color_mask = cv.cvtColor(gray_mask, cv.COLOR_GRAY2RGB)
 
-    mask3 = cv.cvtColor(mask, cv.COLOR_GRAY2RGB)
-    img_mask = cv.bitwise_and(img, mask3)
+    gray_plus_mask = cv.bitwise_and(gray, gray_mask)
+    img_plus_mask = cv.bitwise_and(img, color_mask)
 
-    img_data2 = {
+    fig_data = {
         0: {
             "name": "original gray",
             "img_file": gray,
             "pos": (1, 0),
         },
         1: {
+            "name": "gray mask",
+            "img_file": gray_mask,
+            "pos": (1, 1),
+        },
+        2: {
+            "name": "original gray + mask",
+            "img_file": gray_plus_mask,
+            "pos": (1, 2),
+        },
+        3: {
             "name": "original RGB",
             "img_file": img,
             "pos": (0, 0),
         },
-        2: {
-            "name": "gray mask",
-            "img_file": cv.cvtColor(mask, cv.COLOR_GRAY2RGB),
-            "pos": (1, 1),
-        },
-        3: {
-            "name": "original gray + mask",
-            "img_file": img_gray_mask,
-            "pos": (1, 2),
-        },
         4: {
             "name": "RGB mask",
-            "img_file": mask3,
+            "img_file": color_mask,
             "pos": (0, 1),
         },
         5: {
             "name": "original RGB + mask",
-            "img_file": img_mask,
+            "img_file": img_plus_mask,
             "pos": (0, 2),
         },
     }
 
-    gray = img_gray_mask
-    img = img_mask
+    gray = gray_plus_mask
+    img = img_plus_mask
 
-    return img, gray, img_data2
+    return img, gray, fig_data
 
 
 ####################################
@@ -148,16 +149,19 @@ def _apply_glare_remove(img, gray):
 def _apply_threshold(gray):
     print("--apply binary threshold")
 
-    n = 7
-    gray = cv.medianBlur(gray, n)  # Blur
+    # n = 7
+    # gray = cv.medianBlur(gray, n)  # Blur
 
-    kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
-    gray = cv.filter2D(gray, -1, kernel)  # sharpen kernel
+    # kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
+    # gray = cv.filter2D(gray, -1, kernel)  # sharpen kernel
 
     min_max = cv.minMaxLoc(gray)
+    print(min_max)
+
     delta = 50
 
     _, thresh1 = cv.threshold(gray, (min_max[1] - delta), 255, cv.THRESH_BINARY)  # binary threshold
+    # ret, thresh1 = cv.threshold(gray, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)  # otsu threshold
 
     kernel = np.ones((5, 5), np.uint8)  # square image kernel used for erosion
 
@@ -325,4 +329,11 @@ def find_features(pointcloud, folder, input_file_image, plot=False):
 
 
 if __name__ == "__main__":
-    find_features("may24_image.png", "_3D_frame_fromassistant.zdf", plot=True)
+    pc = load_pointcloud(folder="input", input_file="02_27_n0.zdf")
+
+    find_features(
+        pointcloud=pc,
+        folder="output",
+        input_file_image="02_27_n0_rgb.png",
+        plot=True,
+    )
