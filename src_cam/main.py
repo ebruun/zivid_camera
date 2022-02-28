@@ -91,10 +91,10 @@ def main(rob_num=False, filename=False, plot=False):
         save_frames_as_matrix_yaml(
             frames,
             folder="zerowaste_robot/transformations",
-            output_file="H1_cam_obj_R{}.yaml".format(rob_num),
+            output_file="R{}_H1_cam_obj.yaml".format(rob_num),
         )
     except ValueError:
-        pass
+        print("\nNO MEMBERS WERE DETECTED")
 
     ##########################################
     # 4. PLOT
@@ -126,4 +126,4 @@ if __name__ == "__main__":
 
     # main(filename=saved_file_names[0], plot=True)
 
-    main(rob_num=2, plot=True)  # If you want to capture live data
+    main(rob_num=1, plot=True)  # If you want to capture live data

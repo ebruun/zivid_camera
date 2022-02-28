@@ -45,7 +45,7 @@ def plot_thresholding(plot_data):
 
         mngr = plt.get_current_fig_manager()
         mngr.set_window_title(name)
-        mngr.window.wm_geometry("+500+0")
+        mngr.window.wm_geometry("+50+0")
 
         for item in imgs.items():
             i = item[1]
@@ -59,10 +59,10 @@ def plot_thresholding(plot_data):
 
 def plot_feature_contours(plot_data):
 
-    _ = plt.figure(figsize=(16, 10))
+    _ = plt.figure(figsize=(13, 7))
     mngr = plt.get_current_fig_manager()
     mngr.set_window_title("Found Features")
-    mngr.window.wm_geometry("+900+50")
+    mngr.window.wm_geometry("+600+50")
 
     img, contours, contours_save, midpoint_save, hull, corners_rect, corners_saved, name = plot_data
 
@@ -153,7 +153,7 @@ def plot_frames(img_png, rectangles):
     _ = plt.figure(figsize=(16, 10))
     mngr = plt.get_current_fig_manager()
     mngr.set_window_title("Frames on Image")
-    mngr.window.wm_geometry("+50+50")
+    mngr.window.wm_geometry("+10+50")
 
     img_png = cv.cvtColor(img_png, cv.COLOR_BGR2RGB)
 
@@ -180,10 +180,10 @@ def plot_frames(img_png, rectangles):
 
 def plot_frames_undistort(img, frames, folder, input_file):
 
-    _ = plt.figure(figsize=(12, 6))
+    _ = plt.figure(figsize=(10, 5))
     mngr = plt.get_current_fig_manager()
     mngr.set_window_title("Frames and Undistortion")
-    mngr.window.wm_geometry("+1250+50")
+    mngr.window.wm_geometry("+1000+50")
 
     intrinsics_file_path = _create_file_path(folder, input_file).__str__()
     mtx, dist = build_cam_intrinsics(intrinsics_file_path)
