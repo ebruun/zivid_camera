@@ -7,7 +7,6 @@ from src_cam.camera.use import (
 from src_cam.camera.convert import (
     convert2depth,
     convert2png,
-    load_pointcloud,
 )
 
 from src_cam.processing.detect import find_features
@@ -16,7 +15,7 @@ from src_cam.processing.calc_frames import calc_frames
 
 from src_cam.utility.io import (
     create_dynamic_filename,
-    save_frames_as_matrix_yaml,
+    load_pointcloud,
 )
 from src_cam.utility.plots import (
     plot_thresholding,
@@ -25,6 +24,8 @@ from src_cam.utility.plots import (
     plot_frames_undistort,
     plot_frames,
 )
+
+from src.io import save_frames_as_matrix_yaml
 
 
 ################################
@@ -50,7 +51,7 @@ def main(rob_num=False, filename=False, plot=False):
     else:
         rob_num = int(filename.split("_")[0][1])
 
-        pc = load_pointcloud(
+        pc, _ = load_pointcloud(
             folder="saved_pc",
             input_file=filename + ".zdf",
         )
@@ -90,7 +91,7 @@ def main(rob_num=False, filename=False, plot=False):
         # Represents the pose of the member
         save_frames_as_matrix_yaml(
             frames,
-            folder="zerowaste_robot/transformations",
+            folder="../zerowaste_robot/transformations",
             output_file="R{}_H1_cam_obj.yaml".format(rob_num),
         )
     except ValueError:
@@ -116,14 +117,14 @@ def main(rob_num=False, filename=False, plot=False):
 
 if __name__ == "__main__":
 
-    # # If you want to run from saved data
-    # saved_file_names = {
-    #     0: "R1_save_single01",
-    #     1: "R1_save_single02",
-    #     2: "R1_save_triple01",
-    #     3: "R2_save_single01",
-    # }
+    # If you want to run from saved data
+    saved_file_names = {
+        0: "R1_save_single01",
+        1: "R1_save_single02",
+        2: "R1_save_triple01",
+        3: "R2_save_single01",
+    }
 
-    # main(filename=saved_file_names[0], plot=True)
+    main(filename=saved_file_names[0], plot=False)
 
-    main(rob_num=1, plot=True)  # If you want to capture live data
+    # main(rob_num=1, plot=True)  # If you want to capture live data

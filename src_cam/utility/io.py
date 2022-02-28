@@ -1,28 +1,24 @@
 # PYTHON IMPORTS
 import pathlib
-import numpy as np
-import cv2 as cv
+import zivid
 from datetime import datetime
 
-# COMPAS IMPORTS
-from compas.geometry import Transformation
 
+# def _create_file_path_robot(folder, filename):
+#     """create output data path.
 
-def _create_file_path_robot(folder, filename):
-    """create output data path.
+#     Returns:
+#         path: Output data path
 
-    Returns:
-        path: Output data path
+#     """
+#     path = pathlib.PurePath(
+#         pathlib.Path.cwd().parent,  # up to root folder
+#         folder,
+#         filename,
+#     )
 
-    """
-    path = pathlib.PurePath(
-        pathlib.Path.cwd().parent,  # up to root folder
-        folder,
-        filename,
-    )
-
-    # print("created path...", path)
-    return path
+#     # print("created path...", path)
+#     return path
 
 
 def _create_file_path(folder, filename):
@@ -51,18 +47,19 @@ def create_dynamic_filename(rob_num, n=00):
     return "R{}_".format(rob_num) + str2 + str(n)
 
 
-def save_frames_as_matrix_yaml(frames, folder, output_file):
-    file_path = _create_file_path_robot(folder, output_file).__str__()
-    s = cv.FileStorage(file_path, cv.FileStorage_WRITE)
+def load_pointcloud(folder, input_file):
+    print("\nREAD IN POINTCLOUD")
 
-    for i, f in enumerate(frames):
-        T = Transformation.from_frame(f)
-        PoseState = np.array(T)
-        s.write("PoseState{}".format(i), PoseState)
+    _ = zivid.Application()
+    data_file_in = _create_file_path(folder, input_file)  # ZDF file
 
-    s.release()
+    print(f"--Reading ZDF frame from file: {data_file_in}")
+    frame = zivid.Frame(data_file_in.__str__())
+    point_cloud = frame.point_cloud()
+
+    return point_cloud, frame
 
 
 if __name__ == "__main__":
-    _create_file_path_robot("zerowaste_robot/transformations", "H1_cam_obj2.yaml")
+    # _create_file_path_robot("zerowaste_robot/transformations", "H1_cam_obj2.yaml")
     _create_file_path("transformations", "H1_cam_obj2.yaml")

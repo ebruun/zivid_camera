@@ -1,12 +1,13 @@
 # PYTHON IMPORTS
 import numpy as np
 import cv2 as cv
-import zivid
-
-# ZIVID LOCAL IMPORTS
 
 # LOCAL IMPORTS
 from src_cam.utility.io import _create_file_path
+
+from src_cam.utility.io import (
+    load_pointcloud,
+)
 
 
 def _point_cloud_to_cv_z(point_cloud, points):
@@ -88,19 +89,6 @@ def convert2depth(pointcloud, folder, output_file, points=False):
     cv.imwrite(file_out_depth, z_color_map)
 
     return z_color_map
-
-
-def load_pointcloud(folder, input_file):
-    print("\nREAD IN POINTCLOUD")
-
-    _ = zivid.Application()
-    data_file_in = _create_file_path(folder, input_file).__str__()  # ZDF file
-
-    print(f"--Reading ZDF frame from file: {data_file_in}")
-    frame = zivid.Frame(data_file_in.__str__())
-    point_cloud = frame.point_cloud()
-
-    return point_cloud
 
 
 if __name__ == "__main__":
