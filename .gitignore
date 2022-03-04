@@ -1,6 +1,7 @@
 #PROJECT SPECIFIC ADDS
 # -----------
 /saved_output
+/data/*
 ! /ZividSampleData2/
 *.3dmbak
 # -----------

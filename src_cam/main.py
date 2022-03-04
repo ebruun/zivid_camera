@@ -125,6 +125,6 @@ if __name__ == "__main__":
         3: "R2_save_single01",
     }
 
-    main(filename=saved_file_names[0], plot=False)
+    main(filename=saved_file_names[0], plot=True)
 
     # main(rob_num=1, plot=True)  # If you want to capture live data
