@@ -126,4 +126,4 @@ if __name__ == "__main__":
     }
 
     # main(filename=saved_file_names[0], plot=True)
-    main(rob_num=2, plot=True)  # If you want to capture live data
+    main(rob_num=1, plot=True)  # If you want to capture live data
