@@ -46,7 +46,7 @@ def main(rob_num=False, filename=False, plot=False):
 
         camera_capture_and_save(camera, settings, folder="saved_pc", output_file=filename + ".zdf")
 
-        pc = load_pointcloud(folder="saved_pc", input_file=filename + ".zdf")
+        pc, _ = load_pointcloud(folder="saved_pc", input_file=filename + ".zdf")
 
     else:
         rob_num = int(filename.split("_")[0][1])
@@ -125,6 +125,5 @@ if __name__ == "__main__":
         3: "R2_save_single01",
     }
 
-    main(filename=saved_file_names[0], plot=True)
-
-    # main(rob_num=1, plot=True)  # If you want to capture live data
+    # main(filename=saved_file_names[0], plot=True)
+    main(rob_num=1, plot=True)  # If you want to capture live data
