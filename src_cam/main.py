@@ -44,11 +44,15 @@ def main(rob_num=False, filename=False, plot=False):
         )
         # settings = camera_capture_settings(camera) # For auto-capture
 
-        camera_capture_and_save(camera, settings, folder="saved_pc", output_file=filename + ".zdf")
+        pc, _ = camera_capture_and_save(
+            camera,
+            settings,
+            folder="saved_pc",
+            output_file=filename + ".zdf",
+            downsample_factor=1,
+        )
 
-        pc, _ = load_pointcloud(folder="saved_pc", input_file=filename + ".zdf")
-
-    else:
+    else:  # load from saved ZDF
         rob_num = int(filename.split("_")[0][1])
 
         pc, _ = load_pointcloud(
