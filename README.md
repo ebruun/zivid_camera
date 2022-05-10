@@ -1,10 +1,12 @@
 # zerowaste
 
-no builds export of zivid_261_rrc environment (so mac and windows work):
+no builds export of ziv261_cfab250 environment (so mac and windows work):
 
-`conda env export --no-builds --name zivid_261_rrc > environment.yml`
+`conda env export --no-builds --name ziv261_cfab250 > environment.yml`
 
 `conda env create`
+
+if you change the the conda environment, make sure to update the env name in .git/hooks/pre-commit file
 
 ## Zivid Code
 

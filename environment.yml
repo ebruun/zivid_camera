@@ -1,4 +1,4 @@
-name: zivid_261_rrc
+name: ziv261_cfab250
 channels:
   - conda-forge
   - defaults
@@ -16,9 +16,9 @@ dependencies:
   - certifi=2021.10.8
   - cffi=1.14.6
   - cgal-cpp=5.3
-  - compas=1.8.1
+  - compas=1.15.1
   - compas_cgal=0.1.2
-  - compas_fab=0.22.0
+  - compas_fab=0.25.0
   - compas_rrc=1.1.0
   - constantly=15.1.0
   - contextlib2=0.5.5
@@ -79,7 +79,7 @@ dependencies:
   - olefile=0.46
   - opencv=4.5.3
   - openjpeg=2.4.0
-  - openssl=1.1.1l
+  - openssl=1.1.1o
   - pillow=8.3.2
   - pip=21.2.4
   - planarity=3.0.0.5
@@ -211,5 +211,5 @@ dependencies:
     - websocket-client==1.3.1
     - widgetsnbextension==3.5.2
     - zivid==2.5.0.2.6.1
-prefix: C:\Users\Edvard\.conda\envs\zivid_261_rrc
+prefix: C:\Users\Edvard\.conda\envs\ziv261_cfab250
 
