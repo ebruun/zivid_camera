@@ -34,5 +34,10 @@
         "--line-length=100",
         "--experimental-string-processing"
     ],
+
+    //GITHUB
+    "files.exclude": {
+        "**/.git": false
+   }
     
 }
