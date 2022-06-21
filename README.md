@@ -12,6 +12,8 @@ if you change the the conda environment, make sure to update the env name in .gi
 
 version: *Working for SDK V2.6.1, as of April, 2022*
 
+About version 2.7 (need to update still): <https://blog.zivid.com/sdk-2.7-preserve-the-details-in-your-point-clouds?utm_campaign=software&utm_medium=email&_hsmi=217086722&_hsenc=p2ANqtz-_ICS7K6EMNJlBN-M5Ul41QWuTe80zmZiisC4dljNtvQbqMnPRfgvocFtiyan01y9MzoD19lY1DPjNzsUy1KsLA2aOfig&utm_content=217087514&utm_source=hs_email>
+
 note: when upgrading to SDK V2.7 need to update the capture settings .yml  from `Settings::Processing::Color::Experimental::ToneMapping::Enabled` to `Settings::Processing::Color::Experimental::Mode` as per <https://support.zivid.com/latest/reference-articles/settings/processing-settings/tone-mapping.html?hsLang=en>
 
 Zivid provides example code from the following repos:
