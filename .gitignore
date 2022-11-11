@@ -2,7 +2,8 @@
 # -----------
 /saved_output
 /data/*
-! /ZividSampleData2/
+/ZividSampleData/ZividGemEyeInHand.zdf
+/ZividSampleData/ZividGemEyeInHandInRobotBaseFrame.zdf
 *.3dmbak
 # -----------
 

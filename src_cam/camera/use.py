@@ -12,7 +12,6 @@ from sample_utils.display import display_pointcloud
 from src_cam.utility.io import _create_file_path
 from src_cam.utility.io import load_pointcloud
 from src_cam.camera.convert import convert2png
-#from src_cam.utility.display import display_pointcloud
 
 
 def _list_connected_cameras():
