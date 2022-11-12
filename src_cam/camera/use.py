@@ -67,7 +67,7 @@ def camera_capture_settings(camera, folder=False, input_file=False):
     return settings
 
 
-def pc_downsample(pc, downsample_factor=1, display=True):
+def pc_downsample(pc, downsample_factor=1, display=False):
     """
     downsample the pointcloud using Zivid API (happens on GPU, fast)
     """
@@ -98,9 +98,9 @@ def pc_downsample(pc, downsample_factor=1, display=True):
         display_pointcloud(xyz_donwsampled, rgba_downsampled[:, :, 0:3])
 
 
-def camera_capture_and_save(camera, settings, folder, output_file, downsample_factor=1):
+def camera_capture_and_save(camera, settings, folder, output_file, downsample_factor=1, display=False):
     with camera.capture(settings) as frame:
-        pc_downsample(frame.point_cloud(), downsample_factor)
+        pc_downsample(frame.point_cloud(), downsample_factor,display)
 
         pointcloud_file_path = _create_file_path(folder, output_file)
 

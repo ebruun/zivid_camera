@@ -15,6 +15,9 @@ import zivid
 
 from sample_utils.save_load_matrix import assert_affine_matrix_and_save
 
+# LOCAL IMPORTS
+from src_cam.utility.io import _create_file_path
+
 
 def _create_open3d_point_cloud(point_cloud: zivid.PointCloud) -> o3d.geometry.PointCloud:
     """Create a point cloud in Open3D format from NumPy array.
@@ -64,24 +67,20 @@ def _visualize_checkerboard_point_cloud_with_coordinate_system(
     visualizer.destroy_window()
 
 
-def checkboard_pose_calc(file_path_in, file_path_out):
+def checkboard_pose_calc(pointcloud,folder, output_file, display=False):
 
-    with zivid.Application():
-        file_path_in = Path() / file_path_in / "CalibrationBoardInCameraOrigin.zdf"
-        print(f"Reading ZDF frame from file: {file_path_in}")
-        frame = zivid.Frame(file_path_in)
-        point_cloud = frame.point_cloud()
+    transform_file_out = _create_file_path(folder, output_file)
 
-        print("Detecting checkerboard and estimating its pose in camera frame")
-        transform_camera_to_checkerboard = zivid.calibration.detect_feature_points(point_cloud).pose().to_matrix()
-        print(f"Camera pose in checkerboard frame:\n{transform_camera_to_checkerboard}")
+    print("Detecting checkerboard and estimating its pose in camera frame")
+    transform_camera_to_checkerboard = zivid.calibration.detect_feature_points(pointcloud).pose().to_matrix()
+    print(f"Camera pose in checkerboard frame:\n{transform_camera_to_checkerboard}")
 
-        transform_path_out = Path() / file_path_out / "CameraToCheckerboardTransform.yaml"
-        print(f"Saving detected checkerboard pose to YAML file: {transform_path_out}")
-        assert_affine_matrix_and_save(transform_camera_to_checkerboard, transform_path_out)
+    print(f"Saving detected checkerboard pose to YAML file: {transform_file_out}")
+    assert_affine_matrix_and_save(transform_camera_to_checkerboard, transform_file_out)
 
+    if display:
         print("Visualizing checkerboard with coordinate system")
-        checkerboard_point_cloud = _create_open3d_point_cloud(point_cloud)
+        checkerboard_point_cloud = _create_open3d_point_cloud(pointcloud)
         _visualize_checkerboard_point_cloud_with_coordinate_system(
             checkerboard_point_cloud, transform_camera_to_checkerboard
         )
