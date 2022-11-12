@@ -66,22 +66,22 @@ def _visualize_checkerboard_point_cloud_with_coordinate_system(
 
 def checkboard_pose_calc(file_path_in, file_path_out):
 
-    data_file = Path() / file_path_in / "CalibrationBoardInCameraOrigin.zdf"
-    print(f"Reading ZDF frame from file: {data_file}")
-    frame = zivid.Frame(data_file)
-    point_cloud = frame.point_cloud()
+    with zivid.Application():
+        file_path_in = Path() / file_path_in / "CalibrationBoardInCameraOrigin.zdf"
+        print(f"Reading ZDF frame from file: {file_path_in}")
+        frame = zivid.Frame(file_path_in)
+        point_cloud = frame.point_cloud()
 
-    print("Detecting checkerboard and estimating its pose in camera frame")
-    transform_camera_to_checkerboard = zivid.calibration.detect_feature_points(point_cloud).pose().to_matrix()
-    print(f"Camera pose in checkerboard frame:\n{transform_camera_to_checkerboard}")
+        print("Detecting checkerboard and estimating its pose in camera frame")
+        transform_camera_to_checkerboard = zivid.calibration.detect_feature_points(point_cloud).pose().to_matrix()
+        print(f"Camera pose in checkerboard frame:\n{transform_camera_to_checkerboard}")
 
-    transform_file_name = "CameraToCheckerboardTransform.yaml"
-    print(f"Saving detected checkerboard pose to YAML file: {transform_file_name}")
-    transform_file_path = file_path_out
-    assert_affine_matrix_and_save(transform_camera_to_checkerboard, transform_file_path)
+        transform_path_out = Path() / file_path_out / "CameraToCheckerboardTransform.yaml"
+        print(f"Saving detected checkerboard pose to YAML file: {transform_path_out}")
+        assert_affine_matrix_and_save(transform_camera_to_checkerboard, transform_path_out)
 
-    print("Visualizing checkerboard with coordinate system")
-    checkerboard_point_cloud = _create_open3d_point_cloud(point_cloud)
-    _visualize_checkerboard_point_cloud_with_coordinate_system(
-        checkerboard_point_cloud, transform_camera_to_checkerboard
-    )
+        print("Visualizing checkerboard with coordinate system")
+        checkerboard_point_cloud = _create_open3d_point_cloud(point_cloud)
+        _visualize_checkerboard_point_cloud_with_coordinate_system(
+            checkerboard_point_cloud, transform_camera_to_checkerboard
+        )

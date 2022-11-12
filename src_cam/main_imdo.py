@@ -38,7 +38,11 @@ settings = camera_capture_settings(
 )
 
 pc, _ = camera_capture_and_save(
-    camera, settings, folder="saved_pc", output_file="_delete" + ".zdf", downsample_factor=2,
+    camera,
+    settings,
+    folder="saved_pc",
+    output_file="_delete" + ".zdf",
+    downsample_factor=2,
 )
 
 _ = convert2png(
