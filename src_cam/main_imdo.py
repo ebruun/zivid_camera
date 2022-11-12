@@ -17,7 +17,7 @@ from src_cam.camera.use import (
     camera_connect,
     camera_capture_settings,
     camera_capture_and_save,
-    pc_downsample
+    pc_downsample,
 )
 
 from src_cam.processing.checker_calc import checkboard_pose_calc
@@ -38,40 +38,38 @@ def load_as_transformation_yaml(folder, input_file):
     return trans.as_matrix()
 
 
-
 def main_transform():
 
-    cam_nums = [1,2]
+    cam_nums = [1, 2]
 
     for i in range(1):
         for cam_num in cam_nums:
 
             trans = load_as_transformation_yaml(
                 folder="saved_output",
-                input_file="{:02d}_cam{}_trans.yml".format(i,cam_num),
+                input_file="{:02d}_cam{}_trans.yml".format(i, cam_num),
             )
 
             pc, frame = load_pointcloud(
-                folder="saved_output",
-                input_file="{:02d}_cam{}_3d.zdf".format(i,cam_num)
+                folder="saved_output", input_file="{:02d}_cam{}_3d.zdf".format(i, cam_num)
             )
 
             pc.transform(trans)
 
-            folder="saved_output"
-            output_file="{:02d}_cam{}_3d_TRNS.zdf".format(i,cam_num)
+            folder = "saved_output"
+            output_file = "{:02d}_cam{}_3d_TRNS.zdf".format(i, cam_num)
             pointcloud_file_path = _create_file_path(folder, output_file)
             frame.save(pointcloud_file_path)
 
-            folder="saved_output"
-            output_file="{:02d}_cam{}_3d_TRNS".format(i,cam_num)
+            folder = "saved_output"
+            output_file = "{:02d}_cam{}_3d_TRNS".format(i, cam_num)
             pointcloud_file_path = _create_file_path(folder, output_file)
-            _convert_2_ply(frame,pointcloud_file_path)
+            _convert_2_ply(frame, pointcloud_file_path)
 
 
 def main_capture():
     for i in range(1):
-        cam_nums = [1,2]
+        cam_nums = [1, 2]
 
         for cam_num in cam_nums:
 
@@ -81,8 +79,8 @@ def main_capture():
                 print("--camera connect error: camera already connected")
                 print("--camera connect error: or ZIVID studio is open (close it!)")
 
-            folder="saved_output"
-            output_file="{:02d}_cam{}_3d.zdf".format(i,cam_num)
+            folder = "saved_output"
+            output_file = "{:02d}_cam{}_3d.zdf".format(i, cam_num)
             pointcloud_file_path = _create_file_path(folder, output_file)
 
             settings = camera_capture_settings(
@@ -95,30 +93,31 @@ def main_capture():
 
                 pc = frame.point_cloud()
 
-                pc_downsample(pc, downsample_factor=4,display=False)
+                pc_downsample(pc, downsample_factor=4, display=False)
 
                 frame.save(pointcloud_file_path)
 
                 _ = convert2png(
                     pointcloud=pc,
                     folder="saved_output",
-                    output_file="{:02d}_cam{}_2d.png".format(i,cam_num),
+                    output_file="{:02d}_cam{}_2d.png".format(i, cam_num),
                 )
 
                 try:
                     checkboard_pose_calc(
-                        pointcloud =pc,
+                        pointcloud=pc,
                         folder="saved_output",
-                        output_file="{:02d}_cam{}_trans.yml".format(i,cam_num),
-                        display=True
-                        )
+                        output_file="{:02d}_cam{}_trans.yml".format(i, cam_num),
+                        display=True,
+                    )
                 except RuntimeError:
+
                     print("\n NO CHECKERBOARD SEEN!!!")
 
 
 if __name__ == "__main__":
 
-    #_list_connected_cameras()
+    # _list_connected_cameras()
     # main_capture()
 
     main_transform()
