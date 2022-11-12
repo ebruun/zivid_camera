@@ -1,5 +1,6 @@
 # PYTHON IMPORTS
-import datetime
+from pathlib import Path
+import os
 from time import process_time
 
 # ZIVID IMPORTS
@@ -18,12 +19,16 @@ from src_cam.camera.use import (
     camera_capture_and_save
 )
 
-
-
-_list_connected_cameras()
+from src_cam.processing.checker_calc import checkboard_pose_calc
 
 cam_num = 1
 
+file_path_in = os.path.join(Path(__file__).parent.parent, 'ZividSampleData')
+file_path_out = os.path.join(Path(__file__).parent.parent, 'saved_output')
+
+checkboard_pose_calc(file_path_in, file_path_out)
+
+_list_connected_cameras()
 camera = camera_connect(cam_num)
 
 settings = camera_capture_settings(

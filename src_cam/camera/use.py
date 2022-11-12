@@ -38,7 +38,7 @@ def camera_connect(rob_num):
         camera = app.connect_camera(camera_ids[rob_num])
         print("--Connection success")
     except RuntimeError:
-        virtual_camera_filepath = _create_file_path("ZividSampleData2", "FileCameraZividOne.zfc")
+        virtual_camera_filepath = _create_file_path("ZividSampleData", "FileCameraZividOne.zfc")
         camera = app.create_file_camera(virtual_camera_filepath)
         print(f"--Connection failure, using virtual camera: {virtual_camera_filepath}")
 

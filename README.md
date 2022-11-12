@@ -2,7 +2,7 @@
 
 no builds export of ziv261_cfab250 environment (so mac and windows work):
 
-`conda env export --no-builds --name ziv261_cfab250 > environment.yml`
+`conda env export --from-history --name zivid_tests> environment2.yml`
 
 `conda env create`
 

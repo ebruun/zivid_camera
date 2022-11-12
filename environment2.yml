@@ -1,0 +1,12 @@
+name: zivid_tests
+channels:
+  - r
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.8.10
+  - flake8
+  - opencv
+  - matplotlib
+  - yaml
+prefix: C:\Users\Bel\anaconda3\envs\zivid_tests
