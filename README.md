@@ -16,6 +16,8 @@ About version 2.7 (need to update still): <https://blog.zivid.com/sdk-2.7-preser
 
 note: when upgrading to SDK V2.7 need to update the capture settings .yml  from `Settings::Processing::Color::Experimental::ToneMapping::Enabled` to `Settings::Processing::Color::Experimental::Mode` as per <https://support.zivid.com/latest/reference-articles/settings/processing-settings/tone-mapping.html?hsLang=en>
 
+note: when upgrading 50 SKD V2.8.1, the zivid2 no longer works through USB. Works fine through ethernet, but then have to change the network settings from the robot control setup. Works if just using the camera, but how will it work with robot control?
+
 Zivid provides example code from the following repos:
 
 | Repo      | Folder |
