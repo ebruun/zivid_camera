@@ -1,7 +1,8 @@
 # PYTHON IMPORTS
-from pathlib import Path
-import os
+# from pathlib import Path
+# import os
 from time import process_time
+import keyboard
 
 # ZIVID IMPORTS
 import zivid
@@ -38,39 +39,62 @@ def load_as_transformation_yaml(folder, input_file):
     return trans.as_matrix()
 
 
-def main_transform():
+def main_transform(range):
 
     cam_nums = [1, 2]
+    output_folder = "saved_output"
 
-    for i in range(1):
+    file_names = {
+        "pntcloud": "{:02d}_cam{}_3d.zdf",
+        "pntcloud_trns_zdf": "{:02d}_cam{}_3d_TRNS.zdf",
+        "pntcloud_trns_ply": "{:02d}_cam{}_3d_TRNS",
+        "t_matrix": "{:02d}_cam{}_trans.yml",
+    }
+
+    for i in range:
+
         for cam_num in cam_nums:
 
             trans = load_as_transformation_yaml(
-                folder="saved_output",
-                input_file="{:02d}_cam{}_trans.yml".format(i, cam_num),
+                folder=output_folder,
+                input_file=file_names["t_matrix"].format(i, cam_num),
             )
 
             pc, frame = load_pointcloud(
-                folder="saved_output", input_file="{:02d}_cam{}_3d.zdf".format(i, cam_num)
+                folder=output_folder, input_file=file_names["pntcloud"].format(i, cam_num)
             )
 
             pc.transform(trans)
 
-            folder = "saved_output"
-            output_file = "{:02d}_cam{}_3d_TRNS.zdf".format(i, cam_num)
-            pointcloud_file_path = _create_file_path(folder, output_file)
+            pointcloud_file_path = _create_file_path(
+                output_folder, file_names["pntcloud_trns_zdf"].format(i, cam_num)
+            )
             frame.save(pointcloud_file_path)
 
-            folder = "saved_output"
-            output_file = "{:02d}_cam{}_3d_TRNS".format(i, cam_num)
-            pointcloud_file_path = _create_file_path(folder, output_file)
+            pointcloud_file_path = _create_file_path(
+                output_folder, file_names["pntcloud_trns_ply"].format(i, cam_num)
+            )
             _convert_2_ply(frame, pointcloud_file_path)
 
 
 def main_capture():
-    for i in range(1):
-        cam_nums = [1, 2]
 
+    idx = int(input("Please enter a an index to start at: "))
+
+    cam_nums = [1, 2]
+    output_folder = "saved_output"
+    settings_folder = "input_settings"
+
+    file_names = {
+        "pntcloud": "{:02d}_cam{}_3d.zdf",
+        "img": "{:02d}_cam{}_2d.png",
+        "t_matrix": "{:02d}_cam{}_trans.yml",
+    }
+
+    while idx < 200:
+        input("\nPress ENTER to start capture #{:02d}".format(idx))
+
+        t_start = process_time()
         for cam_num in cam_nums:
 
             try:
@@ -79,13 +103,9 @@ def main_capture():
                 print("--camera connect error: camera already connected")
                 print("--camera connect error: or ZIVID studio is open (close it!)")
 
-            folder = "saved_output"
-            output_file = "{:02d}_cam{}_3d.zdf".format(i, cam_num)
-            pointcloud_file_path = _create_file_path(folder, output_file)
-
             settings = camera_capture_settings(
                 camera,
-                folder="input_settings",
+                folder=settings_folder,
                 input_file="capture_settings_z{}.yml".format(cam_num),
             )
 
@@ -93,26 +113,36 @@ def main_capture():
 
                 pc = frame.point_cloud()
 
-                pc_downsample(pc, downsample_factor=4, display=False)
+                pc_downsample(pc, downsample_factor=1, display=False)
+
+                pointcloud_file_path = _create_file_path(
+                    output_folder, file_names["pntcloud"].format(idx, cam_num)
+                )
 
                 frame.save(pointcloud_file_path)
 
                 _ = convert2png(
                     pointcloud=pc,
-                    folder="saved_output",
-                    output_file="{:02d}_cam{}_2d.png".format(i, cam_num),
+                    folder=output_folder,
+                    output_file=file_names["img"].format(idx, cam_num),
                 )
 
                 try:
                     checkboard_pose_calc(
                         pointcloud=pc,
-                        folder="saved_output",
-                        output_file="{:02d}_cam{}_trans.yml".format(i, cam_num),
-                        display=True,
+                        folder=output_folder,
+                        output_file=file_names["t_matrix"].format(idx, cam_num),
+                        display=False,
                     )
                 except RuntimeError:
-
                     print("\n NO CHECKERBOARD SEEN!!!")
+
+        t_stop = process_time()
+        t_elapsed = t_stop - t_start
+
+        print("capture #{:02d} completed, elapsed time = {:.2f}s".format(idx, t_elapsed))
+
+        idx += 1
 
 
 if __name__ == "__main__":
@@ -120,4 +150,4 @@ if __name__ == "__main__":
     # _list_connected_cameras()
     # main_capture()
 
-    main_transform()
+    main_transform(range(0, 3))
