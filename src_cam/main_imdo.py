@@ -1,13 +1,5 @@
 # PYTHON IMPORTS
-# from pathlib import Path
-# import os
 from time import process_time
-import keyboard
-
-# ZIVID IMPORTS
-import zivid
-import zivid.capture_assistant as capture_assistant
-from zivid.capture_assistant import SuggestSettingsParameters as sgst_params
 
 # LOCAL IMPORTS
 from src_cam.utility.io import _create_file_path
@@ -17,7 +9,6 @@ from src_cam.camera.use import (
     _list_connected_cameras,
     camera_connect,
     camera_capture_settings,
-    camera_capture_and_save,
     pc_downsample,
 )
 
@@ -86,9 +77,10 @@ def main_capture():
     settings_folder = "input_settings"
 
     file_names = {
-        "pntcloud": "{:02d}_cam{}_3d.zdf",
-        "img": "{:02d}_cam{}_2d.png",
-        "t_matrix": "{:02d}_cam{}_trans.yml",
+        "pntcloud": "{:02d}_ziv{}_3d.zdf",
+        "pntcloud_reduced": "{:02d}_ziv{}_3d_reduced .zdf",
+        "img": "{:02d}_ziv{}_2d.png",
+        "t_matrix": "{:02d}_ziv{}_trans.yml",
     }
 
     while idx < 200:
@@ -106,20 +98,25 @@ def main_capture():
             settings = camera_capture_settings(
                 camera,
                 folder=settings_folder,
-                input_file="capture_settings_z{}.yml".format(cam_num),
+                # input_file="capture_settings_z{}.yml".format(cam_num),
+            )
+
+            pointcloud_file_path1 = _create_file_path(
+                output_folder, file_names["pntcloud"].format(idx, cam_num)
+            )
+
+            pointcloud_file_path2 = _create_file_path(
+                output_folder, file_names["pntcloud_reduced"].format(idx, cam_num)
             )
 
             with camera.capture(settings) as frame:
 
+                frame.save(pointcloud_file_path1)
+
                 pc = frame.point_cloud()
 
-                pc_downsample(pc, downsample_factor=1, display=False)
-
-                pointcloud_file_path = _create_file_path(
-                    output_folder, file_names["pntcloud"].format(idx, cam_num)
-                )
-
-                frame.save(pointcloud_file_path)
+                pc_downsample(pc, downsample_factor=4, display=False)
+                frame.save(pointcloud_file_path2)
 
                 _ = convert2png(
                     pointcloud=pc,
@@ -135,19 +132,18 @@ def main_capture():
                         display=False,
                     )
                 except RuntimeError:
-                    print("\n NO CHECKERBOARD SEEN!!!")
+                    print("\nNO CHECKERBOARD SEEN!!!")
 
         t_stop = process_time()
         t_elapsed = t_stop - t_start
 
-        print("capture #{:02d} completed, elapsed time = {:.2f}s".format(idx, t_elapsed))
+        print("\ncapture #{:02d} completed, elapsed time = {:.2f}s".format(idx, t_elapsed))
 
         idx += 1
 
 
 if __name__ == "__main__":
 
-    # _list_connected_cameras()
+    _list_connected_cameras()
     # main_capture()
-
-    main_transform(range(0, 3))
+    # main_transform(range(0, 6))
