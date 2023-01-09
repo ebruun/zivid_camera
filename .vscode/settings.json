@@ -1,6 +1,6 @@
 {
     //PYTHON
-    "python.pythonPath": "C:\\Users\\Bel\\anaconda3\\envs\\ziv281_cfab270\\python.exe",
+    "python.pythonPath": "C:\\Users\\Edvard\\.conda\\envs\\ziv281_cfab270\\python.exe",
     "python.terminal.activateEnvironment": true,
     "python.envFile": "${workspaceFolder}/.vscode/.env",
 
@@ -38,6 +38,6 @@
     //GITHUB
     "files.exclude": {
         "**/.git": false
-   }
+},
 
 }

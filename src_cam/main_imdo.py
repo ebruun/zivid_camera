@@ -2,9 +2,17 @@
 from time import process_time
 
 # LOCAL IMPORTS
-from src_cam.utility.io import _create_file_path
-from src_cam.utility.io import load_pointcloud
-from src_cam.camera.convert import convert2png
+from src_cam.utility.io import (
+    _create_file_path,
+    load_pointcloud,
+    load_as_transformation_yaml
+)
+
+from src_cam.camera.convert import (
+    convert2png,
+    convert2ply
+)
+
 from src_cam.camera.use import (
     _list_connected_cameras,
     camera_connect,
@@ -13,33 +21,20 @@ from src_cam.camera.use import (
 )
 
 from src_cam.processing.checker_calc import checkboard_pose_calc
-from sample_utils.save_load_matrix import load_and_assert_affine_matrix
-from sample_utils.transformation_matrix import TransformationMatrix
-from applications.basic.file_formats.convert_zdf import _convert_2_ply
 
 
-def load_as_transformation_yaml(folder, input_file):
-    file_name = _create_file_path(folder, input_file)
-
-    matrix = load_and_assert_affine_matrix(file_name)
-
-    trans = TransformationMatrix.from_matrix(matrix)
-
-    trans = trans.inverse()
-
-    return trans.as_matrix()
 
 
-def main_transform(range):
+def main_transform(range, output_folder):
 
     cam_nums = [1, 2]
-    output_folder = "saved_output"
+    
 
     file_names = {
-        "pntcloud": "{:02d}_cam{}_3d.zdf",
-        "pntcloud_trns_zdf": "{:02d}_cam{}_3d_TRNS.zdf",
-        "pntcloud_trns_ply": "{:02d}_cam{}_3d_TRNS",
-        "t_matrix": "{:02d}_cam{}_trans.yml",
+        "pntcloud": "{:02d}_ziv{}_3d.zdf",
+        "pntcloud_trns_zdf": "{:02d}_ziv{}_3d_TRNS.zdf",
+        "pntcloud_trns_ply": "{:02d}_ziv{}_3d_TRNS",
+        "t_matrix": "{:02d}_ziv{}_trans.yml",
     }
 
     for i in range:
@@ -65,7 +60,8 @@ def main_transform(range):
             pointcloud_file_path = _create_file_path(
                 output_folder, file_names["pntcloud_trns_ply"].format(i, cam_num)
             )
-            _convert_2_ply(frame, pointcloud_file_path)
+
+            convert2ply(frame, pointcloud_file_path)
 
 
 def main_capture():
@@ -144,6 +140,9 @@ def main_capture():
 
 if __name__ == "__main__":
 
-    _list_connected_cameras()
+    # _list_connected_cameras()
     # main_capture()
-    # main_transform(range(0, 6))
+
+    folder_data = "saved_output_raw/spec_N3_3"
+
+    main_transform(range(0, 1),output_folder=folder_data)
