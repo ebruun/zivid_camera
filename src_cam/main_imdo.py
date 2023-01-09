@@ -3,16 +3,9 @@ from time import process_time
 import open3d as o3d
 
 # LOCAL IMPORTS
-from src_cam.utility.io import (
-    _create_file_path,
-    load_pointcloud,
-    load_as_transformation_yaml
-)
+from src_cam.utility.io import _create_file_path, load_pointcloud, load_as_transformation_yaml
 
-from src_cam.camera.convert import (
-    convert2png,
-    convert2ply
-)
+from src_cam.camera.convert import convert2png, convert2ply
 
 from src_cam.camera.use import (
     _list_connected_cameras,
@@ -26,16 +19,14 @@ from src_cam.processing.pcd_processing import pcd_stitch_individual_rob
 from src_cam.processing.checker_calc import checkboard_pose_calc
 
 
-
-def main_process(pcd_range, output_folder):
+def main_process(pcd_range, test_name):
 
     cam_nums = [1, 2]
 
     folder_names = {
-         "input_data": "saved_output_raw/{}}",
-         "output_data": "saved_output_processed/{}}",
+        "input_data": "saved_output_raw/{}}",
+        "output_data": "saved_output_processed/{}}",
     }
-
 
     file_names = {
         "pntcloud": "{:02d}_ziv{}_3d.zdf",
@@ -44,24 +35,21 @@ def main_process(pcd_range, output_folder):
         "t_matrix": "{:02d}_ziv{}_trans.yml",
     }
 
-
     for i in pcd_range:
 
-        point_data = []
-        color_data = []
+        # point_data = []
+        # color_data = []
 
         for cam_num in cam_nums:
 
-            pcd = o3d.io.read_point_cloud(
+            _ = o3d.io.read_point_cloud(
                 _create_file_path(
-                    folder=folders[2].format(cam_num),
-                    filename=file_names["pntcloud_trns_ply"].format(i, cam_num)
+                    folder=folder_names["input_data"].format(test_name),
+                    filename=file_names["pntcloud_trns_ply"].format(i, cam_num),
                 ).__str__()
             )
 
         pcd_stitch_individual_rob(pcd_range)
-
-
 
 
 def main_transform(range, test_name):
@@ -69,10 +57,10 @@ def main_transform(range, test_name):
     cam_nums = [1, 2]
 
     folder_names = {
-         "input_data": "saved_output_raw/{}",
-         "output_data": "saved_output_processed/{}",
+        "input_data": "saved_output_raw/{}",
+        "output_data": "saved_output_processed/{}",
     }
-    
+
     file_names = {
         "pntcloud": "{:02d}_ziv{}_3d.zdf",
         "pntcloud_trns_zdf": "{:02d}_ziv{}_3d_TRNS.zdf",
@@ -91,20 +79,20 @@ def main_transform(range, test_name):
 
             pc, frame = load_pointcloud(
                 folder=folder_names["input_data"].format(test_name),
-                input_file=file_names["pntcloud"].format(i, cam_num)
+                input_file=file_names["pntcloud"].format(i, cam_num),
             )
 
             pc.transform(trans)
 
             pointcloud_file_path = _create_file_path(
                 folder=folder_names["input_data"].format(test_name),
-                filename = file_names["pntcloud_trns_zdf"].format(i, cam_num)
+                filename=file_names["pntcloud_trns_zdf"].format(i, cam_num),
             )
             frame.save(pointcloud_file_path)
 
             pointcloud_file_path = _create_file_path(
                 folder=folder_names["input_data"].format(test_name),
-                filename=file_names["pntcloud_trns_ply"].format(i, cam_num)
+                filename=file_names["pntcloud_trns_ply"].format(i, cam_num),
             )
             convert2ply(frame, pointcloud_file_path)
 
@@ -191,4 +179,4 @@ if __name__ == "__main__":
     test_name = "spec_N3_3"
 
     # main_transform(range(0, 1)test_name)
-    main_process(range(0, 1),test_name)
+    main_process(range(0, 1), test_name)

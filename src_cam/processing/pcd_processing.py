@@ -4,12 +4,10 @@ import numpy as np
 
 
 # LOCAL IMPORTS
-from src_cam.utility.io  import (
+from src_cam.utility.io import (
     _create_file_path,
     load_o3d_view_settings,
 )
-
-
 
 
 def _visualize_pcd(pcd, folder, filename):
@@ -30,21 +28,21 @@ def _visualize_pcd(pcd, folder, filename):
     )
 
 
-def pcd_stitch_individual_rob(rob_nums, pc_range, folders, filenames, pcd_vars, vis_on=False):
+def pcd_stitch_individual_rob(pcd_range, folders, filenames, pcd_vars, vis_on=False):
     """
     combine pointclouds from all captures with a single robot
     """
 
     print("START POINTCLOUD STITCH\n")
-    for i in pc_range:
-    
+    for i in pcd_range:
+
         point_data = []
         color_data = []
 
-        for rob_num in rob_nums:
+        for cam_num in [1, 2]:
             pcd = o3d.io.read_point_cloud(
                 _create_file_path(
-                    folder=folders[2].format(rob_num), filename=filenames[1].format(i)
+                    folder=folders[2].format(cam_num), filename=filenames[1].format(i)
                 ).__str__()
             )
 
@@ -76,13 +74,13 @@ def pcd_stitch_individual_rob(rob_nums, pc_range, folders, filenames, pcd_vars, 
         if vis_on:
             _visualize_pcd(
                 pcd_combined,
-                folders[2].format(rob_num),
-                filenames[6].format(rob_num),
+                folders[2].format(cam_num),
+                filenames[6].format(cam_num),
             )
 
         o3d.io.write_point_cloud(
             _create_file_path(
-                folder=folders[2].format(rob_num), filename=filenames[5].format(rob_num)
+                folder=folders[2].format(cam_num), filename=filenames[5].format(cam_num)
             ).__str__(),
             pcd_combined,
         )
