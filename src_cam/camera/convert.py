@@ -90,16 +90,16 @@ def convert2depth(pointcloud, folder, output_file, points=False):
     return z_color_map
 
 
-def convert2ply(frame, file_name):
-    """Convert from frame to PLY.
+# def convert2ply(frame, file_name):
+#     """Convert from frame to PLY.
 
-    Args:
-        frame: A frame captured by a Zivid camera
-        file_name: File name without extension
+#     Args:
+#         frame: A frame captured by a Zivid camera
+#         file_name: File name without extension
 
-    """
-    print(f"Saving the frame to {file_name}.ply")
-    frame.save(f"{file_name}.ply")
+#     """
+#     print(f"Saving the frame to {file_name}")
+#     frame.save(f"{file_name}")
 
 
 if __name__ == "__main__":

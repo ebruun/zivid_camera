@@ -1,11 +1,10 @@
 # PYTHON IMPORTS
 from time import process_time
-import open3d as o3d
 
 # LOCAL IMPORTS
-from src_cam.utility.io import _create_file_path, load_pointcloud, load_as_transformation_yaml
+from src_cam.utility.io import _create_file_path
 
-from src_cam.camera.convert import convert2png, convert2ply
+from src_cam.camera.convert import convert2png
 
 from src_cam.camera.use import (
     _list_connected_cameras,
@@ -14,47 +13,41 @@ from src_cam.camera.use import (
     pc_downsample,
 )
 
-from src_cam.processing.pcd_processing import pcd_stitch_individual_rob
+from src_cam.processing.pcd_processing import pcd_stitch_and_crop, pcd_transform_and_save
 
 from src_cam.processing.checker_calc import checkboard_pose_calc
 
 
-def main_process(pcd_range, test_name):
-
-    cam_nums = [1, 2]
+def main_process(pcd_range, test_name, vis_on=False):
 
     folder_names = {
-        "input_data": "saved_output_raw/{}}",
-        "output_data": "saved_output_processed/{}}",
+        "input_data": "saved_output_raw/{}",
+        "input_settings": "input_settings",
+        "output_data": "saved_output_processed/{}",
     }
 
     file_names = {
         "pntcloud": "{:02d}_ziv{}_3d.zdf",
         "pntcloud_trns_zdf": "{:02d}_ziv{}_3d_TRNS.zdf",
-        "pntcloud_trns_ply": "{:02d}_ziv{}_3d_TRNS",
+        "pntcloud_trns_ply": "{:02d}_ziv{}_3d_TRNS.ply",
+        "pntcloud_processed_ply": "{}_step{:02d}_3d_PROCESSED.ply",
         "t_matrix": "{:02d}_ziv{}_trans.yml",
+        "o3d_view": "o3d_view_settings.json",
     }
 
-    for i in pcd_range:
+    pcd_stitch_and_crop(pcd_range, test_name, folder_names, file_names, vis_on)
 
-        # point_data = []
-        # color_data = []
+    # pcd = o3d.io.read_point_cloud(
+    #     _create_file_path(
+    #         folder=folder_names["output_data"].format(test_name),
+    #         filename=file_names["pntcloud_processed_ply"].format(test_name, 10),
+    #     ).__str__()
+    # )
 
-        for cam_num in cam_nums:
-
-            _ = o3d.io.read_point_cloud(
-                _create_file_path(
-                    folder=folder_names["input_data"].format(test_name),
-                    filename=file_names["pntcloud_trns_ply"].format(i, cam_num),
-                ).__str__()
-            )
-
-        pcd_stitch_individual_rob(pcd_range)
+    # o3d.visualization.draw_geometries([pcd])
 
 
-def main_transform(range, test_name):
-
-    cam_nums = [1, 2]
+def main_transform(pcd_range, test_name):
 
     folder_names = {
         "input_data": "saved_output_raw/{}",
@@ -64,37 +57,11 @@ def main_transform(range, test_name):
     file_names = {
         "pntcloud": "{:02d}_ziv{}_3d.zdf",
         "pntcloud_trns_zdf": "{:02d}_ziv{}_3d_TRNS.zdf",
-        "pntcloud_trns_ply": "{:02d}_ziv{}_3d_TRNS",
+        "pntcloud_trns_ply": "{:02d}_ziv{}_3d_TRNS.ply",
         "t_matrix": "{:02d}_ziv{}_trans.yml",
     }
 
-    for i in range:
-
-        for cam_num in cam_nums:
-
-            trans = load_as_transformation_yaml(
-                folder=folder_names["input_data"].format(test_name),
-                input_file=file_names["t_matrix"].format(i, cam_num),
-            )
-
-            pc, frame = load_pointcloud(
-                folder=folder_names["input_data"].format(test_name),
-                input_file=file_names["pntcloud"].format(i, cam_num),
-            )
-
-            pc.transform(trans)
-
-            pointcloud_file_path = _create_file_path(
-                folder=folder_names["input_data"].format(test_name),
-                filename=file_names["pntcloud_trns_zdf"].format(i, cam_num),
-            )
-            frame.save(pointcloud_file_path)
-
-            pointcloud_file_path = _create_file_path(
-                folder=folder_names["input_data"].format(test_name),
-                filename=file_names["pntcloud_trns_ply"].format(i, cam_num),
-            )
-            convert2ply(frame, pointcloud_file_path)
+    pcd_transform_and_save(pcd_range, test_name, folder_names, file_names)
 
 
 def main_capture():
@@ -176,7 +143,7 @@ if __name__ == "__main__":
     # _list_connected_cameras()
     # main_capture()
 
-    test_name = "spec_N3_3"
+    test_name = "spec_N6_3"
 
-    # main_transform(range(0, 1)test_name)
-    main_process(range(0, 1), test_name)
+    main_transform(range(0, 1), test_name)
+    # main_process(range(0, 40), test_name, vis_on=False)
