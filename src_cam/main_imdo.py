@@ -1,5 +1,6 @@
 # PYTHON IMPORTS
 from time import process_time
+import open3d as o3d
 
 # LOCAL IMPORTS
 from src_cam.utility.io import (
@@ -20,16 +21,58 @@ from src_cam.camera.use import (
     pc_downsample,
 )
 
+from src_cam.processing.pcd_processing import pcd_stitch_individual_rob
+
 from src_cam.processing.checker_calc import checkboard_pose_calc
 
 
 
-
-def main_transform(range, output_folder):
+def main_process(pcd_range, output_folder):
 
     cam_nums = [1, 2]
-    
 
+    folder_names = {
+         "input_data": "saved_output_raw/{}}",
+         "output_data": "saved_output_processed/{}}",
+    }
+
+
+    file_names = {
+        "pntcloud": "{:02d}_ziv{}_3d.zdf",
+        "pntcloud_trns_zdf": "{:02d}_ziv{}_3d_TRNS.zdf",
+        "pntcloud_trns_ply": "{:02d}_ziv{}_3d_TRNS",
+        "t_matrix": "{:02d}_ziv{}_trans.yml",
+    }
+
+
+    for i in pcd_range:
+
+        point_data = []
+        color_data = []
+
+        for cam_num in cam_nums:
+
+            pcd = o3d.io.read_point_cloud(
+                _create_file_path(
+                    folder=folders[2].format(cam_num),
+                    filename=file_names["pntcloud_trns_ply"].format(i, cam_num)
+                ).__str__()
+            )
+
+        pcd_stitch_individual_rob(pcd_range)
+
+
+
+
+def main_transform(range, test_name):
+
+    cam_nums = [1, 2]
+
+    folder_names = {
+         "input_data": "saved_output_raw/{}",
+         "output_data": "saved_output_processed/{}",
+    }
+    
     file_names = {
         "pntcloud": "{:02d}_ziv{}_3d.zdf",
         "pntcloud_trns_zdf": "{:02d}_ziv{}_3d_TRNS.zdf",
@@ -42,25 +85,27 @@ def main_transform(range, output_folder):
         for cam_num in cam_nums:
 
             trans = load_as_transformation_yaml(
-                folder=output_folder,
+                folder=folder_names["input_data"].format(test_name),
                 input_file=file_names["t_matrix"].format(i, cam_num),
             )
 
             pc, frame = load_pointcloud(
-                folder=output_folder, input_file=file_names["pntcloud"].format(i, cam_num)
+                folder=folder_names["input_data"].format(test_name),
+                input_file=file_names["pntcloud"].format(i, cam_num)
             )
 
             pc.transform(trans)
 
             pointcloud_file_path = _create_file_path(
-                output_folder, file_names["pntcloud_trns_zdf"].format(i, cam_num)
+                folder=folder_names["input_data"].format(test_name),
+                filename = file_names["pntcloud_trns_zdf"].format(i, cam_num)
             )
             frame.save(pointcloud_file_path)
 
             pointcloud_file_path = _create_file_path(
-                output_folder, file_names["pntcloud_trns_ply"].format(i, cam_num)
+                folder=folder_names["input_data"].format(test_name),
+                filename=file_names["pntcloud_trns_ply"].format(i, cam_num)
             )
-
             convert2ply(frame, pointcloud_file_path)
 
 
@@ -74,7 +119,7 @@ def main_capture():
 
     file_names = {
         "pntcloud": "{:02d}_ziv{}_3d.zdf",
-        "pntcloud_reduced": "{:02d}_ziv{}_3d_reduced .zdf",
+        "pntcloud_reduced": "{:02d}_ziv{}_3d_reduced.zdf",
         "img": "{:02d}_ziv{}_2d.png",
         "t_matrix": "{:02d}_ziv{}_trans.yml",
     }
@@ -143,6 +188,7 @@ if __name__ == "__main__":
     # _list_connected_cameras()
     # main_capture()
 
-    folder_data = "saved_output_raw/spec_N3_3"
+    test_name = "spec_N3_3"
 
-    main_transform(range(0, 1),output_folder=folder_data)
+    # main_transform(range(0, 1)test_name)
+    main_process(range(0, 1),test_name)

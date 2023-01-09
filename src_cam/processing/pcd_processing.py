@@ -36,11 +36,12 @@ def pcd_stitch_individual_rob(rob_nums, pc_range, folders, filenames, pcd_vars, 
     """
 
     print("START POINTCLOUD STITCH\n")
-    for rob_num in rob_nums:
+    for i in pc_range:
+    
         point_data = []
         color_data = []
 
-        for i in pc_range:
+        for rob_num in rob_nums:
             pcd = o3d.io.read_point_cloud(
                 _create_file_path(
                     folder=folders[2].format(rob_num), filename=filenames[1].format(i)
