@@ -16,5 +16,5 @@ dependencies:
   - pip==22.3.1
   - pip:
     - zivid==2.7.0.2.8.1
-    - open3d==0.16.0
+    - open3d==0.16.1
 prefix: C:\Users\Bel\anaconda3\envs\ziv281_cfab270

@@ -13,54 +13,24 @@ from src_cam.camera.use import (
     pc_downsample,
 )
 
-from src_cam.processing.pcd_processing import pcd_stitch_and_crop, pcd_transform_and_save
+from src_cam.processing.pcd_processing import (
+    pcd_transform_and_save,
+    pcd_stitch_and_crop,
+    pcd_segment,
+)
 
 from src_cam.processing.checker_calc import checkboard_pose_calc
 
 
-def main_process(pcd_range, test_name, vis_on=False):
+def main_process2(pcd_range, test_name, folder_names, file_names, vis_on=False):
+    pcd_segment(pcd_range, test_name, folder_names, file_names, vis_on)
 
-    folder_names = {
-        "input_data": "saved_output_raw/{}",
-        "input_settings": "input_settings",
-        "output_data": "saved_output_processed/{}",
-    }
 
-    file_names = {
-        "pntcloud": "{:02d}_ziv{}_3d.zdf",
-        "pntcloud_trns_zdf": "{:02d}_ziv{}_3d_TRNS.zdf",
-        "pntcloud_trns_ply": "{:02d}_ziv{}_3d_TRNS.ply",
-        "pntcloud_processed_ply": "{}_step{:02d}_3d_PROCESSED.ply",
-        "t_matrix": "{:02d}_ziv{}_trans.yml",
-        "o3d_view": "o3d_view_settings.json",
-    }
-
+def main_process1(pcd_range, test_name, folder_names, file_names, vis_on=False):
     pcd_stitch_and_crop(pcd_range, test_name, folder_names, file_names, vis_on)
 
-    # pcd = o3d.io.read_point_cloud(
-    #     _create_file_path(
-    #         folder=folder_names["output_data"].format(test_name),
-    #         filename=file_names["pntcloud_processed_ply"].format(test_name, 10),
-    #     ).__str__()
-    # )
 
-    # o3d.visualization.draw_geometries([pcd])
-
-
-def main_transform(pcd_range, test_name):
-
-    folder_names = {
-        "input_data": "saved_output_raw/{}",
-        "output_data": "saved_output_processed/{}",
-    }
-
-    file_names = {
-        "pntcloud": "{:02d}_ziv{}_3d.zdf",
-        "pntcloud_trns_zdf": "{:02d}_ziv{}_3d_TRNS.zdf",
-        "pntcloud_trns_ply": "{:02d}_ziv{}_3d_TRNS.ply",
-        "t_matrix": "{:02d}_ziv{}_trans.yml",
-    }
-
+def main_transform(pcd_range, test_name, folder_names, file_names):
     pcd_transform_and_save(pcd_range, test_name, folder_names, file_names)
 
 
@@ -140,10 +110,27 @@ def main_capture():
 
 if __name__ == "__main__":
 
-    # _list_connected_cameras()
-    # main_capture()
+    folder_names = {
+        "input_data": "saved_output_raw/{}",
+        "input_settings": "input_settings",
+        "output_data": "saved_output_processed/{}",
+        "output_data2": "saved_output_processed2/{}",
+    }
+
+    file_names = {
+        "pntcloud": "{:02d}_ziv{}_3d.zdf",
+        "pntcloud_trns_zdf": "{:02d}_ziv{}_3d_TRNS.zdf",
+        "pntcloud_trns_ply": "{:02d}_ziv{}_3d_TRNS.ply",
+        "pntcloud_processed_ply": "{}_step{:02d}_3d_PROCESSED.ply",
+        "t_matrix": "{:02d}_ziv{}_trans.yml",
+        "o3d_view": "o3d_view_settings.json",
+    }
 
     test_name = "spec_N6_3"
 
-    main_transform(range(0, 1), test_name)
-    # main_process(range(0, 40), test_name, vis_on=False)
+    # _list_connected_cameras()
+    # main_capture()
+
+    # main_transform(range(0, 1), test_name, folder_names, file_names)
+    # main_process1(range(0, 29), test_name, folder_names, file_names, vis_on=True)
+    main_process2(range(7, 8), test_name, folder_names, file_names, vis_on=True)
