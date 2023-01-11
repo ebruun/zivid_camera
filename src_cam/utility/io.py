@@ -6,26 +6,10 @@ from datetime import datetime
 from compas_fab.utilities import read_data_from_json
 
 # ZIVID IMPORTS
-import zivid
-from sample_utils.save_load_matrix import load_and_assert_affine_matrix
-from sample_utils.transformation_matrix import TransformationMatrix
+# import zivid
+# from sample_utils.save_load_matrix import load_and_assert_affine_matrix
+# from sample_utils.transformation_matrix import TransformationMatrix
 
-
-# def _create_file_path_robot(folder, filename):
-#     """create output data path.
-
-#     Returns:
-#         path: Output data path
-
-#     """
-#     path = pathlib.PurePath(
-#         pathlib.Path.cwd().parent,  # up to root folder
-#         folder,
-#         filename,
-#     )
-
-#     # print("created path...", path)
-#     return path
 
 
 def _create_file_path(folder, filename):

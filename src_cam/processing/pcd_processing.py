@@ -11,6 +11,8 @@ from src_cam.utility.io import (
     load_as_transformation_yaml,
 )
 
+def test():
+    print("import working")
 
 def _visualize_pcd(viz_item_list, folder, filename):
     vis_settings = load_o3d_view_settings(folder, filename)
