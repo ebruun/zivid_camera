@@ -1,15 +1,15 @@
 # PYTHON IMPORTS
 import pathlib
+import open3d as o3d
 from datetime import datetime
 
 # COMPAS IMPORTS
 from compas_fab.utilities import read_data_from_json
 
 # ZIVID IMPORTS
-# import zivid
-# from sample_utils.save_load_matrix import load_and_assert_affine_matrix
-# from sample_utils.transformation_matrix import TransformationMatrix
-
+import zivid
+from sample_utils.save_load_matrix import load_and_assert_affine_matrix
+from sample_utils.transformation_matrix import TransformationMatrix
 
 
 def _create_file_path(folder, filename):
@@ -61,6 +61,28 @@ def load_pointcloud(folder, input_file):
     point_cloud = frame.point_cloud()
 
     return point_cloud, frame
+
+
+def load_pointcloud_ply(folder, filename):
+
+    pcd = o3d.io.read_point_cloud(
+        _create_file_path(
+            folder=folder,
+            filename=filename,
+        ).__str__()
+    )
+    return pcd
+
+
+def save_pointcloud_ply(pcd, folder, filename):
+
+    o3d.io.write_point_cloud(
+        _create_file_path(
+            folder=folder,
+            filename=filename,
+        ).__str__(),
+        pcd,
+    )
 
 
 def load_o3d_view_settings(folder, name):

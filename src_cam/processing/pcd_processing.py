@@ -6,195 +6,103 @@ import numpy as np
 # LOCAL IMPORTS
 from src_cam.utility.io import (
     _create_file_path,
-    load_o3d_view_settings,
     load_pointcloud,
+    load_pointcloud_ply,
     load_as_transformation_yaml,
+    save_pointcloud_ply,
 )
 
-def test():
-    print("import working")
+from src_cam.utility.display import (
+    visualize_pcd,
+    visualize_pcd_interactive,
+)
 
-def _visualize_pcd(viz_item_list, folder, filename):
-    vis_settings = load_o3d_view_settings(folder, filename)
 
-    # pcd.estimate_normals()
+def _combine_pcd(i, test_name, folder_names, file_names, scale=1):
+    """combine and scale two pointclouds as ply files"""
+    point_data = []
+    color_data = []
 
-    o3d.visualization.draw_geometries(
-        viz_item_list,
-        left=10,
-        top=50,
-        width=1600,
-        height=900,
-        zoom=vis_settings["zoom"],
-        front=vis_settings["front"],
-        lookat=vis_settings["lookat"],
-        up=vis_settings["up"],
+    for cam_num in [1, 2]:
+
+        pcd = load_pointcloud_ply(
+            folder_names["input_data"].format(test_name),
+            file_names["pntcloud_trns_ply"].format(i, cam_num),
+        )
+
+        point_data.append(np.asarray(pcd.points))
+        color_data.append(np.asarray(pcd.colors))
+
+    points_combined = np.concatenate(point_data, axis=0)
+    colors_combined = np.concatenate(color_data, axis=0)
+
+    # Scale from mm --> m (if 1000)
+    points_combined = points_combined * scale
+
+    pcd_combined = o3d.geometry.PointCloud()
+    pcd_combined.points = o3d.utility.Vector3dVector(points_combined)
+    pcd_combined.colors = o3d.utility.Vector3dVector(colors_combined)
+
+    return pcd_combined
+
+
+def _rotate_pcd(pcd):
+    """rotate full pointcloud so that +z is aligned with "up" in real world"""
+    R = pcd.get_rotation_matrix_from_xyz((np.pi, 0, 0))
+    pcd_rotated = pcd.rotate(R, center=(0, 0, 0))
+
+    return pcd_rotated
+
+
+def _crop_pcd(pcd, i):
+    """crop pointcloud based on this specified box, make this generic one day"""
+
+    box_corners = np.array(
+        [
+            [-0.005, -0.028, 0.229],
+            [-0.005, -0.028, 0.235 + 0.003 * i],
+            [-0.005, 0.175, 0.229],
+            [-0.005, 0.175, 0.235 + 0.003 * i],
+            [0.24, -0.028, 0.229],
+            [0.24, -0.028, 0.235 + 0.003 * i],
+            [0.24, 0.175, 0.229],
+            [0.24, 0.175, 0.235 + 0.003 * i],
+        ]
     )
 
+    box_corners = o3d.utility.Vector3dVector(box_corners.astype("float64"))
+    obb = o3d.geometry.OrientedBoundingBox.create_from_points(box_corners)
 
-def _visualize_pcd_interactive(viz_item_list, folder, filename):
-    print("")
-    print("1) Please pick at least three correspondences using [shift + left click]")
-    print("   Press [shift + right click] to undo point picking")
-    print("2) Afther picking points, press q for close the window")
+    pcd_cropped = pcd.crop(obb)
 
-    pcd = viz_item_list[0]
+    # Get a nice looking bounding box to display around the newly cropped point cloud
+    bounding_box = pcd_cropped.get_axis_aligned_bounding_box()
+    bounding_box.color = (1, 0, 0)
 
-    # vis_settings = load_o3d_view_settings(folder, filename)
-    pcd.estimate_normals()
-
-    vis = o3d.visualization.VisualizerWithEditing()
-    vis.create_window()
-    vis.add_geometry(pcd)
-
-    # ctr = vis.get_view_control()
-    # ctr.set_front(vis_settings["front"])
-    # ctr.set_up(vis_settings["up"])
-    # ctr.set_zoom(vis_settings["zoom"])
-    # ctr.set_lookat(vis_settings["lookat"])
-
-    vis.run()  # user picks points
-    vis.destroy_window()
-    print("")
-
-    return vis.get_picked_points()
+    return pcd_cropped, bounding_box
 
 
-def pcd_segment(pcd_range, test_name, folder_names, file_names, vis_on=False):
+def _color_mask_pcd(pcd, threshold=0.00):
+    """select all points that are above a certain grayscale value, 0 = black, 1 = white"""
 
-    for i in pcd_range:
+    # Get rid of black base
+    grayscale_values = np.array(pcd.colors).dot(np.array([0.2989, 0.5870, 0.1140]))
+    mask_indices = [i for i, x in enumerate(grayscale_values > threshold) if x]
+    pcd_masked = pcd.select_by_index(mask_indices)
 
-        pcd = o3d.io.read_point_cloud(
-            _create_file_path(
-                folder=folder_names["output_data2"].format(test_name),
-                filename=file_names["pntcloud_processed_ply"].format(test_name, i),
-            ).__str__()
-        )
-
-        grayscale_values = np.array(pcd.colors).dot(np.array([0.2989, 0.5870, 0.1140]))
-
-        mask_indices = [i for i, x in enumerate(grayscale_values > 0.55) if x]
-
-        pcd_reduced = pcd.select_by_index(mask_indices)
-        pcd_reduced.paint_uniform_color([1, 0, 0])
-
-        pcd_leftover = pcd.select_by_index(mask_indices, invert=True)
-        # pcd_leftover, ind = pcd_leftover.remove_statistical_outlier(nb_neighbors=10, std_ratio=0.2)
-
-        # pcd_leftover.paint_uniform_color([0.5,0.5,0.5])
-
-        print("original: {}\n reduced: {}".format(pcd, pcd_reduced))
-
-        if vis_on:
-            _visualize_pcd(
-                viz_item_list=[pcd_reduced, pcd_leftover],
-                folder=folder_names["input_settings"],
-                filename=file_names["o3d_view"],
-            )
+    return pcd_masked
 
 
-def pcd_stitch_and_crop(pcd_range, test_name, folder_names, file_names, vis_on=False):
-
-    for i in pcd_range:
-
-        point_data = []
-        color_data = []
-
-        for cam_num in [1, 2]:
-
-            pcd = o3d.io.read_point_cloud(
-                _create_file_path(
-                    folder=folder_names["input_data"].format(test_name),
-                    filename=file_names["pntcloud_trns_ply"].format(i, cam_num),
-                ).__str__()
-            )
-
-            point_data.append(np.asarray(pcd.points))
-            color_data.append(np.asarray(pcd.colors))
-
-        points_combined = np.concatenate(point_data, axis=0) / 1000  # mm -> m
-        colors_combined = np.concatenate(color_data, axis=0)
-
-        pcd_combined = o3d.geometry.PointCloud()
-        pcd_combined.points = o3d.utility.Vector3dVector(points_combined)
-        pcd_combined.colors = o3d.utility.Vector3dVector(colors_combined)
-
-        # Rotate full pointcloud so that +z is aligned with "up" in real world
-        R = pcd_combined.get_rotation_matrix_from_xyz((np.pi, 0, 0))
-        pcd_combined = pcd_combined.rotate(R, center=(0, 0, 0))
-
-        # cropping box
-        box_corners = np.array(
-            [
-                [-0.005, -0.028, 0.229],
-                [-0.005, -0.028, 0.235 + 0.003 * i],
-                [-0.005, 0.175, 0.229],
-                [-0.005, 0.175, 0.235 + 0.003 * i],
-                [0.24, -0.028, 0.229],
-                [0.24, -0.028, 0.235 + 0.003 * i],
-                [0.24, 0.175, 0.229],
-                [0.24, 0.175, 0.235 + 0.003 * i],
-            ]
-        )
-
-        box_corners = o3d.utility.Vector3dVector(box_corners.astype("float64"))
-        obb = o3d.geometry.OrientedBoundingBox.create_from_points(box_corners)
-
-        pcd_combined_cropped = pcd_combined.crop(obb)
-
-        # Get rid of black base
-        grayscale_values = np.array(pcd_combined_cropped.colors).dot(
-            np.array([0.2989, 0.5870, 0.1140])
-        )
-        mask_indices = [i for i, x in enumerate(grayscale_values > 0.05) if x]
-        pcd_combined_cropped_masked = pcd_combined_cropped.select_by_index(mask_indices)
-
-        # Remove Outliers
-        (
-            pcd_combined_cropped_masked_outlier,
-            _,
-        ) = pcd_combined_cropped_masked.remove_statistical_outlier(nb_neighbors=10, std_ratio=1.5)
-
-        print(
-            "original: {} \nafter crop: {} \nafter color mask: {} \nafter outlier1: {}".format(
-                pcd,
-                pcd_combined_cropped,
-                pcd_combined_cropped_masked,
-                pcd_combined_cropped_masked_outlier,
-            )
-        )
-
-        pcd_save = pcd_combined_cropped_masked_outlier
-
-        o3d.io.write_point_cloud(
-            _create_file_path(
-                folder=folder_names["output_data"].format(test_name),
-                filename=file_names["pntcloud_processed_ply"].format(test_name, i),
-            ).__str__(),
-            pcd_save,
-        )
-
-        if vis_on:
-            # Get a nice looking bounding box to display around the newly cropped point cloud
-            bounding_box = pcd_combined_cropped.get_axis_aligned_bounding_box()
-            bounding_box.color = (1, 0, 0)
-
-            # Show coordinate axis
-            mesh_frame = o3d.geometry.TriangleMesh.create_coordinate_frame(
-                size=0.2, origin=[0, 0, 0]
-            )
-
-            _visualize_pcd(
-                viz_item_list=[pcd_save, bounding_box, mesh_frame],
-                folder=folder_names["input_settings"],
-                filename=file_names["o3d_view"],
-            )
+def _outlier_remove_pcd(pcd, n, std):
+    """remove outliers"""
+    pcd_outlier, _ = pcd.remove_statistical_outlier(nb_neighbors=n, std_ratio=std)
+    return pcd_outlier
 
 
 def pcd_transform_and_save(pcd_range, test_name, folder_names, file_names):
+    """Transform PCDs based on rotattion matrix from calibration plate"""
 
     for i in pcd_range:
-
         for cam_num in [1, 2]:
 
             trans = load_as_transformation_yaml(
@@ -223,3 +131,69 @@ def pcd_transform_and_save(pcd_range, test_name, folder_names, file_names):
                 filename=file_names["pntcloud_trns_ply"].format(i, cam_num),
             )
             frame.save(pointcloud_file_path)
+
+
+def pcd_process_and_save(pcd_range, test_name, folder_names, file_names, vis_on=False):
+    """process the PCD in various ways: combine, rotate, crop, mask, outlier removal"""
+
+    for i in pcd_range:
+        pcd = _combine_pcd(i, test_name, folder_names, file_names, scale=0.001)
+        print("pcd size after combine: {}".format(pcd))
+
+        pcd = _rotate_pcd(pcd)
+
+        pcd, crop_box = _crop_pcd(pcd, i)
+        print("pcd size after cropping: {}".format(pcd))
+
+        pcd = _color_mask_pcd(pcd, threshold=0.05)
+        print("pcd size after color mask: {}".format(pcd))
+
+        pcd = _outlier_remove_pcd(pcd, n=10, std=1.5)
+        print("pcd size after outlier removal: {}".format(pcd))
+
+        save_pointcloud_ply(
+            pcd,
+            folder_names["output_data"].format(test_name),
+            file_names["pntcloud_processed_ply"].format(test_name, i),
+        )
+
+        if vis_on:
+            visualize_pcd(
+                viz_item_list=[pcd, crop_box],
+                folder=folder_names["input_settings"],
+                filename=file_names["o3d_view"],
+                axis=True,
+            )
+
+
+def pcd_threshold_and_save(pcd_range, test_name, folder_names, file_names, vis_on=False):
+    """Identify and isolate features of interest (white dots) in the PCDs"""
+
+    for i in pcd_range:
+        pcd = o3d.io.read_point_cloud(
+            _create_file_path(
+                folder=folder_names["output_data2"].format(test_name),
+                filename=file_names["pntcloud_processed_ply"].format(test_name, i),
+            ).__str__()
+        )
+
+        grayscale_values = np.array(pcd.colors).dot(np.array([0.2989, 0.5870, 0.1140]))
+
+        mask_indices = [i for i, x in enumerate(grayscale_values > 0.55) if x]
+
+        pcd_reduced = pcd.select_by_index(mask_indices)
+        pcd_reduced.paint_uniform_color([1, 0, 0])
+
+        pcd_leftover = pcd.select_by_index(mask_indices, invert=True)
+        # pcd_leftover, ind = pcd_leftover.remove_statistical_outlier(nb_neighbors=10, std_ratio=0.2)
+
+        # pcd_leftover.paint_uniform_color([0.5,0.5,0.5])
+
+        print("original: {}\n reduced: {}".format(pcd, pcd_reduced))
+
+        if vis_on:
+            visualize_pcd(
+                viz_item_list=[pcd_reduced, pcd_leftover],
+                folder=folder_names["input_settings"],
+                filename=file_names["o3d_view"],
+            )

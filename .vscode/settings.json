@@ -3,11 +3,10 @@
     "python.pythonPath": "C:\\Users\\Edvard\\.conda\\envs\\ziv281_cfab270\\python.exe",
     "python.terminal.activateEnvironment": true,
     "python.envFile": "${workspaceFolder}/.vscode/.env",
-
     //INTEGRATED TERMINAL
     "terminal.integrated.tabs.enabled": true,
     "terminal.integrated.copyOnSelection": true,
-    "terminal.integrated.profiles.windows":{
+    "terminal.integrated.profiles.windows": {
         "Command Prompt2": {
             "path": [
                 "${env:windir}\\Sysnative\\cmd.exe",
@@ -17,7 +16,6 @@
             "icon": "terminal-cmd",
         },
     },
-
     //LINTING
     "python.linting.flake8Enabled": true,
     "python.linting.enabled": true,
@@ -34,10 +32,8 @@
         "--line-length=100",
         "--experimental-string-processing"
     ],
-
     //GITHUB
     "files.exclude": {
         "**/.git": false
-},
-
+    },
 }
