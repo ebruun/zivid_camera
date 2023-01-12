@@ -42,8 +42,9 @@ if __name__ == "__main__":
     folder_names = {
         "input_data": "saved_output_raw/{}",
         "input_settings": "input_settings",
-        "output_data": "saved_output_processed/{}",
+        "output_data1": "saved_output_processed/{}",
         "output_data2": "saved_output_processed_manual/{}",
+        "output_data3": "saved_output_points/{}",
     }
 
     file_names = {
@@ -51,6 +52,7 @@ if __name__ == "__main__":
         "pntcloud_trns_zdf": "{:02d}_ziv{}_3d_TRNS.zdf",
         "pntcloud_trns_ply": "{:02d}_ziv{}_3d_TRNS.ply",
         "pntcloud_processed_ply": "{}_step{:02d}_3d_PROCESSED.ply",
+        "pntcloud_saved_pnts": "{}_step{:02d}_3d_POINTS.ply",
         "t_matrix": "{:02d}_ziv{}_trans.yml",
         "o3d_view": "o3d_view_settings.json",
         "capture_settings": "capture_settings_calibration.yml",
@@ -61,5 +63,5 @@ if __name__ == "__main__":
     # main_capture()
     # main_transform_pcd(range(0, 1), test_name, folder_names, file_names)
     # main_process_pcd(range(0, 1), test_name, folder_names, file_names, vis_on=True)
-    main_process_pcd2(range(10, 11), test_name, folder_names, file_names, vis_on=True)
-    # main_locate_pnts_pcd(range(8, 9), test_name, folder_names, file_names, vis_on=True)
+    # main_process_pcd2(range(10, 11), test_name, folder_names, file_names, vis_on=True)
+    main_locate_pnts_pcd(range(26, 27), test_name, folder_names, file_names, vis_on=True)

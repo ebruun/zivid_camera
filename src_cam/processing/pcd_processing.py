@@ -226,7 +226,7 @@ def pcd_process_and_save(pcd_range, test_name, folder_names, file_names, vis_on=
 
         save_pointcloud_ply(
             pcd,
-            folder_names["output_data"].format(test_name),
+            folder_names["output_data1"].format(test_name),
             file_names["pntcloud_processed_ply"].format(test_name, i),
         )
 
@@ -249,7 +249,7 @@ def pcd_process_corners_and_save(pcd_range, test_name, folder_names, file_names,
         )
 
         pcd = load_pointcloud_ply(
-            folder=folder_names["output_data"].format(test_name),
+            folder=folder_names["output_data1"].format(test_name),
             filename=file_names["pntcloud_processed_ply"].format(test_name, i),
         )
 
@@ -308,7 +308,7 @@ def pcd_process_corners_and_save(pcd_range, test_name, folder_names, file_names,
 
         # save_pointcloud_ply(
         #     pcd,
-        #     folder_names["output_data"].format(test_name),
+        #     folder_names["output_data1"].format(test_name),
         #     file_names["pntcloud_processed_ply"].format(test_name, i),
         # )
 
@@ -325,16 +325,21 @@ def pcd_threshold_and_save(pcd_range, test_name, folder_names, file_names, vis_o
     """Identify and isolate features of interest (white dots) in the PCDs"""
 
     for i in pcd_range:
-        pcd = o3d.io.read_point_cloud(
-            _create_file_path(
-                folder=folder_names["output_data2"].format(test_name),
-                filename=file_names["pntcloud_processed_ply"].format(test_name, i),
-            ).__str__()
+
+        print(
+            "Finding points on: {}".format(
+                file_names["pntcloud_processed_ply"].format(test_name, i)
+            )
+        )
+
+        pcd = load_pointcloud_ply(
+            folder=folder_names["output_data2"].format(test_name),
+            filename=file_names["pntcloud_processed_ply"].format(test_name, i),
         )
 
         grayscale_values = np.array(pcd.colors).dot(np.array([0.2989, 0.5870, 0.1140]))
 
-        mask_indices = [i for i, x in enumerate(grayscale_values > 0.55) if x]
+        mask_indices = [i for i, x in enumerate(grayscale_values > 0.70) if x]
 
         pcd_reduced = pcd.select_by_index(mask_indices)
         pcd_reduced.paint_uniform_color([1, 0, 0])
@@ -346,9 +351,15 @@ def pcd_threshold_and_save(pcd_range, test_name, folder_names, file_names, vis_o
 
         print("original: {}\n reduced: {}".format(pcd, pcd_reduced))
 
+        save_pointcloud_ply(
+            pcd_reduced,
+            folder_names["output_data3"].format(test_name),
+            file_names["pntcloud_saved_pnts"].format(test_name, i),
+        )
+
         if vis_on:
             visualize_pcd(
-                viz_item_list=[pcd_reduced, pcd_leftover],
+                viz_item_list=[pcd_leftover, pcd_reduced],
                 folder=folder_names["input_settings"],
                 filename=file_names["o3d_view"],
             )
