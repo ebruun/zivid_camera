@@ -375,7 +375,7 @@ def pcd_threshold_and_save(pcd_range, test_name, folder_names, file_names, vis_o
 
         grayscale_values = np.array(pcd.colors).dot(np.array([0.2989, 0.5870, 0.1140]))
 
-        mask_indices = [i for i, x in enumerate(grayscale_values > 0.70) if x]
+        mask_indices = [i for i, x in enumerate(grayscale_values > 0.55) if x]
 
         pcd_reduced = pcd.select_by_index(mask_indices)
         pcd_reduced.paint_uniform_color([1, 0, 0])
