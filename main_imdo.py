@@ -9,6 +9,7 @@
 from src_cam.processing.pcd_processing import (
     pcd_transform_and_save,
     pcd_process_and_save,
+    pcd_process_corners_and_save,
     pcd_threshold_and_save,
 )
 
@@ -28,6 +29,10 @@ def main_process_pcd(pcd_range, test_name, folder_names, file_names, vis_on=Fals
     pcd_process_and_save(pcd_range, test_name, folder_names, file_names, vis_on)
 
 
+def main_process_pcd2(pcd_range, test_name, folder_names, file_names, vis_on=False):
+    pcd_process_corners_and_save(pcd_range, test_name, folder_names, file_names, vis_on)
+
+
 def main_locate_pnts_pcd(pcd_range, test_name, folder_names, file_names, vis_on=False):
     pcd_threshold_and_save(pcd_range, test_name, folder_names, file_names, vis_on)
 
@@ -38,7 +43,7 @@ if __name__ == "__main__":
         "input_data": "saved_output_raw/{}",
         "input_settings": "input_settings",
         "output_data": "saved_output_processed/{}",
-        "output_data2": "saved_output_processed2/{}",
+        "output_data2": "saved_output_processed_manual/{}",
     }
 
     file_names = {
@@ -56,4 +61,5 @@ if __name__ == "__main__":
     # main_capture()
     # main_transform_pcd(range(0, 1), test_name, folder_names, file_names)
     # main_process_pcd(range(0, 1), test_name, folder_names, file_names, vis_on=True)
-    main_locate_pnts_pcd(range(7, 8), test_name, folder_names, file_names, vis_on=True)
+    main_process_pcd2(range(10, 11), test_name, folder_names, file_names, vis_on=True)
+    # main_locate_pnts_pcd(range(8, 9), test_name, folder_names, file_names, vis_on=True)
