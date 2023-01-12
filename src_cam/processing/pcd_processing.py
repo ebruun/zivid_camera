@@ -303,14 +303,50 @@ def pcd_process_corners_and_save(pcd_range, test_name, folder_names, file_names,
                 ]
             )
 
+        elif test_name == "spec_N5_3":
+            polygons = np.array(
+                [
+                    [
+                        [0.13, -0.015, 0.220],
+                        [0.15, -0.0087, 0.220],
+                        [0.16, -0.051, 0.220],
+                        [0.13, -0.056, 0.220],
+                    ],
+                    [
+                        [0.035, 0.031, 0.220],
+                        [0.047, 0.014, 0.220],
+                        [-0.035, -0.03, 0.220],
+                        [-0.027, 0.015, 0.220],
+                    ],
+                    [
+                        [0.048, 0.13, 0.220],
+                        [0.035, 0.12, 0.220],
+                        [-0.020, 0.05, 0.220],
+                        [0.017, 0.17, 0.220],
+                    ],
+                    [
+                        [0.155, 0.155, 0.220],
+                        [0.13, 0.16, 0.220],
+                        [0.14, 0.19, 0.220],
+                        [0.17, 0.17, 0.220],
+                    ],
+                    [
+                        [0.2, 0.062, 0.220],
+                        [0.2, 0.087, 0.220],
+                        [0.22, 0.084, 0.220],
+                        [0.22, 0.065, 0.220],
+                    ],
+                ]
+            )
+
         crop_volumes = _make_crop_volumes(polygons)
         pcd_modified, bounding_boxes = _multi_color_change(pcd, crop_volumes)
 
-        # save_pointcloud_ply(
-        #     pcd,
-        #     folder_names["output_data1"].format(test_name),
-        #     file_names["pntcloud_processed_ply"].format(test_name, i),
-        # )
+        save_pointcloud_ply(
+            pcd,
+            folder_names["output_data1"].format(test_name),
+            file_names["pntcloud_processed_ply"].format(test_name, i),
+        )
 
         if vis_on:
             visualize_pcd(
