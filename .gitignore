@@ -1,6 +1,6 @@
 #PROJECT SPECIFIC ADDS
 # -----------
-/saved_output_raw
+/data1_raw
 /data/*
 /ZividSampleData/ZividGemEyeInHand.zdf
 /ZividSampleData/ZividGemEyeInHandInRobotBaseFrame.zdf

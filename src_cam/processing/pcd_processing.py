@@ -18,18 +18,12 @@ from src_cam.utility.display import (
 )
 
 
-def _combine_pcd(i, test_name, folder_names, file_names, scale=1):
+def _combine_pcd(pcds, scale=1):
     """combine and scale two pointclouds as ply files"""
     point_data = []
     color_data = []
 
-    for cam_num in [1, 2]:
-
-        pcd = load_pointcloud_ply(
-            folder_names["input_data"].format(test_name),
-            file_names["pntcloud_trns_ply"].format(i, cam_num),
-        )
-
+    for pcd in pcds:
         point_data.append(np.asarray(pcd.points))
         color_data.append(np.asarray(pcd.colors))
 
@@ -179,12 +173,12 @@ def pcd_transform_and_save(pcd_range, test_name, folder_names, file_names):
         for cam_num in [1, 2]:
 
             trans = load_as_transformation_yaml(
-                folder=folder_names["input_data"].format(test_name),
+                folder=folder_names["data1_raw"].format(test_name),
                 input_file=file_names["t_matrix"].format(i, cam_num),
             )
 
             pc, frame = load_pointcloud(
-                folder=folder_names["input_data"].format(test_name),
+                folder=folder_names["data1_raw"].format(test_name),
                 input_file=file_names["pntcloud"].format(i, cam_num),
             )
 
@@ -193,14 +187,14 @@ def pcd_transform_and_save(pcd_range, test_name, folder_names, file_names):
 
             # Save as ZDF
             pointcloud_file_path = _create_file_path(
-                folder=folder_names["input_data"].format(test_name),
+                folder=folder_names["data1_raw"].format(test_name),
                 filename=file_names["pntcloud_trns_zdf"].format(i, cam_num),
             )
             frame.save(pointcloud_file_path)
 
             # Save as PLY
             pointcloud_file_path = _create_file_path(
-                folder=folder_names["input_data"].format(test_name),
+                folder=folder_names["data1_raw"].format(test_name),
                 filename=file_names["pntcloud_trns_ply"].format(i, cam_num),
             )
             frame.save(pointcloud_file_path)
@@ -210,7 +204,20 @@ def pcd_process_and_save(pcd_range, test_name, folder_names, file_names, vis_on=
     """process the PCD in various ways: combine, rotate, crop, mask, outlier removal"""
 
     for i in pcd_range:
-        pcd = _combine_pcd(i, test_name, folder_names, file_names, scale=0.001)
+
+        print("\nprocessing: {}".format(file_names["pntcloud_processed_ply"].format(test_name, i)))
+
+        pcds = []
+        for cam_num in [1, 2]:
+
+            loaded_pcd = load_pointcloud_ply(
+                folder_names["data1_raw"].format(test_name),
+                file_names["pntcloud_trns_ply"].format(i, cam_num),
+            )
+
+            pcds.append(loaded_pcd)
+
+        pcd = _combine_pcd(pcds, scale=0.001)
         print("pcd size after combine: {}".format(pcd))
 
         pcd = _rotate_pcd(pcd)
@@ -226,7 +233,7 @@ def pcd_process_and_save(pcd_range, test_name, folder_names, file_names, vis_on=
 
         save_pointcloud_ply(
             pcd,
-            folder_names["output_data1"].format(test_name),
+            folder_names["data2_processed"].format(test_name),
             file_names["pntcloud_processed_ply"].format(test_name, i),
         )
 
@@ -249,7 +256,7 @@ def pcd_process_corners_and_save(pcd_range, test_name, folder_names, file_names,
         )
 
         pcd = load_pointcloud_ply(
-            folder=folder_names["output_data1"].format(test_name),
+            folder=folder_names["data2_processed"].format(test_name),
             filename=file_names["pntcloud_processed_ply"].format(test_name, i),
         )
 
@@ -344,7 +351,7 @@ def pcd_process_corners_and_save(pcd_range, test_name, folder_names, file_names,
 
         save_pointcloud_ply(
             pcd,
-            folder_names["output_data1"].format(test_name),
+            folder_names["data2_processed"].format(test_name),
             file_names["pntcloud_processed_ply"].format(test_name, i),
         )
 
@@ -369,27 +376,24 @@ def pcd_threshold_and_save(pcd_range, test_name, folder_names, file_names, vis_o
         )
 
         pcd = load_pointcloud_ply(
-            folder=folder_names["output_data2"].format(test_name),
+            folder=folder_names["data3_processed_clean"].format(test_name),
             filename=file_names["pntcloud_processed_ply"].format(test_name, i),
         )
 
         grayscale_values = np.array(pcd.colors).dot(np.array([0.2989, 0.5870, 0.1140]))
 
-        mask_indices = [i for i, x in enumerate(grayscale_values > 0.55) if x]
+        mask_indices = [i for i, x in enumerate(grayscale_values > 0.52) if x]
 
         pcd_reduced = pcd.select_by_index(mask_indices)
         pcd_reduced.paint_uniform_color([1, 0, 0])
 
         pcd_leftover = pcd.select_by_index(mask_indices, invert=True)
-        # pcd_leftover, ind = pcd_leftover.remove_statistical_outlier(nb_neighbors=10, std_ratio=0.2)
-
-        # pcd_leftover.paint_uniform_color([0.5,0.5,0.5])
 
         print("original: {}\n reduced: {}".format(pcd, pcd_reduced))
 
         save_pointcloud_ply(
             pcd_reduced,
-            folder_names["output_data3"].format(test_name),
+            folder_names["data4_found_points"].format(test_name),
             file_names["pntcloud_saved_pnts"].format(test_name, i),
         )
 

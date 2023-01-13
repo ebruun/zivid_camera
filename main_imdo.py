@@ -40,11 +40,11 @@ def main_locate_pnts_pcd(pcd_range, test_name, folder_names, file_names, vis_on=
 if __name__ == "__main__":
 
     folder_names = {
-        "input_data": "saved_output_raw/{}",
         "input_settings": "input_settings",
-        "output_data1": "saved_output_processed/{}",
-        "output_data2": "saved_output_processed_manual/{}",
-        "output_data3": "saved_output_points/{}",
+        "data1_raw": "data1_raw/{}",
+        "data2_processed": "data2_processed/{}",
+        "data3_processed_clean": "data3_processed_clean/{}",
+        "data4_found_points": "data4_found_points/{}",
     }
 
     file_names = {
@@ -62,6 +62,6 @@ if __name__ == "__main__":
 
     # main_capture()
     # main_transform_pcd(range(0, 1), test_name, folder_names, file_names)
-    # main_process_pcd(range(0, 1), test_name, folder_names, file_names, vis_on=True)
-    # main_process_pcd2(range(0, 28), test_name, folder_names, file_names, vis_on=False)
-    main_locate_pnts_pcd(range(23, 24), test_name, folder_names, file_names, vis_on=True)
+    # main_process_pcd(range(0, 1), test_name, folder_names, file_names, vis_on=False)
+    # main_process_pcd2(range(18, 19), test_name, folder_names, file_names, vis_on=True)
+    main_locate_pnts_pcd(range(21, 22), test_name, folder_names, file_names, vis_on=True)
