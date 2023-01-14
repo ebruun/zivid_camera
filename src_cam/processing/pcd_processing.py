@@ -114,8 +114,41 @@ def _view1D(a, b):  # a, b are arrays
     return a.view(void_dt).ravel(), b.view(void_dt).ravel()
 
 
+def _multi_points_delete(pcd, crop_volumes):
+    """delete points in a specified volume"""
+
+    points_delete = []
+    bounding_boxes = []
+
+    for crop_volume in crop_volumes:
+        pcd_delete = crop_volume.crop_point_cloud(pcd)
+        points_delete.append(np.asarray(pcd_delete.points))
+
+        bounding_box = pcd_delete.get_oriented_bounding_box()
+        bounding_box.color = (0, 0, 1)
+
+        bounding_boxes.append(bounding_box)
+
+    points_delete = np.concatenate(points_delete, axis=0)
+
+    points = np.asarray(pcd.points)
+    colors = np.asarray(pcd.colors)
+
+    A, B = _view1D(points, points_delete)
+    row_indices_duplicate = np.isin(A, B)  # boolean array
+
+    points_remaining = points[~row_indices_duplicate]
+    colors_remaining = colors[~row_indices_duplicate]
+
+    pcd_remaining = o3d.geometry.PointCloud()
+    pcd_remaining.points = o3d.utility.Vector3dVector(points_remaining)
+    pcd_remaining.colors = o3d.utility.Vector3dVector(colors_remaining)
+
+    return pcd_remaining, bounding_boxes
+
+
 def _multi_color_change(pcd, crop_volumes):
-    """use a different method to crop based on irregular 2d polygon"""
+    """change color of points in a specified volume"""
 
     points_crop = []
     bounding_boxes = []
@@ -260,16 +293,17 @@ def pcd_process_corners_and_save(pcd_range, test_name, folder_names, file_names,
             filename=file_names["pntcloud_processed_ply"].format(test_name, i),
         )
 
-        # if vis_on:
-        #     pnts = visualize_pcd_interactive(
-        #         viz_item_list=[pcd],
-        #         folder=folder_names["input_settings"],
-        #         filename=file_names["o3d_view"],
-        #         # axis=True,
-        #     )
+        if vis_on:
+            pnts = visualize_pcd_interactive(
+                viz_item_list=[pcd],
+                folder=folder_names["input_settings"],
+                filename=file_names["o3d_view"],
+                # axis=True,
+            )
+            print(np.asarray(pcd.points)[pnts])
 
         if test_name == "spec_N6_3":
-            polygons = np.array(
+            color_polygons = np.array(
                 [
                     [
                         [-0.005, 0.050, 0.220],
@@ -311,10 +345,10 @@ def pcd_process_corners_and_save(pcd_range, test_name, folder_names, file_names,
             )
 
         elif test_name == "spec_N5_3":
-            polygons = np.array(
+            color_polygons = np.array(
                 [
                     [
-                        [0.13, -0.015, 0.220],
+                        [0.13, -0.015, 0.220],  # corners
                         [0.15, -0.0087, 0.220],
                         [0.16, -0.051, 0.220],
                         [0.13, -0.056, 0.220],
@@ -343,21 +377,110 @@ def pcd_process_corners_and_save(pcd_range, test_name, folder_names, file_names,
                         [0.22, 0.084, 0.220],
                         [0.22, 0.065, 0.220],
                     ],
+                    [
+                        [0.043, 0.02, 0.210],  # sides
+                        [0.14, -0.012, 0.210],
+                        [0.13, -0.023, 0.210],
+                        [0.042, 0.011, 0.210],
+                    ],
+                    [
+                        [0.14, -0.0084, 0.210],
+                        [0.2, 0.07, 0.210],
+                        [0.21, 0.064, 0.210],
+                        [0.15, -0.016, 0.210],
+                    ],
+                    [
+                        [0.039, 0.12, 0.210],
+                        [0.039, 0.026, 0.210],
+                        [0.027, 0.023, 0.210],
+                        [0.027, 0.13, 0.210],
+                    ],
+                    [
+                        [0.14, 0.16, 0.210],
+                        [0.045, 0.13, 0.210],
+                        [0.038, 0.14, 0.210],
+                        [0.14, 0.17, 0.210],
+                    ],
+                    [
+                        [0.2, 0.078, 0.210],
+                        [0.14, 0.16, 0.210],
+                        [0.15, 0.17, 0.210],
+                        [0.21, 0.083, 0.210],
+                    ],
                 ]
             )
 
-        crop_volumes = _make_crop_volumes(polygons)
-        pcd_modified, bounding_boxes = _multi_color_change(pcd, crop_volumes)
+            delete_polygons = [
+                np.array(
+                    [
+                        [0.1529166, -0.01611024, 0.20],
+                        [0.19471136, -0.02285242, 0.20],
+                        [0.21088745, -0.01519365, 0.20],
+                        [0.22872858, 0.04915744, 0.20],
+                        [0.21668607, 0.06462979, 0.20],
+                        [0.20088504, 0.06146107, 0.20],
+                        [0.15061945, -0.00818526, 0.20],
+                    ]
+                ),
+                np.array(
+                    [
+                        [0.04558737, 0.01368767, 0.20],
+                        [0.03764117, -0.0148172, 0.20],
+                        [0.05197833, -0.02188771, 0.20],
+                        [0.06824371, -0.02205147, 0.20],
+                        [0.13191617, -0.02314828, 0.20],
+                        [0.128108, -0.0132541, 0.20],
+                    ]
+                ),
+                np.array(
+                    [
+                        [0.03529871, 0.11781342, 0.2],
+                        [0.02415088, 0.12590814, 0.2],
+                        [0.02184369, 0.04133041, 0.2],
+                        [0.02177271, 0.02243735, 0.2],
+                        [0.03464105, 0.03030618, 0.2],
+                    ]
+                ),
+                np.array(
+                    [
+                        [0.04610632, 0.1369007, 0.2],
+                        [0.04788623, 0.13487723, 0.2],
+                        [0.12851248, 0.15966498, 0.2],
+                        [0.13201035, 0.16809216, 0.2],
+                        [0.06820551, 0.17120758, 0.2],
+                        [0.05513959, 0.17119415, 0.2],
+                        [0.03204877, 0.16839441, 0.2],
+                        [0.02287036, 0.15415363, 0.2],
+                    ]
+                ),
+                np.array(
+                    [
+                        [0.15061722, 0.15597513, 0.2],
+                        [0.20150677, 0.0846152, 0.2],
+                        [0.20988593, 0.08422189, 0.2],
+                        [0.21821747, 0.08422278, 0.2],
+                        [0.20388962, 0.15890372, 0.2],
+                        [0.20131342, 0.16644717, 0.2],
+                        [0.16270276, 0.16677191, 0.2],
+                    ]
+                ),
+            ]
+
+        color_volumes = _make_crop_volumes(color_polygons)
+        delete_volumes = _make_crop_volumes(delete_polygons)
+
+        pcd_modified1, bounding_boxes1 = _multi_color_change(pcd, color_volumes)
+        pcd_modified2, bounding_boxes2 = _multi_points_delete(pcd_modified1, delete_volumes)
 
         save_pointcloud_ply(
-            pcd,
+            pcd_modified2,
             folder_names["data2_processed"].format(test_name),
             file_names["pntcloud_processed_ply"].format(test_name, i),
         )
 
         if vis_on:
             visualize_pcd(
-                viz_item_list=bounding_boxes + [pcd_modified],
+                viz_item_list=bounding_boxes1 + bounding_boxes2 + [pcd_modified2],
                 folder=folder_names["input_settings"],
                 filename=file_names["o3d_view"],
                 axis=True,
