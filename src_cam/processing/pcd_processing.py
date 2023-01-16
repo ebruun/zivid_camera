@@ -17,11 +17,13 @@ from src_cam.utility.display import (
     visualize_pcd_interactive,
 )
 
-from _crop_volumes import (
+from src_cam.processing._crop_volumes import (
     N6_color_polygons,
     N6_delete_polygons,
     N5_color_polygons,
     N5_delete_polygons,
+    N4_EB_color_polygons,
+    N4_EB_delete_polygons,
 )
 
 
@@ -131,10 +133,12 @@ def _multi_points_delete(pcd, crop_volumes):
         pcd_delete = crop_volume.crop_point_cloud(pcd)
         points_delete.append(np.asarray(pcd_delete.points))
 
-        bounding_box = pcd_delete.get_oriented_bounding_box()
-        bounding_box.color = (0, 0, 1)
-
-        bounding_boxes.append(bounding_box)
+        try:
+            bounding_box = pcd_delete.get_oriented_bounding_box()
+            bounding_box.color = (0, 0, 1)
+            bounding_boxes.append(bounding_box)
+        except RuntimeError:
+            print("No points found in crop_volume")
 
     points_delete = np.concatenate(points_delete, axis=0)
 
@@ -315,6 +319,9 @@ def pcd_process_corners_and_save(pcd_range, test_name, folder_names, file_names,
         elif test_name == "spec_N5_3":
             color_polygons = N5_color_polygons
             delete_polygons = N5_delete_polygons
+        elif test_name == "spec_N4_EB_3":
+            color_polygons = N4_EB_color_polygons
+            delete_polygons = N4_EB_delete_polygons
 
         color_volumes = _make_crop_volumes(color_polygons)
         delete_volumes = _make_crop_volumes(delete_polygons)
