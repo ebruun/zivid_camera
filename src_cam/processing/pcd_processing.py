@@ -95,16 +95,12 @@ def _make_crop_volumes(polygons):
         # Create a SelectionPolygonVolume
         vol = o3d.visualization.SelectionPolygonVolume()
 
-        # You need to specify what axis to orient the polygon to.
-        # I choose the "Z" axis. I made the max value the maximum Z of
-        # the polygon vertices and the min value the minimum Y of the
-        # polygon vertices.
+        # Z axis to orient the polygon to, choose height above min Z-value for vertex
         vol.orthogonal_axis = "Z"
         vol.axis_min = np.min(bounding_polygon[:, 2])
         vol.axis_max = vol.axis_min + 0.040
 
-        # Set all the Z values to 0 (they aren't needed since we specified what they
-        # should be using just vol.axis_max and vol.axis_min).
+        # Set Z values to 0 (not needed, vol.axis_max and vol.axis_min does this).
         bounding_polygon[:, 2] = 0
 
         # Convert the np.array to a Vector3dVector
