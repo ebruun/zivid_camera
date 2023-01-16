@@ -100,8 +100,8 @@ def _make_crop_volumes(polygons):
         # the polygon vertices and the min value the minimum Y of the
         # polygon vertices.
         vol.orthogonal_axis = "Z"
-        vol.axis_max = 0.300
         vol.axis_min = np.min(bounding_polygon[:, 2])
+        vol.axis_max = vol.axis_min + 0.040
 
         # Set all the Z values to 0 (they aren't needed since we specified what they
         # should be using just vol.axis_max and vol.axis_min).
@@ -138,7 +138,7 @@ def _multi_points_delete(pcd, crop_volumes):
             bounding_box.color = (0, 0, 1)
             bounding_boxes.append(bounding_box)
         except RuntimeError:
-            print("No points found in crop_volume")
+            print("No points found in Delete volume")
 
     points_delete = np.concatenate(points_delete, axis=0)
 
@@ -168,10 +168,12 @@ def _multi_color_change(pcd, crop_volumes):
         pcd_cropped = crop_volume.crop_point_cloud(pcd)
         points_crop.append(np.asarray(pcd_cropped.points))
 
-        bounding_box = pcd_cropped.get_oriented_bounding_box()
-        bounding_box.color = (0, 1, 0)
-
-        bounding_boxes.append(bounding_box)
+        try:
+            bounding_box = pcd_cropped.get_oriented_bounding_box()
+            bounding_box.color = (1, 0, 0)
+            bounding_boxes.append(bounding_box)
+        except RuntimeError:
+            print("No points found in Color volume")
 
     points_crop = np.concatenate(points_crop, axis=0)
 
