@@ -60,10 +60,10 @@ if __name__ == "__main__":
         "capture_settings": "capture_settings_calibration.yml",
     }
 
-    test_name = "ar_construct_castle4_cov"
+    test_name = "ar_construct_castle6_cov"
 
-    main_capture(test_name, folder_names, file_names)
+    # main_capture(test_name, folder_names, file_names)
     # main_transform_pcd(range(0, 7), test_name, folder_names, file_names)
-    # main_process_pcd(range(0, 7), test_name, folder_names, file_names, vis_on=False)
+    main_process_pcd(range(0, 7), test_name, folder_names, file_names, vis_on=False)
     # main_process_pcd2(range(15, 28), test_name, folder_names, file_names, vis_on=False)
     # main_locate_pnts_pcd(range(0, 1), test_name, folder_names, file_names, vis_on=True)
