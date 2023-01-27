@@ -1,10 +1,10 @@
 # PYTHON IMPORTS
 
 # LOCAL IMPORTS
-# from src_cam.camera.use import (
-#     _list_connected_cameras,
-#     camera_capture_and_save_IMDO,
-# )
+from src_cam.camera.use import (
+    _list_connected_cameras,
+    camera_capture_and_save_IMDO,
+)
 
 from src_cam.processing.pcd_processing import (
     pcd_transform_and_save,
@@ -16,8 +16,8 @@ from src_cam.processing.pcd_processing import (
 
 def main_capture(test_name, folder_names, file_names):
     # _list_connected_cameras()
-    # idx = int(input("Please enter a an index to start at: "))
-    # camera_capture_and_save_IMDO(idx,test_name,folder_names,file_names)
+    idx = int(input("Please enter a an index to start at: "))
+    camera_capture_and_save_IMDO(idx,test_name,folder_names,file_names)
     pass
 
 
@@ -49,19 +49,21 @@ if __name__ == "__main__":
 
     file_names = {
         "pntcloud": "{:02d}_ziv{}_3d.zdf",
+        "pntcloud_reduced": "{:02d}_ziv{}_3d_REDUCED.zdf",
         "pntcloud_trns_zdf": "{:02d}_ziv{}_3d_TRNS.zdf",
         "pntcloud_trns_ply": "{:02d}_ziv{}_3d_TRNS.ply",
         "pntcloud_processed_ply": "{}_step{:02d}_3d_PROCESSED.ply",
         "pntcloud_saved_pnts": "{}_step{:02d}_3d_POINTS.ply",
+        "img": "{:02d}_ziv{}_3d_REDUCED.png",
         "t_matrix": "{:02d}_ziv{}_trans.yml",
         "o3d_view": "o3d_view_settings.json",
         "capture_settings": "capture_settings_calibration.yml",
     }
 
-    test_name = "spec_N4_EB_3"
+    test_name = "ar_construct10_twist_covered"
 
-    # main_capture()
-    # main_transform_pcd(range(0, 1), test_name, folder_names, file_names)
-    # main_process_pcd(range(15, 28), test_name, folder_names, file_names, vis_on=False)
+    # main_capture(test_name, folder_names, file_names)
+    # main_transform_pcd(range(0, 7), test_name, folder_names, file_names)
+    main_process_pcd(range(0, 7), test_name, folder_names, file_names, vis_on=False)
     # main_process_pcd2(range(15, 28), test_name, folder_names, file_names, vis_on=False)
-    main_locate_pnts_pcd(range(0, 1), test_name, folder_names, file_names, vis_on=True)
+    # main_locate_pnts_pcd(range(0, 1), test_name, folder_names, file_names, vis_on=True)

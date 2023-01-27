@@ -212,7 +212,7 @@ def pcd_transform_and_save(pcd_range, test_name, folder_names, file_names):
     """Transform PCDs based on rotattion matrix from calibration plate"""
 
     for i in pcd_range:
-        for cam_num in [1, 2]:
+        for cam_num in [2]:
 
             trans = load_as_transformation_yaml(
                 folder=folder_names["data1_raw"].format(test_name),
@@ -221,7 +221,7 @@ def pcd_transform_and_save(pcd_range, test_name, folder_names, file_names):
 
             pc, frame = load_pointcloud(
                 folder=folder_names["data1_raw"].format(test_name),
-                input_file=file_names["pntcloud"].format(i, cam_num),
+                input_file=file_names["pntcloud_reduced"].format(i, cam_num),
             )
 
             # Transform
@@ -250,7 +250,7 @@ def pcd_process_and_save(pcd_range, test_name, folder_names, file_names, vis_on=
         print("\nprocessing: {}".format(file_names["pntcloud_processed_ply"].format(test_name, i)))
 
         pcds = []
-        for cam_num in [1, 2]:
+        for cam_num in [2]:
 
             loaded_pcd = load_pointcloud_ply(
                 folder_names["data1_raw"].format(test_name),
@@ -259,19 +259,19 @@ def pcd_process_and_save(pcd_range, test_name, folder_names, file_names, vis_on=
 
             pcds.append(loaded_pcd)
 
-        pcd = _combine_pcd(pcds, scale=0.001)
+        pcd = _combine_pcd(pcds, scale=1)
         print("pcd size after combine: {}".format(pcd))
 
         pcd = _rotate_pcd(pcd)
 
-        pcd, crop_box = _crop_pcd(pcd, i)
-        print("pcd size after cropping: {}".format(pcd))
+        # pcd, crop_box = _crop_pcd(pcd, i)
+        # print("pcd size after cropping: {}".format(pcd))
 
-        pcd = _color_mask_pcd(pcd, threshold=0.05)
-        print("pcd size after color mask: {}".format(pcd))
+        # pcd = _color_mask_pcd(pcd, threshold=0.05)
+        # print("pcd size after color mask: {}".format(pcd))
 
-        pcd = _outlier_remove_pcd(pcd, n=10, std=1.5)
-        print("pcd size after outlier removal: {}".format(pcd))
+        # pcd = _outlier_remove_pcd(pcd, n=10, std=1.5)
+        # print("pcd size after outlier removal: {}".format(pcd))
 
         save_pointcloud_ply(
             pcd,

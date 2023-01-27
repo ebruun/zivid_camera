@@ -118,7 +118,7 @@ def camera_capture_and_save_IMDO(idx_start,test_name, folder_names, file_names):
         input("\nPress ENTER to start capture #{:02d}".format(idx))
 
         t_start = process_time()
-        for cam_num in [1,2]:
+        for cam_num in [2]:
 
             try:
                 camera = camera_connect(cam_num)
@@ -133,11 +133,11 @@ def camera_capture_and_save_IMDO(idx_start,test_name, folder_names, file_names):
             )
 
             pointcloud_file_path1 = _create_file_path(
-                folder_names["input_data"].format(test_name), file_names["pntcloud"].format(idx, cam_num)
+                folder_names["data1_raw"].format(test_name), file_names["pntcloud"].format(idx, cam_num)
             )
 
             pointcloud_file_path2 = _create_file_path(
-                folder_names["input_data"].format(test_name), file_names["pntcloud_reduced"].format(idx, cam_num)
+                folder_names["data1_raw"].format(test_name), file_names["pntcloud_reduced"].format(idx, cam_num)
             )
 
             with camera.capture(settings) as frame:
@@ -151,14 +151,14 @@ def camera_capture_and_save_IMDO(idx_start,test_name, folder_names, file_names):
 
                 _ = convert2png(
                     pointcloud=pc,
-                    folder=folder_names["input_data"].format(test_name),
+                    folder=folder_names["data1_raw"].format(test_name),
                     output_file=file_names["img"].format(idx, cam_num),
                 )
 
                 try:
                     checkboard_pose_calc(
                         pointcloud=pc,
-                        folder=folder_names["input_data"].format(test_name),
+                        folder=folder_names["data1_raw"].format(test_name),
                         output_file=file_names["t_matrix"].format(idx, cam_num),
                         display=False,
                     )
@@ -170,7 +170,7 @@ def camera_capture_and_save_IMDO(idx_start,test_name, folder_names, file_names):
 
         print("\ncapture #{:02d} completed, elapsed time = {:.2f}s".format(idx, t_elapsed))
 
-        idx += 1    
+        idx += 1
 
 if __name__ == "__main__":
     _list_connected_cameras()
