@@ -1,0 +1,1 @@
+this assembly was performed with low-battery on hololens, check if it affects the accuracy!

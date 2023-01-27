@@ -128,8 +128,8 @@ def camera_capture_and_save_IMDO(idx_start,test_name, folder_names, file_names):
 
             settings = camera_capture_settings(
                 camera,
-                folder=folder_names["input_settings"]
-                # input_file= file_names["capture_settings"],
+                folder=folder_names["input_settings"],
+                input_file= file_names["capture_settings"],
             )
 
             pointcloud_file_path1 = _create_file_path(
