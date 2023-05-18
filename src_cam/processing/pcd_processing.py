@@ -209,7 +209,11 @@ def _outlier_remove_pcd(pcd, n, std):
 
 
 def pcd_transform_and_save(pcd_range, test_name, folder_names, file_names):
-    """Transform PCDs based on rotattion matrix from calibration plate"""
+    """Transform PCDs based on rotation matrix calculated from calibration plate
+
+    input: data1_raw folder
+    outout: data1_raw folder (NEW TRNS FILES)
+    """
 
     for i in pcd_range:
         for cam_num in [2]:
@@ -243,7 +247,11 @@ def pcd_transform_and_save(pcd_range, test_name, folder_names, file_names):
 
 
 def pcd_process_and_save(pcd_range, test_name, folder_names, file_names, vis_on=False):
-    """process the PCD in various ways: combine, rotate, crop, mask, outlier removal"""
+    """process the PCD in various ways: combine, rotate, crop, mask, outlier removal
+
+    input: data1_raw folder
+    outout: data2_processed folder
+    """
 
     for i in pcd_range:
 
@@ -264,14 +272,14 @@ def pcd_process_and_save(pcd_range, test_name, folder_names, file_names, vis_on=
 
         pcd = _rotate_pcd(pcd)
 
-        # pcd, crop_box = _crop_pcd(pcd, i)
-        # print("pcd size after cropping: {}".format(pcd))
+        pcd, crop_box = _crop_pcd(pcd, i)
+        print("pcd size after cropping: {}".format(pcd))
 
-        # pcd = _color_mask_pcd(pcd, threshold=0.05)
-        # print("pcd size after color mask: {}".format(pcd))
+        pcd = _color_mask_pcd(pcd, threshold=0.05)
+        print("pcd size after color mask: {}".format(pcd))
 
-        # pcd = _outlier_remove_pcd(pcd, n=10, std=1.5)
-        # print("pcd size after outlier removal: {}".format(pcd))
+        pcd = _outlier_remove_pcd(pcd, n=10, std=1.5)
+        print("pcd size after outlier removal: {}".format(pcd))
 
         save_pointcloud_ply(
             pcd,
@@ -289,6 +297,12 @@ def pcd_process_and_save(pcd_range, test_name, folder_names, file_names, vis_on=
 
 
 def pcd_process_corners_and_save(pcd_range, test_name, folder_names, file_names, vis_on=False):
+    """process the PCD by turning the corners black, specified by a volume polygon
+
+    input: data2_processed folder
+    output: data2_processed folder (OVERWRITES)
+    """
+
     for i in pcd_range:
 
         print(
@@ -343,7 +357,11 @@ def pcd_process_corners_and_save(pcd_range, test_name, folder_names, file_names,
 
 
 def pcd_threshold_and_save(pcd_range, test_name, folder_names, file_names, vis_on=False):
-    """Identify and isolate features of interest (white dots) in the PCDs"""
+    """Identify and isolate features of interest (white dots) in the PCDs
+
+    input: data3_processed_clean folder (MANUALLY MADE)
+    output: data4_found_points folder
+    """
 
     for i in pcd_range:
 
