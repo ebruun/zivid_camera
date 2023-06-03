@@ -9,6 +9,8 @@ export only explictly downloaded packages:
 create new from environment.yml file:
 `conda env create`
 
+doesn't work on mac, currently if any other packages are installed with open3d we get a seg fault
+
 check to see if this works for windows...
 
 ## Linting and Pre-commit
