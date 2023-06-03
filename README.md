@@ -1,12 +1,25 @@
 # zerowaste
 
-no builds export of ziv261_cfab250 environment (so mac and windows work):
+## Making clean environment.yml file
 
-`conda env export --from-history --name zivid_tests> environment2.yml`
+export only explictly downloaded packages:
 
+`conda env export --from-history --name rigidity_theory > environment.yml`
+
+create new from environment.yml file:
 `conda env create`
 
-if you change the the conda environment, make sure to update the env name in .git/hooks/pre-commit file
+check to see if this works for windows...
+
+## Linting and Pre-commit
+
+make sure .pre-commit-config.yaml file is up to date
+
+language_version: python (use system version of python)
+
+run this: `pre-commit install`
+
+in .vscode/settings.json make sure formatonsave = TRUE
 
 ## Zivid Code
 

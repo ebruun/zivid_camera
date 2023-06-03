@@ -27,11 +27,15 @@
         //"--max-line-length=120",
         //"--ignore=E402,F841,F401,E302,E305",
     ],
-    "python.formatting.provider": "black",
+    "python.formatting.provider": "none",
     "python.formatting.blackArgs": [
         "--line-length=100",
         "--experimental-string-processing"
     ],
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true
+    },
     //GITHUB
     "files.exclude": {
         "**/.git": false

@@ -7,14 +7,13 @@ dependencies:
   - python==3.8.10
   - compas_fab==0.27.0
   - compas_rrc==1.1.0
-  - flake8==3.9.2
-  - black==22.10.0
-  - pre-commit==2.17.0
   - opencv==4.6.0
   - matplotlib==3.6.2
   - pyyaml==6.0
   - pip==22.3.1
+  - pre-commit=3.3.2
+  - flake8=6.0.0
   - pip:
     # - zivid==2.7.0.2.8.1
-    - open3d==0.16.1
-prefix: C:\Users\Bel\anaconda3\envs\ziv281_cfab270
+    - open3d==0.17.0
+prefix: /opt/homebrew/anaconda3/envs/ziv281_cfab270

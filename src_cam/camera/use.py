@@ -99,9 +99,11 @@ def pc_downsample(pc, downsample_factor=1, display=False):
         display_pointcloud(xyz_donwsampled, rgba_downsampled[:, :, 0:3])
 
 
-def camera_capture_and_save(camera, settings, folder, output_file, downsample_factor=1, display=False):
+def camera_capture_and_save(
+    camera, settings, folder, output_file, downsample_factor=1, display=False
+):
     with camera.capture(settings) as frame:
-        pc_downsample(frame.point_cloud(), downsample_factor,display)
+        pc_downsample(frame.point_cloud(), downsample_factor, display)
 
         pointcloud_file_path = _create_file_path(folder, output_file)
 
@@ -110,8 +112,8 @@ def camera_capture_and_save(camera, settings, folder, output_file, downsample_fa
 
         return frame.point_cloud(), frame
 
-def camera_capture_and_save_IMDO(idx_start,test_name, folder_names, file_names):
 
+def camera_capture_and_save_IMDO(idx_start, test_name, folder_names, file_names):
     idx = idx_start
 
     while idx < 200:
@@ -119,7 +121,6 @@ def camera_capture_and_save_IMDO(idx_start,test_name, folder_names, file_names):
 
         t_start = process_time()
         for cam_num in [2]:
-
             try:
                 camera = camera_connect(cam_num)
             except RuntimeError:
@@ -133,15 +134,16 @@ def camera_capture_and_save_IMDO(idx_start,test_name, folder_names, file_names):
             )
 
             pointcloud_file_path1 = _create_file_path(
-                folder_names["data1_raw"].format(test_name), file_names["pntcloud"].format(idx, cam_num)
+                folder_names["data1_raw"].format(test_name),
+                file_names["pntcloud"].format(idx, cam_num),
             )
 
             pointcloud_file_path2 = _create_file_path(
-                folder_names["data1_raw"].format(test_name), file_names["pntcloud_reduced"].format(idx, cam_num)
+                folder_names["data1_raw"].format(test_name),
+                file_names["pntcloud_reduced"].format(idx, cam_num),
             )
 
             with camera.capture(settings) as frame:
-
                 frame.save(pointcloud_file_path1)
 
                 pc = frame.point_cloud()
@@ -171,6 +173,7 @@ def camera_capture_and_save_IMDO(idx_start,test_name, folder_names, file_names):
         print("\ncapture #{:02d} completed, elapsed time = {:.2f}s".format(idx, t_elapsed))
 
         idx += 1
+
 
 if __name__ == "__main__":
     _list_connected_cameras()
