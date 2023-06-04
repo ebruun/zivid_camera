@@ -27,9 +27,12 @@ in .vscode/settings.json make sure formatonsave = TRUE
 
 zivid-python-samples version:
 * working with old branch 7090186 (which is from around December 2022)
+* [link to github](https://github.com/zivid/zivid-python-samples/commit/3a045d9691a35066d5e1461dda0ea40c0fe29fcd#diff-d9aab9bce282566685b4294adf74066e8b2e36e5d660d3379b0cd6646f180468)
 * Major changes to sample_utils after, deleted TransformationMatrix object
-* Probably an easy fix using zivid.Matrix4x4 object
-* but its annoying since need a running instance of Zivid :: Application
+  * [old transformation_matrix.py](https://github.com/zivid/zivid-python-samples/blob/70901876a8de73e9950dce1ee08dda232077b33e/source/sample_utils/transformation_matrix.py)
+* Probably an easy fix using zivid.Matrix4x4 object in save_load_matrix, but that changed too...
+  * [old save_load_matrix.py](https://github.com/zivid/zivid-python-samples/blob/70901876a8de73e9950dce1ee08dda232077b33e/source/sample_utils/save_load_matrix.py)
+* annoying since new save_load_matrix.py needs a running instance of Zivid :: Application
 * don't have time to fix it, so keep old code for now...
 
 version: *Working for SDK V2.6.1, as of April, 2022*
