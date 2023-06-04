@@ -84,4 +84,4 @@ if __name__ == "__main__":
     ### CHECK THE DELETE VOLUMES FIRST###
     # main_process_pcd2(range(0, 1), test_name, folder_names, file_names, vis_on=True)
 
-    main_locate_pnts_pcd(range(7, 8), test_name, folder_names, file_names, vis_on=True)
+    main_locate_pnts_pcd(range(17, 18), test_name, folder_names, file_names, vis_on=True)
