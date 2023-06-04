@@ -25,6 +25,13 @@ in .vscode/settings.json make sure formatonsave = TRUE
 
 ## Zivid Code
 
+zivid-python-samples version:
+* working with old branch 7090186 (which is from around December 2022)
+* Major changes to sample_utils after, deleted TransformationMatrix object
+* Probably an easy fix using zivid.Matrix4x4 object
+* but its annoying since need a running instance of Zivid :: Application
+* don't have time to fix it, so keep old code for now...
+
 version: *Working for SDK V2.6.1, as of April, 2022*
 
 About version 2.7 (need to update still): <https://blog.zivid.com/sdk-2.7-preserve-the-details-in-your-point-clouds?utm_campaign=software&utm_medium=email&_hsmi=217086722&_hsenc=p2ANqtz-_ICS7K6EMNJlBN-M5Ul41QWuTe80zmZiisC4dljNtvQbqMnPRfgvocFtiyan01y9MzoD19lY1DPjNzsUy1KsLA2aOfig&utm_content=217087514&utm_source=hs_email>

@@ -88,7 +88,6 @@ def _crop_pcd(pcd, i):
 def _make_crop_volumes(polygons):
     crop_polygons = []
     for polygon in polygons:
-
         # Convert the corners array to have type float64
         bounding_polygon = polygon.astype("float64")
 
@@ -208,7 +207,7 @@ def _outlier_remove_pcd(pcd, n, std):
 ###########################
 
 
-def pcd_transform_and_save(pcd_range, test_name, folder_names, file_names):
+def pcd_transform_and_save(pcd_range, cameras, test_name, folder_names, reduced_flag, file_names):
     """Transform PCDs based on rotation matrix calculated from calibration plate
 
     input: data1_raw folder
@@ -216,17 +215,22 @@ def pcd_transform_and_save(pcd_range, test_name, folder_names, file_names):
     """
 
     for i in pcd_range:
-        for cam_num in [2]:
-
+        for cam_num in cameras:
             trans = load_as_transformation_yaml(
                 folder=folder_names["data1_raw"].format(test_name),
                 input_file=file_names["t_matrix"].format(i, cam_num),
             )
 
-            pc, frame = load_pointcloud(
-                folder=folder_names["data1_raw"].format(test_name),
-                input_file=file_names["pntcloud_reduced"].format(i, cam_num),
-            )
+            if reduced_flag:
+                pc, frame = load_pointcloud(
+                    folder=folder_names["data1_raw"].format(test_name),
+                    input_file=file_names["pntcloud_reduced"].format(i, cam_num),
+                )
+            else:
+                pc, frame = load_pointcloud(
+                    folder=folder_names["data1_raw"].format(test_name),
+                    input_file=file_names["pntcloud"].format(i, cam_num),
+                )
 
             # Transform
             pc.transform(trans)
@@ -246,20 +250,20 @@ def pcd_transform_and_save(pcd_range, test_name, folder_names, file_names):
             frame.save(pointcloud_file_path)
 
 
-def pcd_process_and_save(pcd_range, test_name, folder_names, file_names, vis_on=False):
+def pcd_process_and_save(
+    pcd_range, cameras, test_name, folder_names, file_names, scale, vis_on=False
+):
     """process the PCD in various ways: combine, rotate, crop, mask, outlier removal
 
     input: data1_raw folder
-    outout: data2_processed folder
+    output: data2_processed folder
     """
 
     for i in pcd_range:
-
         print("\nprocessing: {}".format(file_names["pntcloud_processed_ply"].format(test_name, i)))
 
         pcds = []
-        for cam_num in [2]:
-
+        for cam_num in cameras:
             loaded_pcd = load_pointcloud_ply(
                 folder_names["data1_raw"].format(test_name),
                 file_names["pntcloud_trns_ply"].format(i, cam_num),
@@ -267,7 +271,7 @@ def pcd_process_and_save(pcd_range, test_name, folder_names, file_names, vis_on=
 
             pcds.append(loaded_pcd)
 
-        pcd = _combine_pcd(pcds, scale=1)
+        pcd = _combine_pcd(pcds, scale=scale)
         print("pcd size after combine: {}".format(pcd))
 
         pcd = _rotate_pcd(pcd)
@@ -304,7 +308,6 @@ def pcd_process_corners_and_save(pcd_range, test_name, folder_names, file_names,
     """
 
     for i in pcd_range:
-
         print(
             "processing corners: {}".format(
                 file_names["pntcloud_processed_ply"].format(test_name, i)
@@ -364,7 +367,6 @@ def pcd_threshold_and_save(pcd_range, test_name, folder_names, file_names, vis_o
     """
 
     for i in pcd_range:
-
         print(
             "Finding points on: {}".format(
                 file_names["pntcloud_processed_ply"].format(test_name, i)
