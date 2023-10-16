@@ -1,13 +1,12 @@
-{   
+{
     //PYTHON
-    "python.pythonPath": "C:\\Users\\Edvard\\.conda\\envs\\ziv281_cfab250\\python.exe",
+    "python.pythonPath": "C:\\Users\\Edvard\\.conda\\envs\\ziv281_cfab270\\python.exe",
     "python.terminal.activateEnvironment": true,
     "python.envFile": "${workspaceFolder}/.vscode/.env",
-
     //INTEGRATED TERMINAL
     "terminal.integrated.tabs.enabled": true,
     "terminal.integrated.copyOnSelection": true,
-    "terminal.integrated.profiles.windows":{
+    "terminal.integrated.profiles.windows": {
         "Command Prompt2": {
             "path": [
                 "${env:windir}\\Sysnative\\cmd.exe",
@@ -17,7 +16,6 @@
             "icon": "terminal-cmd",
         },
     },
-
     //LINTING
     "python.linting.flake8Enabled": true,
     "python.linting.enabled": true,
@@ -29,15 +27,17 @@
         //"--max-line-length=120",
         //"--ignore=E402,F841,F401,E302,E305",
     ],
-    "python.formatting.provider": "black",
+    "python.formatting.provider": "none",
     "python.formatting.blackArgs": [
         "--line-length=100",
         "--experimental-string-processing"
     ],
-
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true
+    },
     //GITHUB
     "files.exclude": {
         "**/.git": false
-   }
-    
+    },
 }

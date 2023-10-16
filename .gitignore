@@ -1,9 +1,12 @@
 #PROJECT SPECIFIC ADDS
 # -----------
-/saved_output
+/data1_raw
 /data/*
-! /ZividSampleData2/
+/ZividSampleData/ZividGemEyeInHand.zdf
+/ZividSampleData/ZividGemEyeInHandInRobotBaseFrame.zdf
 *.3dmbak
+*.plybak
+*.rhl
 # -----------
 
 # Byte-compiled / optimized / DLL files

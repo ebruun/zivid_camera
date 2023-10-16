@@ -1,0 +1,56 @@
+__version__:
+    serializer: 1
+    data: 8
+Settings:
+    Acquisitions:
+        - Acquisition:
+              Aperture: 8
+              Brightness: 1
+              ExposureTime: 10000
+              Gain: 1
+        - Acquisition:
+              Aperture: 4
+              Brightness: 1
+              ExposureTime: 10000
+              Gain: 1
+        - Acquisition:
+              Aperture: 2.83
+              Brightness: 1
+              ExposureTime: 10000
+              Gain: 4
+    Experimental:
+        Engine: phase
+    Processing:
+        Color:
+            Balance:
+                Blue: 1
+                Green: 1
+                Red: 1
+            Experimental:
+                ToneMapping:
+                    Enabled: hdrOnly
+            Gamma: 1
+        Filters:
+            Experimental:
+                ContrastDistortion:
+                    Correction:
+                        Enabled: yes
+                        Strength: 0.4
+                    Removal:
+                        Enabled: no
+                        Threshold: 0.5
+            Noise:
+                Removal:
+                    Enabled: yes
+                    Threshold: 7
+            Outlier:
+                Removal:
+                    Enabled: yes
+                    Threshold: 5
+            Reflection:
+                Removal:
+                    Enabled: yes
+            Smoothing:
+                Gaussian:
+                    Enabled: yes
+                    Sigma: 1.5

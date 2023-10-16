@@ -1,0 +1,1 @@
+These are manually cleaned PLYs, changing the color on some points and removing outliers. These files are used for the final step in isolating points (data4)

@@ -1,14 +1,39 @@
 # zerowaste
 
-no builds export of ziv261_cfab250 environment (so mac and windows work):
+## Making clean environment.yml file
 
-`conda env export --no-builds --name ziv261_cfab250 > environment.yml`
+export only explictly downloaded packages:
 
+`conda env export --from-history --name rigidity_theory > environment.yml`
+
+create new from environment.yml file:
 `conda env create`
 
-if you change the the conda environment, make sure to update the env name in .git/hooks/pre-commit file
+doesn't work on mac, currently if any other packages are installed with open3d we get a seg fault
+
+check to see if this works for windows...
+
+## Linting and Pre-commit
+
+make sure .pre-commit-config.yaml file is up to date
+
+language_version: python (use system version of python)
+
+run this: `pre-commit install`
+
+in .vscode/settings.json make sure formatonsave = TRUE
 
 ## Zivid Code
+
+zivid-python-samples version:
+* working with old branch 7090186 (which is from around December 2022)
+* [link to github](https://github.com/zivid/zivid-python-samples/commit/3a045d9691a35066d5e1461dda0ea40c0fe29fcd#diff-d9aab9bce282566685b4294adf74066e8b2e36e5d660d3379b0cd6646f180468)
+* Major changes to sample_utils after, deleted TransformationMatrix object
+  * [old transformation_matrix.py](https://github.com/zivid/zivid-python-samples/blob/70901876a8de73e9950dce1ee08dda232077b33e/source/sample_utils/transformation_matrix.py)
+* Probably an easy fix using zivid.Matrix4x4 object in save_load_matrix, but that changed too...
+  * [old save_load_matrix.py](https://github.com/zivid/zivid-python-samples/blob/70901876a8de73e9950dce1ee08dda232077b33e/source/sample_utils/save_load_matrix.py)
+* annoying since new save_load_matrix.py needs a running instance of Zivid :: Application
+* don't have time to fix it, so keep old code for now...
 
 version: *Working for SDK V2.6.1, as of April, 2022*
 
