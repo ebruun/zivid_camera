@@ -4,7 +4,7 @@
 
 export only explictly downloaded packages:
 
-`conda env export --from-history --name rigidity_theory > environment.yml`
+`conda env export --from-history --name  ziv281_cfab270 > environment.yml`
 
 create new from environment.yml file:
 `conda env create`
