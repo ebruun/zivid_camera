@@ -9,7 +9,7 @@ export only explictly downloaded packages:
 create new from environment.yml file:
 `conda env create`
 
-doesn't work on mac, currently if any other packages are installed with open3d we get a seg fault
+PROCESSING PCDs DOES NOT WORK ON MAC, currently if any other packages are installed with open3d we get a seg fault.
 
 check to see if this works for windows...
 
