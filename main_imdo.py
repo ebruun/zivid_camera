@@ -75,7 +75,7 @@ if __name__ == "__main__":
     cameras = [1, 2]
     reduced_flag = False
 
-    test_name = "spec_N5"
+    test_name = "spec_N5_3"
 
     # main_capture(test_name, folder_names, file_names)
     # main_transform_pcd(range(0, 1), cameras, test_name, folder_names, reduced_flag, file_names)
