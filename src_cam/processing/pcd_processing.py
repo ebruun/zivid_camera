@@ -24,6 +24,8 @@ from src_cam.processing._crop_volumes import (
     N5_delete_polygons,
     N4_EB_color_polygons,
     N4_EB_delete_polygons,
+    N4_color_polygons,
+    N4_delete_polygons,
 )
 
 
@@ -337,6 +339,9 @@ def pcd_process_corners_and_save(pcd_range, test_name, folder_names, file_names,
         elif test_name == "spec_N4_EB_3":
             color_polygons = N4_EB_color_polygons
             delete_polygons = N4_EB_delete_polygons
+        elif test_name == "spec_N4_3":
+            color_polygons = N4_color_polygons
+            delete_polygons = N4_delete_polygons
 
         color_volumes = _make_crop_volumes(color_polygons)
         delete_volumes = _make_crop_volumes(delete_polygons)

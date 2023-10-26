@@ -1,6 +1,7 @@
 # PYTHON IMPORTS
 
 # LOCAL IMPORTS
+from pickle import FALSE
 from src_cam.camera.use import (
     _list_connected_cameras,
     camera_capture_and_save_IMDO,
@@ -75,13 +76,13 @@ if __name__ == "__main__":
     cameras = [1, 2]
     reduced_flag = False
 
-    test_name = "spec_N5_3"
+    test_name = "spec_N4_3"
 
     # main_capture(test_name, folder_names, file_names)
     # main_transform_pcd(range(0, 1), cameras, test_name, folder_names, reduced_flag, file_names)
     # main_process_pcd(range(0, 1), cameras, test_name, folder_names, file_names, scale=0.001, vis_on=True)
 
     ### CHECK THE DELETE VOLUMES FIRST###
-    # main_process_pcd2(range(0, 1), test_name, folder_names, file_names, vis_on=True)
+    main_process_pcd2(range(0, 50), test_name, folder_names, file_names, vis_on=False)
 
-    main_locate_pnts_pcd(range(0, 1), test_name, folder_names, file_names, vis_on=True)
+    # main_locate_pnts_pcd(range(0, 1), test_name, folder_names, file_names, vis_on=True)
