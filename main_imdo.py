@@ -83,6 +83,6 @@ if __name__ == "__main__":
     # main_process_pcd(range(0, 1), cameras, test_name, folder_names, file_names, scale=0.001, vis_on=True)
 
     ### CHECK THE DELETE VOLUMES FIRST###
-    main_process_pcd2(range(0, 50), test_name, folder_names, file_names, vis_on=False)
+    # main_process_pcd2(range(0, 1), test_name, folder_names, file_names, vis_on=False)
 
-    # main_locate_pnts_pcd(range(0, 1), test_name, folder_names, file_names, vis_on=True)
+    main_locate_pnts_pcd(range(37, 38), test_name, folder_names, file_names, vis_on=True)
