@@ -1,5 +1,14 @@
 # zerowaste
 
+the main_zerowaste.py was used in ZeroWaste, but is probably superceded by the main_IMDO, which was used for Isabel's research. A lot of code was changed when working on Isabel's project.
+
+This only works on windows, since Zivid only works on windows.
+
+PROCESSING PCDs DOES NOT WORK ON MAC, currently if any other packages are installed with open3d we get a seg fault on Mac.
+
+Basically, just use this one Windows machine...
+
+
 ## Making clean environment.yml file
 
 export only explictly downloaded packages:
@@ -9,9 +18,6 @@ export only explictly downloaded packages:
 create new from environment.yml file:
 `conda env create`
 
-PROCESSING PCDs DOES NOT WORK ON MAC, currently if any other packages are installed with open3d we get a seg fault.
-
-check to see if this works for windows...
 
 ## Linting and Pre-commit
 
